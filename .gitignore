@@ -1,0 +1,27 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# next.js
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# env
+.env
+.env*.local
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# editor/os
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+Thumbs.db
+
+# misc
+/media

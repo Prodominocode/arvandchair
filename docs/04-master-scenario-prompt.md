@@ -27,7 +27,7 @@
 ## استک فنی (الزامی — تغییر نده مگر با دلیل فنی قوی و اطلاع‌رسانی)
 
 طبق سند `00-tech-stack.md`:
-Next.js 15 (App Router) + TypeScript strict، Payload CMS 3 (Embedded)، PostgreSQL، Tailwind CSS v4 + shadcn/ui، next-intl، GSAP ScrollTrigger + Lenis، React Three Fiber + drei، Framer Motion، TanStack Query + Zustand، Meilisearch، درگاه پرداخت ایرانی، Resend، Cloudflare R2، Vercel.
+Next.js 15 (App Router) + TypeScript strict، Payload CMS 3 (Embedded)، PostgreSQL، Tailwind CSS v4 + shadcn/ui، next-intl، GSAP ScrollTrigger + Lenis، React Three Fiber + drei، Framer Motion، TanStack Query + Zustand، Meilisearch، Mock Payment Provider در توسعه/درگاه ایرانی در Production، Mailhog در توسعه/Liara Email Server در Production.
 
 جزئیات کامل و دلایل انتخاب در `00-tech-stack.md`. مدل داده‌ی کامل در `02-data-model.md`. این دو سند مرجع فنی هستند و نباید نادیده گرفته شوند.
 
@@ -67,10 +67,11 @@ Next.js 15 (App Router) + TypeScript strict، Payload CMS 3 (Embedded)، Postgre
 
 1. طبق `01-workflow-roadmap.md` فازها را به ترتیب طی کن؛ فاز فعلی را من مشخص می‌کنم یا خودت از آخرین گزارش پیشرفت تشخیص بده.
 2. **این پروژه UI-first است:** فاز ۳ کل UI/UX سایت را با داده‌ی Mock (طبق شکل `02-data-model.md` که فعلاً Draft است) صفحه‌به‌صفحه می‌سازد. مدل داده‌ی نهایی و اتصال واقعی به Payload در فازهای ۴ و ۵ می‌آید. تا آن زمان هیچ Collection واقعی در Payload نساز — فقط `lib/mock-data` + `lib/data` (لایه‌ی Data Access نازک، طبق فاز ۳ در `01-workflow-roadmap.md`).
-3. قبل از شروع هر فاز: چک‌لیست آن فاز را مرور کن و هر ابهام را بپرس.
-4. حین کار: تغییرات را در واحدهای کوچک و قابل‌بررسی پیش ببر (یک صفحه/یک Collection/یک Feature در هر گام).
-5. پایان هر فاز: `docs/progress/phase-XX-<name>.md` را بنویس شامل «چه ساخته شد»، «چه تصمیمی گرفته شد و چرا»، «چه چیزی باز مانده یا نیاز به تأیید دارد».
-6. هرگز به فاز بعد نرو بدون تأیید صریح من.
+3. **این پروژه Local-First هم هست:** تا فاز ۱۱، هیچ سرویس ابری (Liara، درگاه پرداخت واقعی، ایمیل واقعی) وصل نمی‌شود — همه‌چیز روی لپ‌تاپ با Docker Compose (Postgres/Meilisearch/Mailhog)، Payload Local Disk Storage، و Mock Payment Provider اجرا می‌شود. جزئیات کامل و دلیل در `00-tech-stack.md` بخش ۱.۲.
+4. قبل از شروع هر فاز: چک‌لیست آن فاز را مرور کن و هر ابهام را بپرس.
+5. حین کار: تغییرات را در واحدهای کوچک و قابل‌بررسی پیش ببر (یک صفحه/یک Collection/یک Feature در هر گام).
+6. پایان هر فاز: `docs/progress/phase-XX-<name>.md` را بنویس شامل «چه ساخته شد»، «چه تصمیمی گرفته شد و چرا»، «چه چیزی باز مانده یا نیاز به تأیید دارد».
+7. هرگز به فاز بعد نرو بدون تأیید صریح من.
 
 ## خارج از محدوده‌ی MVP (فعلاً نساز، فقط یادداشت کن)
 

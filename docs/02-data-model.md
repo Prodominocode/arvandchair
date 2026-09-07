@@ -111,7 +111,7 @@
 - `shippingAddress`, `billingAddress` (ساختار آدرس ایران: استان/شهر/خیابان/کدپستی — Checkout فعلاً فقط آدرس داخل ایران را می‌پذیرد)
 - `status`: enum → `pending` | `confirmed` | `shipped` | `delivered` | `cancelled`
 - `paymentStatus`: enum → `unpaid` | `paid` | `refunded`
-- `paymentProvider`: enum → درگاه بانکی ایرانی (مثلاً `zarinpal` | `idpay` | `zibal` | `nextpay` — انتخاب نهایی در فاز ۶ طبق قرارداد PSP). **Stripe از Stack حذف شد** چون برای کسب‌وکار ایرانی به‌دلیل محدودیت‌های بین‌المللی قابل‌استفاده نیست.
+- `paymentProvider`: enum → `mock` (پیش‌فرض توسعه، طبق `00-tech-stack.md` بخش ۱.۲ — تا فاز ۱۱) | `zarinpal` | `idpay` | `zibal` | `nextpay` (فقط Production، فاز ۱۱ طبق قرارداد PSP). **Stripe از Stack حذف شد** چون برای کسب‌وکار ایرانی به‌دلیل محدودیت‌های بین‌المللی قابل‌استفاده نیست.
 - `totals`: گروه → subtotal, shipping, tax, discount, total
 - `locale`: زبانی که سفارش در آن ثبت شده (برای فاکتور)
 - **Access:** مشتری فقط سفارش‌های خودش را می‌بیند؛ تیم فروش همه را می‌بیند/ویرایش می‌کند
