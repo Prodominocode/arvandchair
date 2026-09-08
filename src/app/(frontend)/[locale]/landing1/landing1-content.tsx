@@ -319,6 +319,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
         products={products}
         eyebrow={t('showcase.eyebrow')}
         linkLabel={t('showcase.linkLabel')}
+        locale={locale}
       />
 
       {/* Showcase — موبایل: Grid ساده بدون Scroll-jacking */}

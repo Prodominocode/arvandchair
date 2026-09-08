@@ -8,6 +8,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 
 import { Link } from '@/i18n/navigation'
+import type { AppLocale } from '@/i18n/routing'
 
 export const SHOWCASE_LEFT_IMAGES = [
   '/images/landing1/product_slide01_pc.webp',
@@ -37,7 +38,7 @@ const DIM_MAX = 0.3
 
 export type ShowcaseProduct = { id: string; title: string; description: string; href: string }
 
-type Props = { products: ShowcaseProduct[]; eyebrow: string; linkLabel: string }
+type Props = { products: ShowcaseProduct[]; eyebrow: string; linkLabel: string; locale: AppLocale }
 
 /**
  * ویترین محصولات با Pin+Snap — سکشن این سکشن روی اسکرول پین می‌شود و بین N فریم (محصول) روی
@@ -45,8 +46,12 @@ type Props = { products: ShowcaseProduct[]; eyebrow: string; linkLabel: string }
  * Handoff نرم به سکشن بعدی تحویل می‌دهد — پیاده‌سازی از app.js رفرنس پورت شده به React/Refs.
  * فقط دسکتاپ (lg+)؛ موبایل در Landing1Content یک Grid ساده و بدون Scroll-jacking می‌بیند
  * (هم برای سادگی تعامل لمسی، هم چون CSS رفرنس در موبایل ۳ از ۴ محصول را کامل مخفی می‌کرد).
+ *
+ * چیدمان دو ستون (صحنه‌ی چپ/راست) عمداً `dir="ltr"` دارد و در fa/ar جابه‌جا نمی‌شود — طبق
+ * بازخورد، فقط خودِ متن باید راست‌به‌چپ بشود، نه ترتیب فیزیکی دو صحنه؛ متن پنل هر محصول با
+ * `dir` مطابق زبان صفحه رندر می‌شود تا شکل/چینش نوشتار درست بماند.
  */
-export function ShowcaseSection({ products, eyebrow, linkLabel }: Props) {
+export function ShowcaseSection({ products, eyebrow, linkLabel, locale }: Props) {
   const trackRef = useRef<HTMLDivElement>(null)
   const pinRef = useRef<HTMLDivElement>(null)
   const leftFramesRef = useRef<(HTMLDivElement | null)[]>([])
@@ -190,7 +195,7 @@ export function ShowcaseSection({ products, eyebrow, linkLabel }: Props) {
     <section id="showcase" className="bg-surface-mist hidden lg:block" aria-label={eyebrow}>
       <div ref={trackRef} className="relative">
         <div ref={pinRef} className="relative flex h-svh flex-col overflow-hidden">
-          <div className="relative flex flex-1">
+          <div dir="ltr" className="relative flex flex-1">
             {/* صحنه‌ی چپ — تصویر اتمسفریک محصول در استودیو */}
             <div className="border-border relative h-full w-1/2 overflow-hidden border-e">
               {products.map((product, i) => (
@@ -236,7 +241,10 @@ export function ShowcaseSection({ products, eyebrow, linkLabel }: Props) {
                       priority={i === 0}
                     />
                   </div>
-                  <div className="relative z-[3] flex flex-col gap-2 px-8 pb-8 md:px-11 md:pb-9">
+                  <div
+                    dir={locale === 'en' ? 'ltr' : 'rtl'}
+                    className="relative z-[3] flex flex-col gap-2 px-8 pb-8 md:px-11 md:pb-9"
+                  >
                     <span className="text-arvand-gold font-mono text-xs tracking-widest uppercase">
                       {eyebrow}
                     </span>
