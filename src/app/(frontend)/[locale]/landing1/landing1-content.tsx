@@ -17,8 +17,7 @@ import {
   SCROLL_TRIGGER,
 } from '@/lib/motion/scroll-tokens'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { ShowcaseSection, SHOWCASE_RIGHT_IMAGES, type ShowcaseProduct } from './showcase-section'
+import { ShowcaseSection, type ShowcaseProduct } from './showcase-section'
 import { StoriesSection } from './stories-section'
 
 type Props = {
@@ -253,14 +252,16 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
 
   return (
     <div ref={rootRef}>
-      {/* Hero */}
+      {/* Hero — data-header-tone="dark" چون پس‌زمینه‌ی تیره دارد، هدر شفاف رویش شناور می‌شود؛
+          mt-16- فاصله‌ی pt-16 پیش‌فرض main را لغو می‌کند تا هیرو زیر هدر تا بالای صفحه ادامه یابد. */}
       <section
         id="hero"
-        className="bg-arvand-ink relative flex min-h-[calc(100svh-4rem)] items-center justify-center overflow-hidden"
+        data-header-tone="dark"
+        className="bg-arvand-ink relative -mt-16 flex min-h-svh items-center justify-center overflow-hidden"
       >
         <div ref={heroBackdropRef} className="absolute -inset-[6%]">
           <Image
-            src="/images/landing1/hero-img1.jpg"
+            src="/images/landing1/hero-img1.png"
             alt=""
             fill
             priority
@@ -281,10 +282,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
           ref={heroContentRef}
           className="relative z-[2] flex flex-col items-center gap-4 px-6 text-center text-white sm:gap-5"
         >
-          <span
-            ref={heroEyebrowRef}
-            className="font-mono text-xs tracking-[0.16em] text-white/70 uppercase"
-          >
+          <span ref={heroEyebrowRef} className="text-xs tracking-[0.16em] text-white/70 uppercase">
             {t('hero.eyebrow')}
           </span>
           <h1
@@ -303,9 +301,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
           ref={heroScrollRef}
           className="absolute inset-x-0 bottom-8 z-[2] flex flex-col items-center gap-2 text-white/70"
         >
-          <span className="font-mono text-[0.68rem] tracking-[0.2em] uppercase">
-            {t('hero.scroll')}
-          </span>
+          <span className="text-[0.68rem] tracking-[0.2em] uppercase">{t('hero.scroll')}</span>
           <span className="relative h-8 w-px overflow-hidden bg-white/40">
             <span ref={scrollLineRef} className="absolute inset-x-0 top-0 h-full bg-white" />
           </span>
@@ -313,7 +309,11 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
       </section>
 
       {/* Intro / About */}
-      <section id="intro" className="bg-surface-mist flex min-h-[100svh] items-center">
+      <section
+        id="intro"
+        data-header-tone="light"
+        className="bg-surface-mist flex min-h-[100svh] items-center"
+      >
         <div className="px-container-x mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div
             ref={introMediaRef}
@@ -329,7 +329,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
             />
           </div>
           <div className="flex flex-col items-start gap-6">
-            <span className="text-arvand-slate font-mono text-xs tracking-[0.16em] uppercase">
+            <span className="text-arvand-slate text-xs tracking-[0.16em] uppercase">
               {t('intro.eyebrow')}
             </span>
             <h2
@@ -350,7 +350,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
         </div>
       </section>
 
-      {/* Showcase — دسکتاپ: Pin+Snap */}
+      {/* Showcase — دسکتاپ: Pin+Snap دو ستونه، موبایل: Pin+Snap دو ردیفه (داخل خودِ کامپوننت) */}
       <ShowcaseSection
         products={products}
         eyebrow={t('showcase.eyebrow')}
@@ -358,44 +358,15 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
         locale={locale}
       />
 
-      {/* Showcase — موبایل: Grid ساده بدون Scroll-jacking */}
-      <section className="bg-surface-mist py-section-y-md lg:hidden">
-        <div className="px-container-x mx-auto grid max-w-6xl gap-6 sm:grid-cols-2">
-          {products.map((product, i) => (
-            <Card key={product.id} {...revealProps} className="overflow-hidden py-0">
-              <div className="bg-surface-mist relative aspect-square w-full">
-                <Image
-                  src={SHOWCASE_RIGHT_IMAGES[i % SHOWCASE_RIGHT_IMAGES.length]!}
-                  alt={product.title}
-                  fill
-                  className="object-contain p-6"
-                  sizes="(min-width: 640px) 50vw, 100vw"
-                />
-              </div>
-              <CardContent className="flex flex-col items-start gap-2 p-5">
-                <span className="text-arvand-gold font-mono text-xs tracking-widest uppercase">
-                  {t('showcase.eyebrow')}
-                </span>
-                <h3 className="text-arvand-ink text-xl font-bold">{product.title}</h3>
-                <p className="text-muted-foreground text-sm">{product.description}</p>
-                <Link
-                  href={product.href}
-                  className="text-arvand-ink mt-1 inline-flex items-center gap-1 text-sm font-semibold hover:underline"
-                >
-                  {t('showcase.linkLabel')}
-                  <ArrowUpRight className="size-4 rtl:-scale-x-100" aria-hidden="true" />
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
       {/* Philosophy */}
-      <section id="philosophy" className="bg-surface-mist flex min-h-[100svh] items-center">
+      <section
+        id="philosophy"
+        data-header-tone="light"
+        className="bg-surface-mist flex min-h-[100svh] items-center"
+      >
         <div className="px-container-x mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div {...revealProps} className="order-2 flex flex-col gap-6 lg:order-1">
-            <span className="text-arvand-gold font-mono text-xs tracking-[0.16em] uppercase">
+            <span className="text-arvand-gold text-xs tracking-[0.16em] uppercase">
               {t('philosophy.eyebrow')}
             </span>
             <h2 className="text-arvand-ink text-4xl leading-tight font-bold lg:text-5xl">
@@ -435,6 +406,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
       {/* Catalog CTA — نصف بالا در این سکشن (bg-surface-mist مثل سکشن‌های قبل)، نصف پایین
           روی فوتر اورلپ می‌شود؛ اندازه‌گیری و margin منفی در افکت syncCatalogOverlap بالا */}
       <section
+        data-header-tone="light"
         className="bg-surface-mist px-container-x pt-section-y-lg relative z-10"
         {...revealProps}
       >
@@ -455,7 +427,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
               />
             </div>
             <div className="flex flex-col items-start gap-3">
-              <span className="text-arvand-slate font-mono text-xs tracking-[0.16em] uppercase">
+              <span className="text-arvand-slate text-xs tracking-[0.16em] uppercase">
                 {t('catalog.eyebrow')}
               </span>
               <h3 className="text-arvand-ink text-2xl font-bold text-balance sm:text-3xl">

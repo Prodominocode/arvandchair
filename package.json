@@ -64,5 +64,10 @@
     "*.{js,jsx,ts,tsx,json,css,md}": [
       "prettier --write"
     ]
+  },
+  "pnpm": {
+    "overrides": {
+      "sharp": "$sharp"
+    }
   }
 }

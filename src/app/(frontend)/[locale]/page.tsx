@@ -80,8 +80,14 @@ export default async function HomePage({ params }: Args) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
 
-      {/* Hero — سه‌بعدی + Fallback (docs/05 بسته‌ی ۱ #۲) */}
-      <section className="px-container-x py-section-y-lg mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2">
+      {/* Hero — سه‌بعدی + Fallback (docs/05 بسته‌ی ۱ #۲)
+          data-header-tone روشن است چون این سکشن پس‌زمینه‌ی روشن دارد (هدر شفاف رویش شناور
+          می‌شود)؛ mt-16- فاصله‌ی pt-16 پیش‌فرض main را لغو می‌کند تا هیرو زیر هدر تا بالای
+          صفحه ادامه پیدا کند. */}
+      <section
+        data-header-tone="light"
+        className="px-container-x pb-section-y-lg mx-auto -mt-16 grid max-w-7xl items-center gap-10 pt-[12rem] lg:grid-cols-2"
+      >
         <div>
           <h1 className="text-arvand-ink text-4xl font-bold text-balance lg:text-5xl">
             {t('hero.title')}
@@ -104,7 +110,10 @@ export default async function HomePage({ params }: Args) {
       </section>
 
       {/* دسته‌بندی‌های شاخص */}
-      <section className="px-container-x py-section-y-md mx-auto max-w-7xl">
+      <section
+        data-header-tone="light"
+        className="px-container-x py-section-y-md mx-auto max-w-7xl"
+      >
         <header className="mb-8 max-w-2xl">
           <h2 className="text-arvand-ink text-3xl font-semibold">{t('categories.title')}</h2>
           <p className="text-muted-foreground mt-2">{t('categories.subtitle')}</p>
@@ -134,7 +143,7 @@ export default async function HomePage({ params }: Args) {
       </section>
 
       {/* محصولات ویژه */}
-      <section className="bg-surface-mist/60 py-section-y-md">
+      <section data-header-tone="light" className="bg-surface-mist/60 py-section-y-md">
         <div className="px-container-x mx-auto max-w-7xl">
           <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div className="max-w-2xl">
@@ -208,7 +217,10 @@ export default async function HomePage({ params }: Args) {
       </section>
 
       {/* Portfolio منتخب */}
-      <section className="px-container-x py-section-y-md mx-auto max-w-7xl">
+      <section
+        data-header-tone="light"
+        className="px-container-x py-section-y-md mx-auto max-w-7xl"
+      >
         <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-2xl">
             <h2 className="text-arvand-ink text-3xl font-semibold">{t('portfolio.title')}</h2>
@@ -251,7 +263,10 @@ export default async function HomePage({ params }: Args) {
       </section>
 
       {/* CTA باشگاه مشتریان */}
-      <section className="px-container-x py-section-y-md mx-auto max-w-7xl">
+      <section
+        data-header-tone="light"
+        className="px-container-x py-section-y-md mx-auto max-w-7xl"
+      >
         <div className="bg-arvand-ink flex flex-col items-start gap-4 rounded-2xl p-8 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-xl">
             <h2 className="text-2xl font-semibold text-white">{t('loyalty.title')}</h2>
@@ -264,7 +279,10 @@ export default async function HomePage({ params }: Args) {
       </section>
 
       {/* بخش اعتماد */}
-      <section className="px-container-x py-section-y-md mx-auto max-w-7xl">
+      <section
+        data-header-tone="light"
+        className="px-container-x py-section-y-md mx-auto max-w-7xl"
+      >
         <header className="mb-8 max-w-2xl">
           <h2 className="text-arvand-ink text-3xl font-semibold">{t('trust.title')}</h2>
           <p className="text-muted-foreground mt-2">{t('trust.subtitle')}</p>

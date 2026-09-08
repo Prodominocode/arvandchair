@@ -22,11 +22,14 @@ type Slot = {
   opacity: number
 }
 
-// هندسه‌ی دقیقاً از ref/html/app.js (SLOTS) — به‌صورت درصدی از باکس .stories-visual، بدون
-// تغییر، چون این عدد‌ها فقط چیدمان بصری Stack سه‌عکسی را توصیف می‌کنند، نه محتوای رفرنس.
+// هندسه‌ی پایه از ref/html/app.js (SLOTS) — به‌صورت درصدی از باکس .stories-visual. left هر پنج
+// اسلات با +5.7% نسبت به رفرنس شیفت داده شده: باکس بصریِ حاصل از سه اسلات استراحت (top/center/
+// bottom) در رفرنس بین -4% تا 92.6% است (مرکز ≈44.3%، نه 50%) و همین Skew چپ باعث می‌شد استک
+// در باکس/صفحه وسط ننشیند؛ +5.7% این باکس را دقیقاً حول 50% مرکز می‌کند، بدون تغییر عرض/فاصله‌ی
+// نسبی اسلات‌ها از هم.
 const SLOTS: Record<'center' | 'top' | 'bottom' | 'offBelow' | 'offAbove', Slot> = {
   center: {
-    left: '8.7%',
+    left: '14.4%',
     top: '18.3%',
     width: '65.2%',
     height: '63.3%',
@@ -35,7 +38,7 @@ const SLOTS: Record<'center' | 'top' | 'bottom' | 'offBelow' | 'offAbove', Slot>
     opacity: 1,
   },
   top: {
-    left: '-4%',
+    left: '1.7%',
     top: '0%',
     width: '28.3%',
     height: '21.7%',
@@ -44,7 +47,7 @@ const SLOTS: Record<'center' | 'top' | 'bottom' | 'offBelow' | 'offAbove', Slot>
     opacity: 1,
   },
   bottom: {
-    left: '60%',
+    left: '65.7%',
     top: '75%',
     width: '32.6%',
     height: '25%',
@@ -53,7 +56,7 @@ const SLOTS: Record<'center' | 'top' | 'bottom' | 'offBelow' | 'offAbove', Slot>
     opacity: 1,
   },
   offBelow: {
-    left: '88%',
+    left: '93.7%',
     top: '113%',
     width: '32.6%',
     height: '25%',
@@ -62,7 +65,7 @@ const SLOTS: Record<'center' | 'top' | 'bottom' | 'offBelow' | 'offAbove', Slot>
     opacity: 0,
   },
   offAbove: {
-    left: '-34%',
+    left: '-28.3%',
     top: '-24%',
     width: '28.3%',
     height: '21.7%',
@@ -224,6 +227,7 @@ export function StoriesSection({ testimonials, locale, texts }: Props) {
   return (
     <section
       id="stories"
+      data-header-tone="light"
       className="bg-surface-mist py-section-y-lg"
       {...{ [SCROLL_DATA_ATTR]: 'reveal' }}
     >
@@ -258,28 +262,39 @@ export function StoriesSection({ testimonials, locale, texts }: Props) {
             </div>
           </div>
 
-          {/* عکس‌ها — Stack سه‌تایی، هندسه‌ی مطلق طبق SLOTS */}
-          <div
-            className="relative order-1 mx-auto h-auto w-[min(380px,86vw)] justify-self-center md:order-2 md:h-[min(71.5vh,660px)] md:w-auto"
-            style={{ aspectRatio: '460 / 600' }}
-          >
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                ref={(el) => {
-                  photoRefs.current[i] = el
-                }}
-                className="border-background bg-surface-mist absolute overflow-hidden border-4 shadow-xl"
-              >
-                <Image
-                  src="/images/mock/icon-avatar.svg"
-                  alt=""
-                  fill
-                  aria-hidden="true"
-                  className="object-contain p-6"
-                />
-              </div>
-            ))}
+          {/* عکس‌ها — Stack سه‌تایی، هندسه‌ی مطلق طبق SLOTS، بدون تغییر روی باکس داخلی (relative).
+              باکس بیرونی فقط برای Clip موبایل اضافه شده: اسلات‌های گذرا (offAbove/offBelow) هنگام
+              حرکت prev/next تا -34%/-24% از باکس بیرون می‌زنند و چون این Stack روی موبایل بلافاصله
+              زیر هدر Fixed/شفاف قرار می‌گیرد، بدون Clip چند صدم ثانیه از پشت هدر پیدا می‌شوند و
+              چیدمان صفحه را به‌هم می‌ریزند. بافر padding/-margin (نامتقارن: کم در بالا تا به هدر
+              نرسد، زیاد در پایین برای سایه‌ی shadow-xl و کم در چپ/راست برای Peek لبه‌ی SLOTS.top/
+              bottom) طوری انتخاب شده که چیدمان استراحت (Peek چپِ عکس بالا، سایه‌ی عکس پایین) هرگز
+              Clip نشود ولی نشتِ حین انیمیشن مهار شود؛ margin منفی هم‌اندازه‌ی padding یعنی این باکس
+              فضای گرید را بیشتر از قبل اشغال نمی‌کند. دسکتاپ فاصله‌ی کافی دارد و visible می‌ماند تا
+              دقیقاً مطابق رفرنس بماند. */}
+          <div className="order-1 -mx-6 -mt-8 -mb-20 justify-self-center overflow-hidden px-6 pt-8 pb-20 md:order-2 md:m-0 md:overflow-visible md:p-0">
+            <div
+              className="relative h-auto w-[min(380px,86vw)] md:h-[min(71.5vh,660px)] md:w-auto"
+              style={{ aspectRatio: '460 / 600' }}
+            >
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  ref={(el) => {
+                    photoRefs.current[i] = el
+                  }}
+                  className="border-background bg-surface-mist absolute overflow-hidden border-4 shadow-xl"
+                >
+                  <Image
+                    src="/images/mock/icon-avatar.svg"
+                    alt=""
+                    fill
+                    aria-hidden="true"
+                    className="object-contain p-6"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* ناوبری */}
@@ -304,7 +319,7 @@ export function StoriesSection({ testimonials, locale, texts }: Props) {
             </div>
             {/* dir="ltr" عمدی: شمارنده‌ی «۰۱ / ۰۵» یک رشته‌ی خنثی از ارقام لاتین است — بدون این،
                 الگوریتم Bidi داخل والد RTL جای دو عدد را با هم عوض می‌کند («۰۵ / ۰۱»). */}
-            <span ref={countRef} dir="ltr" className="text-muted-foreground font-mono text-xs">
+            <span ref={countRef} dir="ltr" className="text-muted-foreground text-xs">
               {pad(1)} / {pad(N)}
             </span>
           </div>

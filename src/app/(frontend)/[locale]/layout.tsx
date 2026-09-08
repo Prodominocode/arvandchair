@@ -67,7 +67,10 @@ export default async function LocaleLayout({ children, params }: Args) {
       <body className="flex min-h-svh flex-col">
         <NextIntlClientProvider messages={messages}>
           <Header locale={locale} enabledLocales={enabledLocales} />
-          <main id="main-content" className="flex-1">
+          {/* هدر اکنون fixed و بدون پس‌زمینه است (بدون فضای خودش در flow)؛ pt-16 دقیقاً معادل
+              ارتفاع هدر (h-16) جای آن را جبران می‌کند. فقط هیرو صفحه‌ی اصلی با mt-16- منفی این
+              فاصله را لغو می‌کند تا هدر شفاف روی آن شناور بماند. */}
+          <main id="main-content" className="flex-1 pt-16">
             {children}
           </main>
           <Footer locale={locale} />

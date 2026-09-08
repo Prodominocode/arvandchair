@@ -6,8 +6,9 @@
  * فعال/غیرفعال بودن en/ar است و در `[locale]/layout.tsx` دست‌نخورده مانده. این فایل فقط
  * محتوای نمایشی (نام سایت، منو، شعب، شبکه‌های اجتماعی) را برای فاز ۳ شبیه‌سازی می‌کند.
  *
- * لوگو: فایل فعلی `arvand-logo.jpg` پس‌زمینه‌ی سفید دارد (نیاز فنی باز سند ۰۶ — نسخه‌ی
- * شفاف/وکتور هنوز دریافت نشده)؛ همان‌طور که هست استفاده می‌شود.
+ * لوگو: دو نسخه‌ی PNG شفاف موجود است — `arvand-logo-bl.png` (متن تیره، برای پس‌زمینه‌ی روشن)
+ * و `arvand-logo-wh.png` (متن سفید، برای پس‌زمینه‌ی تیره)؛ هدر بر اساس `data-header-tone`
+ * سکشن زیرش بین این دو سوییچ می‌کند (رجوع به `HeaderNav.tsx`).
  */
 
 import type { IranAddress, LocalizedText, MockImage } from './types'
@@ -38,6 +39,8 @@ export type SiteSettingsMock = {
   siteName: LocalizedText
   tagline: LocalizedText
   logo: MockImage
+  /** نسخه‌ی متن‌سفید لوگو، برای وقتی هدر روی سکشن پس‌زمینه‌تیره شناور است. */
+  logoOnDark: string
   socialLinks: SocialLink[]
   navMenu: NavLink[]
   offices: Office[]
@@ -53,9 +56,10 @@ export const siteSettings: SiteSettingsMock = {
     ar: 'أثاث مكتبي لمساحة العمل الحديثة',
   },
   logo: {
-    src: '/images/brand/arvand-logo.jpg',
+    src: '/images/brand/arvand-logo-bl.png',
     alt: { fa: 'لوگوی اروند', en: 'Arvand logo', ar: 'شعار أرواند' },
   },
+  logoOnDark: '/images/brand/arvand-logo-wh.png',
   socialLinks: [
     { platform: 'instagram', url: 'https://instagram.com/arvand.furniture' },
     { platform: 'linkedin', url: 'https://linkedin.com/company/arvand-furniture' },

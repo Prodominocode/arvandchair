@@ -2,11 +2,12 @@
 
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
-import { Menu, ShoppingCart, User } from 'lucide-react'
+import { Menu } from 'lucide-react'
 
 import { Link, usePathname } from '@/i18n/navigation'
 import type { AppLocale } from '@/i18n/routing'
 import type { NavLink } from '@/lib/mock-data/site-settings'
+import { useHeaderTone } from '@/lib/hooks/use-header-tone'
 import { Button } from '@/components/ui/button'
 import {
   NavigationMenu,
@@ -30,31 +31,51 @@ import { cn } from '@/lib/utils/cn'
 
 type HeaderNavProps = {
   locale: AppLocale
-  dir: 'rtl' | 'ltr'
   enabledLocales: AppLocale[]
   siteName: string
   logoSrc: string
+  logoOnDarkSrc: string
   logoAlt: string
   navMenu: NavLink[]
 }
 
+/** ارتفاع هدر (h-16) — هم برای نوار تشخیص IntersectionObserver و هم برای جبران فاصله‌ی
+ * محتوای صفحات فاقد هیرو در layout.tsx (`pt-16` روی main) لازم است. */
+const HEADER_HEIGHT_PX = 64
+
+/** رنگ متن/آیکن‌های هدر روی سکشن روشن؛ نسخه‌ی «dark» با group-data-[tone=dark]/header اعمال می‌شود. */
+const toneAwareText =
+  'text-arvand-ink group-data-[tone=dark]/header:text-white transition-colors duration-base'
+const toneAwareHover =
+  'hover:bg-black/5 group-data-[tone=dark]/header:hover:bg-white/15 group-data-[tone=dark]/header:hover:text-white'
+
 export function HeaderNav({
   locale,
-  dir,
   enabledLocales,
   siteName,
   logoSrc,
+  logoOnDarkSrc,
   logoAlt,
   navMenu,
 }: HeaderNavProps) {
   const t = useTranslations('Layout')
   const pathname = usePathname()
-  // منوی موبایل همیشه از سمت انتهای خط (end) باز می‌شود؛ در LTR این «راست» و در RTL «چپ» است —
-  // چون همبرگر همیشه در سمت مقابل لوگو (ابتدای خط) قرار می‌گیرد.
-  const sheetSide = dir === 'rtl' ? 'left' : 'right'
+  const tone = useHeaderTone(HEADER_HEIGHT_PX)
+
+  const navItemClass = cn(
+    navigationMenuTriggerStyle(),
+    'bg-transparent',
+    toneAwareText,
+    toneAwareHover,
+    'data-[active=true]:bg-black/5 group-data-[tone=dark]/header:data-[active=true]:bg-white/15',
+    'focus:bg-transparent focus-visible:bg-transparent',
+  )
 
   return (
-    <header className="bg-background/95 sticky top-0 z-40 border-b backdrop-blur">
+    // هدر در همه‌ی زبان‌ها همیشه چیدمان LTR دارد (لوگو ابتدای خط/چپ، منو و سوییچر زبان انتهای
+    // خط/راست) — جهت خواندن متن هر زبان (فارسی/عربی) مستقل از این چیدمان و طبق الگوریتم
+    // bidi یونیکد صحیح باقی می‌ماند.
+    <header dir="ltr" data-tone={tone} className="group/header fixed inset-x-0 top-0 z-40 h-16">
       <a
         href="#main-content"
         className="bg-background text-foreground focus-visible:ring-ring sr-only rounded-md px-3 py-2 focus:not-sr-only focus-visible:fixed focus-visible:start-2 focus-visible:top-2 focus-visible:z-50 focus-visible:ring-2"
@@ -65,7 +86,7 @@ export function HeaderNav({
       <div className="px-container-x mx-auto flex h-16 max-w-7xl items-center justify-between gap-4">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <Image
-            src={logoSrc}
+            src={tone === 'dark' ? logoOnDarkSrc : logoSrc}
             alt={logoAlt}
             width={120}
             height={30}
@@ -75,79 +96,65 @@ export function HeaderNav({
           <span className="sr-only">{siteName}</span>
         </Link>
 
-        <NavigationMenu viewport={false} aria-label={t('navAriaLabel')} className="hidden lg:flex">
-          <NavigationMenuList>
-            {navMenu.map((item) => {
-              const isActive = pathname === item.href
-              if (item.children?.length) {
+        <div className="flex items-center gap-2 lg:gap-6">
+          <NavigationMenu
+            viewport={false}
+            aria-label={t('navAriaLabel')}
+            className="hidden lg:flex"
+          >
+            <NavigationMenuList>
+              {navMenu.map((item) => {
+                const isActive = pathname === item.href
+                if (item.children?.length) {
+                  return (
+                    <NavigationMenuItem key={item.href}>
+                      <NavigationMenuTrigger className={navItemClass}>
+                        {item.label[locale]}
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <ul className="grid w-56 gap-1 p-2">
+                          {item.children.map((child) => (
+                            <li key={child.href}>
+                              <NavigationMenuLink asChild>
+                                <Link href={child.href}>{child.label[locale]}</Link>
+                              </NavigationMenuLink>
+                            </li>
+                          ))}
+                        </ul>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  )
+                }
                 return (
                   <NavigationMenuItem key={item.href}>
-                    <NavigationMenuTrigger>{item.label[locale]}</NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <ul className="grid w-56 gap-1 p-2">
-                        {item.children.map((child) => (
-                          <li key={child.href}>
-                            <NavigationMenuLink asChild>
-                              <Link href={child.href}>{child.label[locale]}</Link>
-                            </NavigationMenuLink>
-                          </li>
-                        ))}
-                      </ul>
-                    </NavigationMenuContent>
+                    <NavigationMenuLink asChild active={isActive} className={navItemClass}>
+                      <Link href={item.href}>{item.label[locale]}</Link>
+                    </NavigationMenuLink>
                   </NavigationMenuItem>
                 )
-              }
-              return (
-                <NavigationMenuItem key={item.href}>
-                  <NavigationMenuLink
-                    asChild
-                    active={isActive}
-                    className={navigationMenuTriggerStyle()}
-                  >
-                    <Link href={item.href}>{item.label[locale]}</Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              )
-            })}
-          </NavigationMenuList>
-        </NavigationMenu>
+              })}
+            </NavigationMenuList>
+          </NavigationMenu>
 
-        <div className="flex items-center gap-1">
           <LocaleSwitcher
             currentLocale={locale}
             enabledLocales={enabledLocales}
             ariaLabel={t('languageLabel')}
-            className="hidden sm:flex"
-          />
-
-          <Button variant="ghost" size="icon" asChild aria-label={t('cart')}>
-            <Link href="/cart">
-              <ShoppingCart />
-            </Link>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            asChild
-            aria-label={t('account')}
             className="hidden sm:inline-flex"
-          >
-            <Link href="/account">
-              <User />
-            </Link>
-          </Button>
-
-          <Button asChild className="hidden lg:inline-flex">
-            <Link href="/quote-request">{t('quoteRequestCta')}</Link>
-          </Button>
+          />
 
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label={t('openMenu')} className="lg:hidden">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={t('openMenu')}
+                className={cn('lg:hidden', toneAwareText, toneAwareHover)}
+              >
                 <Menu />
               </Button>
             </SheetTrigger>
-            <SheetContent side={sheetSide} className="flex flex-col overflow-y-auto">
+            <SheetContent side="right" className="flex flex-col overflow-y-auto">
               <SheetHeader>
                 <SheetTitle>{t('mobileNavTitle')}</SheetTitle>
               </SheetHeader>
@@ -180,17 +187,6 @@ export function HeaderNav({
                     ) : null}
                   </div>
                 ))}
-
-                <SheetClose asChild>
-                  <Link href="/quote-request" className={cn('text-primary mt-3 block font-medium')}>
-                    {t('quoteRequestCta')}
-                  </Link>
-                </SheetClose>
-                <SheetClose asChild>
-                  <Link href="/account" className="text-foreground mt-2 block text-sm">
-                    {t('account')}
-                  </Link>
-                </SheetClose>
 
                 <LocaleSwitcher
                   currentLocale={locale}

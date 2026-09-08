@@ -1,8 +1,16 @@
 'use client'
 
+import { Globe, ChevronDown } from 'lucide-react'
+
 import { Link, usePathname } from '@/i18n/navigation'
 import type { AppLocale } from '@/i18n/routing'
 import { cn } from '@/lib/utils/cn'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 /** نام هر زبان همیشه به خط خودش نمایش داده می‌شود (قرارداد استاندارد سوییچر زبان در همه‌جا،
  * نه یک متن قابل‌ترجمه) — به همین دلیل عمداً از next-intl عبور نمی‌کند. */
@@ -29,27 +37,36 @@ export function LocaleSwitcher({
 
   if (enabledLocales.length < 2) return null
 
+  const otherLocales = enabledLocales.filter((locale) => locale !== currentLocale)
+
   return (
-    <nav aria-label={ariaLabel} className={cn('flex items-center gap-1 text-sm', className)}>
-      {enabledLocales.map((locale) => {
-        const isActive = locale === currentLocale
-        return (
-          <Link
-            key={locale}
-            href={pathname}
-            locale={locale}
-            aria-current={isActive ? 'true' : undefined}
-            className={cn(
-              'duration-fast rounded-md px-2 py-1 transition-colors',
-              isActive
-                ? 'bg-secondary text-secondary-foreground font-medium'
-                : 'text-muted-foreground hover:text-foreground',
-            )}
-          >
-            {LOCALE_LABELS[locale]}
-          </Link>
-        )
-      })}
-    </nav>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          aria-label={ariaLabel}
+          className={cn(
+            'text-arvand-ink group-data-[tone=dark]/header:text-white',
+            'duration-fast inline-flex items-center gap-1.5 rounded-md px-2 py-1.5 text-sm font-medium transition-colors',
+            'hover:bg-black/5 group-data-[tone=dark]/header:hover:bg-white/15',
+            'focus-visible:ring-ring/50 outline-none focus-visible:ring-[3px]',
+            className,
+          )}
+        >
+          <Globe className="size-4" aria-hidden="true" />
+          {LOCALE_LABELS[currentLocale]}
+          <ChevronDown className="size-3.5 opacity-70" aria-hidden="true" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        {otherLocales.map((locale) => (
+          <DropdownMenuItem key={locale} asChild>
+            <Link href={pathname} locale={locale}>
+              {LOCALE_LABELS[locale]}
+            </Link>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
