@@ -1,0 +1,9 @@
+{
+  "name": "run-arvand-template-driver",
+  "private": true,
+  "type": "module",
+  "description": "Agent tooling only: headless-browser driver for the run-arvand-template skill. Not part of the site itself.",
+  "dependencies": {
+    "playwright": "1.62.1"
+  }
+}

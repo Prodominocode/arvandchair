@@ -134,6 +134,47 @@
       "sales-office": "Sales Office"
     }
   },
+  "Landing1": {
+    "meta": {
+      "title": "Arvand — Precision Seating",
+      "description": "A chair built to hold its shape through every long workday — engineered comfort for the modern workplace."
+    },
+    "hero": {
+      "eyebrow": "Precision in Design — Arvand, Est. 2013",
+      "titleLine1": "Arvand",
+      "titleLine2": "Comfort",
+      "subtitle": "Engineered comfort for the modern workplace, built to hold its shape through every long day.",
+      "scroll": "Scroll"
+    },
+    "intro": {
+      "eyebrow": "Since 2013",
+      "title": "Arvand, from a small workshop to today",
+      "body": "Arvand began as a small carpentry workshop in Tehran, built on one rule that has never changed: nothing leaves the line until it's right. More than a decade on, that same discipline — patient and exacting — still guides every weld, cut and stitch we make.",
+      "cta": "See our journey"
+    },
+    "showcase": {
+      "eyebrow": "Collection",
+      "linkLabel": "View product"
+    },
+    "philosophy": {
+      "eyebrow": "Why Arvand",
+      "title": "Design philosophy",
+      "body": "We believe comfort is never accidental. Every curve is shaped by years of seated-posture research, every material is chosen to outlast trends, and every joint is built so a worn part is a five-minute fix, not a reason to buy a new chair. Precision isn't a finish we add at the end — it's the discipline we start with."
+    },
+    "stories": {
+      "title": "Stories from our customers",
+      "subtitle": "See why leading organizations trust Arvand for comfort, precision and lasting quality.",
+      "trusted": "Trusted",
+      "prev": "Previous story",
+      "next": "Next story"
+    },
+    "catalog": {
+      "eyebrow": "Product Catalog",
+      "title": "See the full Arvand catalog",
+      "body": "Every model, material and finish — dimensions and specs in one place, ready for your next project.",
+      "cta": "Browse products"
+    }
+  },
   "StyleGuide": {
     "title": "Arvand Design System",
     "subtitle": "Internal dev tool only (noindex) — shows every Phase 2 token and base component.",
