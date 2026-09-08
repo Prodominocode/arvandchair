@@ -1,6 +1,182 @@
 {
-  "Placeholder": {
-    "title": "Arvand",
-    "body": "Project infrastructure is set up. This is a temporary placeholder page (Phase 1)."
+  "Common": {
+    "currency": "Toman",
+    "actions": {
+      "addToCart": "Add to Cart",
+      "requestQuote": "Request a Quote",
+      "viewDetails": "View Details",
+      "viewAll": "View All",
+      "readMore": "Read More",
+      "submit": "Submit",
+      "learnMore": "Learn More"
+    },
+    "badges": {
+      "inStock": "In Stock",
+      "outOfStock": "Out of Stock",
+      "quoteOnly": "Quote Only",
+      "newArrival": "New Arrival"
+    }
+  },
+  "Layout": {
+    "skipToContent": "Skip to main content",
+    "openMenu": "Open menu",
+    "mobileNavTitle": "Arvand menu",
+    "navAriaLabel": "Main navigation",
+    "cart": "Cart",
+    "account": "Account",
+    "quoteRequestCta": "Request a Quote",
+    "languageLabel": "Language"
+  },
+  "Footer": {
+    "quickLinksTitle": "Quick Links",
+    "officesTitle": "Offices & Showrooms",
+    "socialTitle": "Follow Us",
+    "contactTitle": "Contact",
+    "rightsReserved": "All rights reserved by Arvand.",
+    "privacyLink": "Privacy Policy",
+    "termsLink": "Terms of Service"
+  },
+  "Home": {
+    "hero": {
+      "title": "Office furniture that grows with your business",
+      "subtitle": "From a single managerial chair to full amphitheater seating — Arvand designs, manufactures, and installs your project end to end.",
+      "ctaPrimary": "Browse Products",
+      "ctaSecondary": "Request a Quote"
+    },
+    "categories": {
+      "title": "Featured Categories",
+      "subtitle": "Everything you need to fully fit out an office space."
+    },
+    "featuredProducts": {
+      "title": "Featured Products",
+      "subtitle": "A selection of Arvand's best-selling products."
+    },
+    "portfolio": {
+      "title": "Selected Portfolio",
+      "subtitle": "Projects Arvand has partnered on from design to installation.",
+      "viewProject": "View Project"
+    },
+    "loyalty": {
+      "title": "Join the Arvand Loyalty Club",
+      "subtitle": "Earn points with every purchase and unlock exclusive discounts and perks."
+    },
+    "trust": {
+      "title": "Trusted by Leading Organizations",
+      "subtitle": "Some of the clients Arvand has had the honor of working with."
+    }
+  },
+  "About": {
+    "hero": {
+      "eyebrow": "About Arvand",
+      "title": "Over a decade of experience building workspaces",
+      "intro": "Arvand began as a small woodworking workshop in Tehran and is now a trusted furniture supplier to organizations, universities, and conference halls across Iran."
+    },
+    "history": {
+      "title": "Our Journey",
+      "milestones": [
+        { "year": "2013", "text": "Started as a small chair-manufacturing workshop in Tehran." },
+        { "year": "2018", "text": "Launched a desk production line and entered the B2B market." },
+        { "year": "2021", "text": "Delivered our first university amphitheater seating project." },
+        { "year": "2025", "text": "Over 200 successful organizational projects nationwide." }
+      ]
+    },
+    "values": {
+      "title": "Our Values",
+      "items": [
+        {
+          "title": "Lasting Quality",
+          "text": "Every product passes load-bearing and daily-durability testing before delivery."
+        },
+        {
+          "title": "Designed for People",
+          "text": "Ergonomics is the starting point of design, not an afterthought."
+        },
+        {
+          "title": "Project Partnership",
+          "text": "From initial consulting to final installation, one accountable team stays with the client."
+        }
+      ]
+    },
+    "team": {
+      "title": "Our Team",
+      "text": "More than 60 people work together across design, manufacturing, quality control, and project installation."
+    },
+    "closing": {
+      "title": "Work With Us",
+      "text": "Get a free consultation for your next project.",
+      "cta": "Contact Us"
+    }
+  },
+  "Contact": {
+    "title": "Contact Us",
+    "subtitle": "Have a question or ready to start your project? Get in touch.",
+    "formTitle": "Contact Form",
+    "form": {
+      "nameLabel": "Full Name",
+      "namePlaceholder": "e.g. Jane Doe",
+      "emailLabel": "Email",
+      "emailPlaceholder": "example@email.com",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "09xxxxxxxxx",
+      "companyLabel": "Company Name (optional)",
+      "companyPlaceholder": "Your company or organization",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Write your message...",
+      "submit": "Send Message",
+      "submitSuccess": "Your message has been sent. We'll get back to you soon."
+    },
+    "officesTitle": "Our Offices & Showrooms",
+    "emailUsTitle": "Email Us",
+    "callUsTitle": "Call Us",
+    "officeType": {
+      "factory": "Factory",
+      "showroom": "Showroom",
+      "sales-office": "Sales Office"
+    }
+  },
+  "StyleGuide": {
+    "title": "Arvand Design System",
+    "subtitle": "Internal dev tool only (noindex) — shows every Phase 2 token and base component.",
+    "sections": {
+      "colors": "Colors",
+      "typography": "Typography",
+      "spacing": "Spacing",
+      "radius": "Radius",
+      "shadow": "Shadow",
+      "motion": "Motion",
+      "components": "Base Components",
+      "scene3d": "3D Scene"
+    },
+    "typographySample": "Arvand office chairs; comfort and durability for your workspace.",
+    "motionNote": "Hover these cards to see durations and easing curves.",
+    "scene3dNote": "Skeleton ready for Phase 3 — light + camera only for now, no product model.",
+    "toast": {
+      "trigger": "Show toast",
+      "message": "Your order was placed successfully."
+    },
+    "formDemo": {
+      "nameLabel": "Full name",
+      "namePlaceholder": "e.g. Jane Doe",
+      "messageLabel": "Message",
+      "messagePlaceholder": "Write your request...",
+      "categoryLabel": "Product category",
+      "categoryPlaceholder": "Choose a category",
+      "categoryChairs": "Chairs",
+      "categoryDesks": "Desks",
+      "categoryOfficeFurniture": "Office furniture",
+      "submit": "Submit"
+    },
+    "dialog": {
+      "trigger": "Open modal",
+      "title": "Confirm item removal",
+      "description": "This action cannot be undone. Are you sure?",
+      "confirm": "Remove",
+      "cancel": "Cancel"
+    },
+    "badges": {
+      "inStock": "In stock",
+      "quoteOnly": "Quote only",
+      "newArrival": "New arrival"
+    }
   }
 }

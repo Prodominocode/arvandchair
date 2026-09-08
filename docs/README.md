@@ -16,6 +16,7 @@
 | [`05-pages-build-order.md`](./05-pages-build-order.md) | ترتیب دقیق ساخت صفحات فاز ۳، بسته‌بندی‌شده برای پرامپت‌های مجزا |
 | [`06-design-tokens.md`](./06-design-tokens.md) | هویت بصری تأییدشده: رنگ، لوگو، تایپوگرافی (Peyda + Manrope) (ورودی فاز ۲) |
 | [`07-execution-playbook.md`](./07-execution-playbook.md) | **راهنمای اجرا** — چطور هر فاز را با AI Coding Tool پیش ببری، بازبینی کنی، و کی به این گفتگو برگردی |
+| [`08-project-structure-guide.md`](./08-project-structure-guide.md) | **راهنمای مرجع ساختار پروژه** — Route ها کجا تعریف می‌شوند، زبان/محتوا/استایل کجاست (به‌روز از فاز ۲ به بعد) |
 
 ## نحوه‌ی شروع کار
 

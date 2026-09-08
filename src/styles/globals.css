@@ -3,20 +3,146 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * توکن‌های طراحی — فاز ۲ (docs/06-design-tokens.md + docs/progress/phase-02-design-system.md)
+ * معماری دو لایه:
+ *   لایه‌ی ۱ (Primitive) — ۵ رنگ برند تأییدشده + ۳ رنگ وضعیت، ثابت و مستقل از حالت روشن/تیره.
+ *   لایه‌ی ۲ (Semantic)  — نقش‌های shadcn/ui (background/primary/border/...)، تعریف در :root
+ *                          و افشا به Tailwind در @theme inline تا سوییچ حالت تیره در آینده
+ *                          (هنوز Backlog، رجوع به بخش ۴ سند ۰۶) فقط با override این‌جا ممکن شود،
+ *                          بدون تغییر کامپوننت‌ها.
+ */
+
 @theme {
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* رنگ‌های برند اروند — Hex دقیقاً طبق docs/06-design-tokens.md بخش ۲، تغییر نده */
+  --color-arvand-gold: #d2b67f;
+  --color-arvand-slate: #6d6f71;
+  --color-arvand-ink: #2b2a28;
+  --color-surface-white: #ffffff;
+  --color-surface-mist: #e8e8ea;
+
+  /* رنگ‌های وضعیت — برند این‌ها را تعریف نکرده؛ انتخاب فاز ۲ برای Badge/Alert سفارش و موجودی
+     (فاز ۶/۸). قهوه‌ای‌سوخته برای warning عمداً از arvand-gold متفاوت است تا با قانون
+     «فقط یک لهجه‌ی طلایی در هر صفحه» (سند ۰۶) تداخل نکند. */
+  --color-success: #4b7b4e;
+  --color-warning: #b8863b;
+  --color-danger: #b3453a;
+
+  /* Type Scale — پایه ۱۶px، نسبت هدف ~1.25 (سند ۰۶ بخش ۳)، در اندازه‌های کوچک به مقادیر متعارف UI
+     رند شده (رجوع به دلیل در گزارش فاز ۲)؛ line-height بدنه‌ی فارسی/عربی سخاوتمندانه‌تر از حد
+     معمول لاتین برای خوانایی بهتر است. */
+  --text-xs: 0.75rem; /* 12px */
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.875rem; /* 14px */
+  --text-sm--line-height: 1.5;
+  --text-base: 1rem; /* 16px */
+  --text-base--line-height: 1.6;
+  --text-lg: 1.125rem; /* 18px */
+  --text-lg--line-height: 1.6;
+  --text-xl: 1.25rem; /* 20px */
+  --text-xl--line-height: 1.5;
+  --text-2xl: 1.5rem; /* 24px */
+  --text-2xl--line-height: 1.4;
+  --text-3xl: 1.875rem; /* 30px */
+  --text-3xl--line-height: 1.3;
+  --text-4xl: 2.25rem; /* 36px */
+  --text-4xl--line-height: 1.2;
+  --text-5xl: 3rem; /* 48px */
+  --text-5xl--line-height: 1.15;
+  --text-6xl: 3.75rem; /* 60px */
+  --text-6xl--line-height: 1.1;
+
+  /* Spacing — لایه‌ی ۲ (ریتم Layout)؛ مقیاس پایه‌ی Tailwind v4 (--spacing: 0.25rem/4px) دست‌نخورده
+     می‌ماند و برای فاصله‌ی داخلی کامپوننت‌ها استفاده می‌شود؛ این‌ها فقط برای فاصله‌ی عمودی/افقی
+     سطح صفحه/سکشن‌اند (فاز ۳ مصرف می‌کند). */
+  --spacing-section-y-sm: 3rem; /* 48px */
+  --spacing-section-y-md: 5rem; /* 80px */
+  --spacing-section-y-lg: 8rem; /* 128px */
+  --spacing-container-x: 1.5rem; /* 24px */
+
+  /* Shadow — طیف الوانی گرم (بر پایه‌ی arvand-ink #2B2A28)، نه سیاه خنثی، برای هماهنگی با برند */
+  --shadow-xs: 0 1px 2px 0 rgb(43 42 40 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(43 42 40 / 0.08), 0 1px 2px -1px rgb(43 42 40 / 0.08);
+  --shadow-md: 0 4px 6px -1px rgb(43 42 40 / 0.1), 0 2px 4px -2px rgb(43 42 40 / 0.08);
+  --shadow-lg: 0 10px 15px -3px rgb(43 42 40 / 0.1), 0 4px 6px -4px rgb(43 42 40 / 0.08);
+  --shadow-xl: 0 20px 25px -5px rgb(43 42 40 / 0.12), 0 8px 10px -6px rgb(43 42 40 / 0.08);
+
+  /* Motion — مدت‌زمان معنایی (میکرو-اینترکشن UI/Framer Motion، نه GSAP؛ قرارداد GSAP جدا در
+     src/lib/motion/scroll-tokens.ts چون واحدش ثانیه است نه میلی‌ثانیه). Easing عمداً حداقلی است:
+     ease-in/out/in-out/linear همان پیش‌فرض Tailwind (منحنی‌های استاندارد متریال) هستند و اینجا
+     دوباره تعریف نشدند؛ فقط یک منحنی برند اضافه شده برای لحظات شاخص. */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 400ms;
+  --ease-emphasis: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --radius: 0.625rem; /* 10px — گرد اما نه گرد افراطی، هم‌راستا با ترمینال‌های نرم لوگو */
+
+  --background: var(--color-surface-white);
+  --foreground: var(--color-arvand-slate); /* متن بدنه، طبق قانون استفاده سند ۰۶ */
+
+  --card: var(--color-surface-white);
+  --card-foreground: var(--color-arvand-slate);
+  --popover: var(--color-surface-white);
+  --popover-foreground: var(--color-arvand-slate);
+
+  /* Primary CTA: پس‌زمینه طلایی + متن ink — هرگز سفید (Contrast طبق سند ۰۶ بخش ۲) */
+  --primary: var(--color-arvand-gold);
+  --primary-foreground: var(--color-arvand-ink);
+
+  --secondary: var(--color-surface-mist);
+  --secondary-foreground: var(--color-arvand-ink);
+
+  --muted: var(--color-surface-mist);
+  --muted-foreground: color-mix(in srgb, var(--color-arvand-slate) 70%, white);
+
+  --accent: var(--color-surface-mist);
+  --accent-foreground: var(--color-arvand-ink);
+
+  --destructive: var(--color-danger);
+  --destructive-foreground: var(--color-surface-white);
+  --success-foreground: var(--color-surface-white);
+  --warning-foreground: var(--color-arvand-ink);
+
+  --border: color-mix(in srgb, var(--color-arvand-slate) 25%, white);
+  --input: color-mix(in srgb, var(--color-arvand-slate) 25%, white);
+
+  /* Focus Ring: arvand-gold روی سفید Contrast ~2:1 دارد و WCAG 1.4.11 (۳:۱ برای اجزای غیرمتنی)
+     را پاس نمی‌کند؛ به‌جایش ink برای رینگ فوکوس با Contrast بالا استفاده می‌شود، طلایی فقط برای
+     پس‌زمینه/تأکید محدود می‌ماند. */
+  --ring: var(--color-arvand-ink);
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 10px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
 body {

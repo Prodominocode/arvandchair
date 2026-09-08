@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title">
+  <title id="title">جای‌گذار صحنه‌ی سه‌بعدی هیرو اروند</title>
+  <rect width="800" height="800" fill="#E8E8EA" />
+  <circle cx="400" cy="400" r="230" fill="none" stroke="#D2B67F" stroke-width="6" />
+  <rect x="320" y="220" width="160" height="200" rx="30" fill="none" stroke="#2B2A28" stroke-width="6" />
+  <rect x="300" y="420" width="200" height="46" rx="16" fill="none" stroke="#2B2A28" stroke-width="6" />
+  <path d="M400 466 L400 560" fill="none" stroke="#6D6F71" stroke-width="10" stroke-linecap="round" />
+  <g stroke="#6D6F71" stroke-width="8" stroke-linecap="round">
+    <path d="M400 560 L340 610" />
+    <path d="M400 560 L460 610" />
+    <path d="M400 560 L400 620" />
+  </g>
+</svg>

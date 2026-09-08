@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title">
+  <title id="title">آیکون جای‌گذار صندلی کنفرانس</title>
+  <rect width="800" height="800" fill="#E8E8EA" />
+  <rect x="270" y="110" width="260" height="330" rx="44" fill="none" stroke="#2B2A28" stroke-width="6" />
+  <rect x="240" y="450" width="320" height="56" rx="18" fill="none" stroke="#6D6F71" stroke-width="6" />
+  <path d="M260 460 L260 380" fill="none" stroke="#2B2A28" stroke-width="6" stroke-linecap="round" />
+  <path d="M540 460 L540 380" fill="none" stroke="#2B2A28" stroke-width="6" stroke-linecap="round" />
+  <path d="M400 506 L400 610" fill="none" stroke="#6D6F71" stroke-width="10" stroke-linecap="round" />
+  <path d="M400 610 L400 690" fill="none" stroke="#6D6F71" stroke-width="14" stroke-linecap="round" />
+  <ellipse cx="400" cy="700" rx="90" ry="14" fill="none" stroke="#6D6F71" stroke-width="6" />
+</svg>

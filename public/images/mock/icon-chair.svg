@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title">
+  <title id="title">آیکون جای‌گذار صندلی اداری</title>
+  <rect width="800" height="800" fill="#E8E8EA" />
+  <rect x="290" y="160" width="220" height="260" rx="36" fill="none" stroke="#6D6F71" stroke-width="6" />
+  <rect x="250" y="430" width="300" height="60" rx="20" fill="none" stroke="#2B2A28" stroke-width="6" />
+  <path d="M270 440 L270 340" fill="none" stroke="#6D6F71" stroke-width="6" stroke-linecap="round" />
+  <path d="M530 440 L530 340" fill="none" stroke="#6D6F71" stroke-width="6" stroke-linecap="round" />
+  <path d="M400 490 L400 600" fill="none" stroke="#2B2A28" stroke-width="10" stroke-linecap="round" />
+  <g stroke="#2B2A28" stroke-width="8" stroke-linecap="round">
+    <path d="M400 600 L320 660" />
+    <path d="M400 600 L480 660" />
+    <path d="M400 600 L400 670" />
+    <path d="M400 600 L340 560" />
+    <path d="M400 600 L460 560" />
+  </g>
+  <circle cx="320" cy="660" r="12" fill="#6D6F71" />
+  <circle cx="480" cy="660" r="12" fill="#6D6F71" />
+  <circle cx="400" cy="670" r="12" fill="#6D6F71" />
+  <circle cx="340" cy="560" r="12" fill="#6D6F71" />
+  <circle cx="460" cy="560" r="12" fill="#6D6F71" />
+</svg>

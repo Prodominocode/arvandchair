@@ -9,6 +9,9 @@ import { getPayload } from 'payload'
 import config from '@/payload.config'
 import { defaultLocale, routing, rtlLocales, type AppLocale } from '@/i18n/routing'
 import { manrope, persianFont } from '@/styles/fonts'
+import { Header } from '@/components/layout/Header'
+import { Footer } from '@/components/layout/Footer'
+import { Toaster } from '@/components/ui/sonner'
 import '@/styles/globals.css'
 
 export const metadata: Metadata = {
@@ -20,14 +23,26 @@ type Args = {
   params: Promise<{ locale: string }>
 }
 
-async function isLocaleEnabled(locale: AppLocale): Promise<boolean> {
-  if (locale === defaultLocale) return true
+/**
+ * فارسی همیشه فعال است؛ en/ar از Payload Global واقعی خوانده می‌شوند (سند ۰۳ بخش ۲) — همان
+ * منبعی که پیش از این فقط برای notFound() چک می‌شد، حالا برای سوییچر زبان هم مصرف می‌شود.
+ *
+ * قبل از این تغییر، فارسی (defaultLocale) هرگز Payload را صدا نمی‌زد (Short-circuit فوری)؛
+ * چون حالا حتی صفحه‌ی فارسی هم برای ساخت سوییچر زبان باید بداند en/ar فعال‌اند یا نه، این
+ * فراخوانی دیگر قابل‌حذف نیست — اما طبق سیاست Local-First (docs/00-tech-stack.md بخش ۱.۲)،
+ * یک قطعی موقت دیتابیس نباید فارسی (تجربه‌ی پیش‌فرض) را هم بشکند؛ در آن حالت فقط سوییچر
+ * en/ar را مخفی می‌کنیم، فارسی همیشه در دسترس می‌ماند.
+ */
+async function getEnabledLocales(): Promise<AppLocale[]> {
+  try {
+    const payload = await getPayload({ config })
+    const siteSettings = await payload.findGlobal({ slug: 'site-settings' })
+    const enabled = (siteSettings.enabledLocales ?? []) as string[]
 
-  const payload = await getPayload({ config })
-  const siteSettings = await payload.findGlobal({ slug: 'site-settings' })
-  const enabledLocales = (siteSettings.enabledLocales ?? []) as string[]
-
-  return enabledLocales.includes(locale)
+    return routing.locales.filter((locale) => locale === defaultLocale || enabled.includes(locale))
+  } catch {
+    return [defaultLocale]
+  }
 }
 
 export default async function LocaleLayout({ children, params }: Args) {
@@ -37,7 +52,8 @@ export default async function LocaleLayout({ children, params }: Args) {
     notFound()
   }
 
-  if (!(await isLocaleEnabled(locale))) {
+  const enabledLocales = await getEnabledLocales()
+  if (!enabledLocales.includes(locale)) {
     notFound()
   }
 
@@ -48,8 +64,15 @@ export default async function LocaleLayout({ children, params }: Args) {
 
   return (
     <html lang={locale} dir={dir} className={`${manrope.variable} ${persianFont.variable}`}>
-      <body>
-        <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+      <body className="flex min-h-svh flex-col">
+        <NextIntlClientProvider messages={messages}>
+          <Header locale={locale} enabledLocales={enabledLocales} />
+          <main id="main-content" className="flex-1">
+            {children}
+          </main>
+          <Footer locale={locale} />
+          <Toaster />
+        </NextIntlClientProvider>
       </body>
     </html>
   )
