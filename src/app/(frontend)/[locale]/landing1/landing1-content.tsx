@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { ArrowUpRight } from 'lucide-react'
@@ -65,6 +65,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
   const introBodyRef = useRef<HTMLDivElement>(null)
   const introCtaRef = useRef<HTMLDivElement>(null)
   const philoMediaRef = useRef<HTMLDivElement>(null)
+  const catalogCardRef = useRef<HTMLAnchorElement>(null)
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -213,6 +214,41 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
     return () => mm.revert()
   }, [])
 
+  /** کارت catalog-cta باید نصف ارتفاع واقعیِ رندرشده‌اش روی فوتر (سراسری، خارج از این
+   * درخت) اورلپ کند — عددی ثابت جواب نمی‌دهد چون ارتفاع کارت به عرض صفحه/طول متن بستگی
+   * دارد. مطابق ref/html/app.js (syncCatalogCta): ارتفاع کارت اندازه‌گیری و نصفش به‌صورت
+   * margin-bottom منفی روی خودِ کارت نوشته می‌شود (فوتر را از پایین بالا می‌کشد بدون آنکه
+   * لبه‌ی بالای کارت جابه‌جا شود)، و همان مقدار به‌عنوان padding-top اضافه‌ی فوتر ست می‌شود
+   * تا محتوای فوتر هیچ‌وقت زیر کارت شروع نشود. چون فوتر در layout.tsx مشترک است و بین
+   * صفحات با ناوبری سمت کلاینت باقی می‌ماند، مقدار ست‌شده روی آن باید هنگام unmount پاک شود.
+   */
+  useLayoutEffect(() => {
+    const card = catalogCardRef.current
+    if (!card) return
+
+    function syncCatalogOverlap() {
+      if (!card) return
+      const footer = document.querySelector('footer')
+      const fraction = window.innerWidth <= 860 ? 0.34 : 0.5
+      const overlap = Math.ceil(card.getBoundingClientRect().height * fraction)
+      card.style.setProperty('--catalog-overlap', `${overlap}px`)
+      footer?.style.setProperty('--footer-top-clear', `${overlap}px`)
+    }
+
+    syncCatalogOverlap()
+    window.addEventListener('resize', syncCatalogOverlap)
+    document.fonts?.ready.then(syncCatalogOverlap)
+
+    const resizeObserver = new ResizeObserver(syncCatalogOverlap)
+    resizeObserver.observe(card)
+
+    return () => {
+      window.removeEventListener('resize', syncCatalogOverlap)
+      resizeObserver.disconnect()
+      document.querySelector('footer')?.style.removeProperty('--footer-top-clear')
+    }
+  }, [])
+
   const revealProps = { [SCROLL_DATA_ATTR]: 'reveal' } as const
 
   return (
@@ -277,8 +313,8 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
       </section>
 
       {/* Intro / About */}
-      <section id="intro" className="bg-surface-mist py-section-y-lg">
-        <div className="px-container-x mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <section id="intro" className="bg-surface-mist flex min-h-[100svh] items-center">
+        <div className="px-container-x mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div
             ref={introMediaRef}
             className="border-border relative aspect-[3/2] overflow-hidden rounded-sm border shadow-xl"
@@ -356,8 +392,8 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
       </section>
 
       {/* Philosophy */}
-      <section id="philosophy" className="bg-surface-mist py-section-y-lg">
-        <div className="px-container-x mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <section id="philosophy" className="bg-surface-mist flex min-h-[100svh] items-center">
+        <div className="px-container-x mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div {...revealProps} className="order-2 flex flex-col gap-6 lg:order-1">
             <span className="text-arvand-gold font-mono text-xs tracking-[0.16em] uppercase">
               {t('philosophy.eyebrow')}
@@ -396,35 +432,43 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
         }}
       />
 
-      {/* Catalog CTA */}
-      <section className="px-container-x py-section-y-lg mx-auto max-w-5xl" {...revealProps}>
-        <Link
-          href="/products"
-          className="bg-card group flex flex-col items-center gap-8 overflow-hidden rounded-2xl border p-8 shadow-lg transition-shadow hover:shadow-2xl sm:flex-row md:p-12"
-        >
-          <div className="relative aspect-[3/4] w-full max-w-[220px] shrink-0 overflow-hidden rounded-sm">
-            <Image
-              src="/images/landing1/intro-about.png"
-              alt=""
-              fill
-              className="object-cover"
-              sizes="220px"
-            />
-          </div>
-          <div className="flex flex-col items-start gap-3">
-            <span className="text-arvand-slate font-mono text-xs tracking-[0.16em] uppercase">
-              {t('catalog.eyebrow')}
-            </span>
-            <h3 className="text-arvand-ink text-2xl font-bold text-balance sm:text-3xl">
-              {t('catalog.title')}
-            </h3>
-            <p className="text-muted-foreground max-w-[42ch] text-sm">{t('catalog.body')}</p>
-            <span className="bg-arvand-ink mt-2 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-transform group-hover:-translate-y-0.5">
-              {t('catalog.cta')}
-              <ArrowUpRight className="size-3.5 rtl:-scale-x-100" aria-hidden="true" />
-            </span>
-          </div>
-        </Link>
+      {/* Catalog CTA — نصف بالا در این سکشن (bg-surface-mist مثل سکشن‌های قبل)، نصف پایین
+          روی فوتر اورلپ می‌شود؛ اندازه‌گیری و margin منفی در افکت syncCatalogOverlap بالا */}
+      <section
+        className="bg-surface-mist px-container-x pt-section-y-lg relative z-10"
+        {...revealProps}
+      >
+        <div className="mx-auto max-w-5xl">
+          <Link
+            ref={catalogCardRef}
+            href="/products"
+            style={{ marginBottom: 'calc(-1 * var(--catalog-overlap, 0px))' }}
+            className="bg-card group flex flex-col items-center gap-8 overflow-hidden rounded-2xl border p-8 shadow-lg transition-shadow hover:shadow-2xl sm:flex-row md:p-12"
+          >
+            <div className="relative aspect-[3/4] w-full max-w-[220px] shrink-0 overflow-hidden rounded-sm">
+              <Image
+                src="/images/landing1/intro-about.png"
+                alt=""
+                fill
+                className="object-cover"
+                sizes="220px"
+              />
+            </div>
+            <div className="flex flex-col items-start gap-3">
+              <span className="text-arvand-slate font-mono text-xs tracking-[0.16em] uppercase">
+                {t('catalog.eyebrow')}
+              </span>
+              <h3 className="text-arvand-ink text-2xl font-bold text-balance sm:text-3xl">
+                {t('catalog.title')}
+              </h3>
+              <p className="text-muted-foreground max-w-[42ch] text-sm">{t('catalog.body')}</p>
+              <span className="bg-arvand-ink mt-2 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white transition-transform group-hover:-translate-y-0.5">
+                {t('catalog.cta')}
+                <ArrowUpRight className="size-3.5 rtl:-scale-x-100" aria-hidden="true" />
+              </span>
+            </div>
+          </Link>
+        </div>
       </section>
     </div>
   )

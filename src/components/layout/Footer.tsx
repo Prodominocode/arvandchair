@@ -25,7 +25,11 @@ export async function Footer({ locale }: FooterProps) {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="bg-surface-mist mt-auto">
+    <footer
+      id="site-footer"
+      className="bg-surface-mist mt-auto"
+      style={{ paddingTop: 'var(--footer-top-clear, 0px)' }}
+    >
       <div className="px-container-x py-section-y-md mx-auto grid max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <p className="text-arvand-ink text-lg font-bold">{siteSettings.siteName[locale]}</p>
