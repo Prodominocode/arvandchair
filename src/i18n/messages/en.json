@@ -139,6 +139,33 @@
       "sales-office": "Sales Office"
     }
   },
+  "QuoteRequest": {
+    "title": "Request a Quote",
+    "subtitle": "For project-based and bulk orders, send us your organization's details and the products you need, and Arvand's sales team will reach out shortly.",
+    "formTitle": "Quote Request Form",
+    "form": {
+      "companyLabel": "Organization Name",
+      "companyPlaceholder": "Your company or organization",
+      "contactNameLabel": "Full Name",
+      "contactNamePlaceholder": "e.g. Jane Doe",
+      "emailLabel": "Email",
+      "emailPlaceholder": "example@email.com",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "09xxxxxxxxx",
+      "messageLabel": "Additional Notes (optional)",
+      "messagePlaceholder": "Project needs, installation timeline, or anything else that helps...",
+      "itemsTitle": "Products You Need",
+      "itemProductLabel": "Product",
+      "itemProductPlaceholder": "Choose a product",
+      "itemQtyLabel": "Quantity",
+      "itemNotesLabel": "Notes (optional)",
+      "itemNotesPlaceholder": "e.g. color, custom dimensions...",
+      "addItem": "Add Another Product",
+      "removeItem": "Remove this row",
+      "submit": "Send Quote Request",
+      "submitSuccess": "Your quote request has been submitted. Arvand's sales team will contact you soon."
+    }
+  },
   "Landing1": {
     "meta": {
       "title": "Arvand — Precision Seating",

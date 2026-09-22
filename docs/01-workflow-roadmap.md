@@ -88,12 +88,20 @@
 
 ## فاز ۴ — نهایی‌سازی مدل داده (با وسواس، بر اساس UI تأییدشده)
 
-- [ ] `02-data-model.md` را مرور کن: هر فیلدی که در UI فاز ۳ لازم بود ولی در Draft نبود اضافه کن؛ هر فیلد حدسی/بلااستفاده را حذف کن — سند از Draft v1 به نسخه‌ی Final ارتقا پیدا می‌کند
-- [ ] پیاده‌سازی نهایی تمام Collectionها در Payload طبق نسخه‌ی به‌روزشده
-- [ ] تعریف Access Control (نقش‌ها: superadmin، فروش/CRM، ویرایشگر محتوا، مشتری)
-- [ ] تست کامل پنل ادمین Payload (CRUD روی هر Collection)
+> **تقسیم فاز ۴ (تصمیم بعد از فاز ۳):** چون بسته‌ی ۴ (فروشگاه، به‌جز فرم استعلام) و بسته‌ی ۵ (حساب‌کاربری/باشگاه مشتریان) در فاز ۳ طراحی UI نشدند، فینالایز کردن `Customers`/`Orders`/`Companies`/`Loyalty*` همان ریسک «حدس‌زدن قبل از دیدن UI» را برمی‌گرداند. فاز ۴ به **۴‑الف** (کاتالوگ + محتوا + استعلام — انجام‌شده) و **۴‑ب** (فروش/حساب/وفاداری — بعد از طراحی همان بسته‌های UI) تقسیم شد.
 
-**خروجی فاز:** `02-data-model.md` نسخه‌ی Final؛ پنل ادمین کاملاً کاربردی.
+**فاز ۴‑الف (انجام‌شده):**
+- [x] `02-data-model.md` مرور و به‌روزرسانی شد: فیلدهای لازم‌شده در UI فاز ۳ اضافه، فیلدهای حدسی/بلااستفاده (`ogImage`، بلوک‌های مصرف‌نشده‌ی `Pages`) حذف شدند
+- [x] پیکربندی Localization واقعی Payload (`fa`/`en`) در `payload.config.ts`
+- [x] پیاده‌سازی نهایی: `Users` (+ `role`)، `Media` (+ `alt` localized)، `Categories`، `ProductTags`، `ProductMaterials`، `Products`، `PortfolioIndustries`، `PortfolioProjects`، `BlogPosts`، `Testimonials`، `Pages`، `QuoteRequests`، Global `SiteSettings`
+- [x] تعریف Access Control بر اساس `Users.role` (`superadmin`/`sales`/`content-editor`/`support`) — `src/access/roles.ts`
+- [x] تست زنده: تمام Collection‌های بالا روی Postgres واقعی (نه Mock) از طریق REST API پاسخ ۲۰۰ دادند؛ `quote-requests` بدون لاگین صحیح ۴۰۳ داد
+
+**فاز ۴‑ب (باقی‌مانده — بعد از طراحی UI بسته‌ی ۴/۵):**
+- [ ] فینالایز و پیاده‌سازی `Customers`, `Orders`, `Companies`, `LoyaltyTiers`, `LoyaltyTransactions`, `Rewards`, `Leads`, `Interactions` در Payload
+- [ ] تست کامل پنل ادمین Payload برای این بخش (CRUD)
+
+**خروجی فاز ۴‑الف:** بخش عمده‌ی `02-data-model.md` نسخه‌ی Final؛ پنل ادمین برای کاتالوگ/محتوا/استعلام کاملاً کاربردی. جزئیات کامل در `docs/progress/phase-04-data-model.md`.
 
 ---
 

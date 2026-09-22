@@ -139,6 +139,33 @@
       "sales-office": "دفتر فروش"
     }
   },
+  "QuoteRequest": {
+    "title": "درخواست استعلام قیمت",
+    "subtitle": "برای خریدهای پروژه‌ای و تیراژبالا، اطلاعات سازمان و محصولات مورد نظرتان را بفرستید تا کارشناسان فروش اروند در اسرع وقت با شما تماس بگیرند.",
+    "formTitle": "فرم استعلام",
+    "form": {
+      "companyLabel": "نام سازمان",
+      "companyPlaceholder": "نام شرکت یا سازمان شما",
+      "contactNameLabel": "نام و نام خانوادگی",
+      "contactNamePlaceholder": "مثلاً علی رضایی",
+      "emailLabel": "ایمیل",
+      "emailPlaceholder": "example@email.com",
+      "phoneLabel": "شماره تماس",
+      "phonePlaceholder": "۰۹xxxxxxxxx",
+      "messageLabel": "توضیحات تکمیلی (اختیاری)",
+      "messagePlaceholder": "نیاز پروژه، زمان‌بندی نصب، یا هر نکته‌ی دیگری که کمک می‌کند...",
+      "itemsTitle": "محصولات مورد نظر",
+      "itemProductLabel": "محصول",
+      "itemProductPlaceholder": "یک محصول را انتخاب کنید",
+      "itemQtyLabel": "تعداد",
+      "itemNotesLabel": "توضیح (اختیاری)",
+      "itemNotesPlaceholder": "مثلاً رنگ، ابعاد ویژه...",
+      "addItem": "افزودن محصول دیگر",
+      "removeItem": "حذف این ردیف",
+      "submit": "ارسال درخواست استعلام",
+      "submitSuccess": "درخواست استعلام شما ثبت شد. کارشناسان فروش اروند به‌زودی با شما تماس می‌گیرند."
+    }
+  },
   "Landing1": {
     "meta": {
       "title": "اروند — دقت در نشستن",

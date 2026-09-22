@@ -69,6 +69,16 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    categories: Category;
+    'product-tags': ProductTag;
+    'product-materials': ProductMaterial;
+    products: Product;
+    'portfolio-industries': PortfolioIndustry;
+    'portfolio-projects': PortfolioProject;
+    'blog-posts': BlogPost;
+    testimonials: Testimonial;
+    pages: Page;
+    'quote-requests': QuoteRequest;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +88,16 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    'product-tags': ProductTagsSelect<false> | ProductTagsSelect<true>;
+    'product-materials': ProductMaterialsSelect<false> | ProductMaterialsSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    'portfolio-industries': PortfolioIndustriesSelect<false> | PortfolioIndustriesSelect<true>;
+    'portfolio-projects': PortfolioProjectsSelect<false> | PortfolioProjectsSelect<true>;
+    'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    'quote-requests': QuoteRequestsSelect<false> | QuoteRequestsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -86,14 +106,14 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('fa' | 'en') | ('fa' | 'en')[];
   globals: {
     'site-settings': SiteSetting;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
-  locale: null;
+  locale: 'fa' | 'en';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -127,6 +147,8 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
+  name: string;
+  role: 'superadmin' | 'sales' | 'content-editor' | 'support';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -169,6 +191,299 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  title: string;
+  slug: string;
+  parent?: (number | null) | Category;
+  image?: (number | null) | Media;
+  salesMode: 'direct-purchase' | 'quote-only' | 'mixed';
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-tags".
+ */
+export interface ProductTag {
+  id: number;
+  label: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-materials".
+ */
+export interface ProductMaterial {
+  id: number;
+  label: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  title: string;
+  slug: string;
+  /**
+   * مشترک بین زبان‌ها — Localized نیست.
+   */
+  sku: string;
+  category: number | Category;
+  shortDescription: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  images?: (number | Media)[] | null;
+  /**
+   * فایل glTF/GLB — پایپ‌لاین فشرده‌سازی/سقف حجم عمداً به فاز بعد موکول شده.
+   */
+  model3d?: (number | null) | Media;
+  specs: {
+    dimensions: {
+      lengthCm: number;
+      widthCm: number;
+      heightCm: number;
+    };
+    material?: string | null;
+    weightKg?: number | null;
+    /**
+     * فقط برای محصولات پروژه‌محور (آمفی‌تئاتر/همایش) معنادار است.
+     */
+    capacity?: string | null;
+  };
+  variants?:
+    | {
+        label: string;
+        priceModifier?: number | null;
+        stock?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * به تومان.
+   */
+  basePrice: number;
+  currency?: 'IRR' | null;
+  stock: number;
+  relatedProducts?: (number | Product)[] | null;
+  salesMode: 'inherit-from-category' | 'direct-purchase' | 'quote-only';
+  tags?: (number | ProductTag)[] | null;
+  materials?: (number | ProductMaterial)[] | null;
+  /**
+   * اختیاری — بلوک‌های روایت تصویری/متنی صفحه‌ی جزئیات (بسته‌ی ۲ #۷).
+   */
+  features?:
+    | {
+        title: string;
+        text: string;
+        images?: (number | Media)[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "portfolio-industries".
+ */
+export interface PortfolioIndustry {
+  id: number;
+  label: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "portfolio-projects".
+ */
+export interface PortfolioProject {
+  id: number;
+  title: string;
+  slug: string;
+  clientName?: string | null;
+  /**
+   * متن نمایشی آزاد روی کارت/جزئیات.
+   */
+  industry?: string | null;
+  /**
+   * مبنای فیلتر Facet آرشیو — مستقل از فیلد «industry» بالا.
+   */
+  industryRef: number | PortfolioIndustry;
+  location?: string | null;
+  scope?: string | null;
+  duration?: string | null;
+  completionYear?: number | null;
+  coverImage: number | Media;
+  gallery?: (number | Media)[] | null;
+  summary?: string | null;
+  challenge?: string | null;
+  solution?: string | null;
+  productsUsed?: (number | Product)[] | null;
+  featured?: boolean | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts".
+ */
+export interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  coverImage: number | Media;
+  author?: (number | null) | User;
+  category?: string | null;
+  /**
+   * برچسب آزاد (نه واژه‌نامه‌ی کنترل‌شده) — مطابق نیاز فعلی UI.
+   */
+  tags?: string[] | null;
+  publishedDate?: string | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: number;
+  authorName: string;
+  authorCompany?: string | null;
+  quote: string;
+  avatar?: (number | null) | Media;
+  rating?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  slug: string;
+  layout?:
+    | (
+        | {
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'rich-text';
+          }
+        | {
+            title: string;
+            buttonLabel: string;
+            href: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+      )[]
+    | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quote-requests".
+ */
+export interface QuoteRequest {
+  id: number;
+  company: string;
+  contactName: string;
+  email: string;
+  phone: string;
+  items?:
+    | {
+        product: number | Product;
+        qty: number;
+        notes?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  message?: string | null;
+  status?: ('new' | 'in-review' | 'quoted' | 'won' | 'lost') | null;
+  assignedSalesRep?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -198,6 +513,46 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'product-tags';
+        value: number | ProductTag;
+      } | null)
+    | ({
+        relationTo: 'product-materials';
+        value: number | ProductMaterial;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'portfolio-industries';
+        value: number | PortfolioIndustry;
+      } | null)
+    | ({
+        relationTo: 'portfolio-projects';
+        value: number | PortfolioProject;
+      } | null)
+    | ({
+        relationTo: 'blog-posts';
+        value: number | BlogPost;
+      } | null)
+    | ({
+        relationTo: 'testimonials';
+        value: number | Testimonial;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'quote-requests';
+        value: number | QuoteRequest;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -246,6 +601,8 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -280,6 +637,239 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  parent?: T;
+  image?: T;
+  salesMode?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-tags_select".
+ */
+export interface ProductTagsSelect<T extends boolean = true> {
+  label?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "product-materials_select".
+ */
+export interface ProductMaterialsSelect<T extends boolean = true> {
+  label?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  sku?: T;
+  category?: T;
+  shortDescription?: T;
+  description?: T;
+  images?: T;
+  model3d?: T;
+  specs?:
+    | T
+    | {
+        dimensions?:
+          | T
+          | {
+              lengthCm?: T;
+              widthCm?: T;
+              heightCm?: T;
+            };
+        material?: T;
+        weightKg?: T;
+        capacity?: T;
+      };
+  variants?:
+    | T
+    | {
+        label?: T;
+        priceModifier?: T;
+        stock?: T;
+        id?: T;
+      };
+  basePrice?: T;
+  currency?: T;
+  stock?: T;
+  relatedProducts?: T;
+  salesMode?: T;
+  tags?: T;
+  materials?: T;
+  features?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        images?: T;
+        id?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "portfolio-industries_select".
+ */
+export interface PortfolioIndustriesSelect<T extends boolean = true> {
+  label?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "portfolio-projects_select".
+ */
+export interface PortfolioProjectsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  clientName?: T;
+  industry?: T;
+  industryRef?: T;
+  location?: T;
+  scope?: T;
+  duration?: T;
+  completionYear?: T;
+  coverImage?: T;
+  gallery?: T;
+  summary?: T;
+  challenge?: T;
+  solution?: T;
+  productsUsed?: T;
+  featured?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog-posts_select".
+ */
+export interface BlogPostsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  content?: T;
+  coverImage?: T;
+  author?: T;
+  category?: T;
+  tags?: T;
+  publishedDate?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  authorName?: T;
+  authorCompany?: T;
+  quote?: T;
+  avatar?: T;
+  rating?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  layout?:
+    | T
+    | {
+        'rich-text'?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              title?: T;
+              buttonLabel?: T;
+              href?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quote-requests_select".
+ */
+export interface QuoteRequestsSelect<T extends boolean = true> {
+  company?: T;
+  contactName?: T;
+  email?: T;
+  phone?: T;
+  items?:
+    | T
+    | {
+        product?: T;
+        qty?: T;
+        notes?: T;
+        id?: T;
+      };
+  message?: T;
+  status?: T;
+  assignedSalesRep?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -322,8 +912,6 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * تنظیمات عمومی سایت — در فاز ۴ تکمیل می‌شود.
- *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
  */
@@ -333,6 +921,62 @@ export interface SiteSetting {
    * فارسی همیشه فعال است. زبان‌هایی که اینجا انتخاب نشوند، مسیر عمومی‌شان 404 برمی‌گرداند.
    */
   enabledLocales?: 'en'[] | null;
+  siteName: string;
+  tagline?: string | null;
+  /**
+   * نسخه‌ی متن تیره — برای پس‌زمینه‌ی روشن.
+   */
+  logo?: (number | null) | Media;
+  /**
+   * نسخه‌ی متن سفید — برای پس‌زمینه‌ی تیره.
+   */
+  logoOnDark?: (number | null) | Media;
+  socialLinks?:
+    | {
+        platform: 'instagram' | 'linkedin' | 'telegram';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  navMenu?:
+    | {
+        label: string;
+        /**
+         * مسیر بدون پیشوند locale.
+         */
+        href: string;
+        children?:
+          | {
+              label: string;
+              href: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  offices?:
+    | {
+        title: string;
+        type: 'factory' | 'showroom' | 'sales-office';
+        address: {
+          title: string;
+          province: string;
+          city: string;
+          street: string;
+          postalCode: string;
+          recipientPhone: string;
+        };
+        phone: string;
+        /**
+         * برای Structured Data آینده (LocalBusiness، سند ۰۳).
+         */
+        hours?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -342,6 +986,52 @@ export interface SiteSetting {
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
   enabledLocales?: T;
+  siteName?: T;
+  tagline?: T;
+  logo?: T;
+  logoOnDark?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  navMenu?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        children?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  offices?:
+    | T
+    | {
+        title?: T;
+        type?: T;
+        address?:
+          | T
+          | {
+              title?: T;
+              province?: T;
+              city?: T;
+              street?: T;
+              postalCode?: T;
+              recipientPhone?: T;
+            };
+        phone?: T;
+        hours?: T;
+        id?: T;
+      };
+  contactEmail?: T;
+  contactPhone?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
