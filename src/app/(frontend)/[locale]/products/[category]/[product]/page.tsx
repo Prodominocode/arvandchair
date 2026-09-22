@@ -14,6 +14,7 @@ import { ProductOverviewCarousel } from '@/components/products/ProductOverviewCa
 import { ProductOverviewPanel } from '@/components/products/ProductOverviewPanel'
 import { ProductGalleryFilmstrip } from '@/components/products/ProductGalleryFilmstrip'
 import { ProductLineupAccordion } from '@/components/products/ProductLineupAccordion'
+import { ProductQuoteInquiry } from '@/components/products/ProductQuoteInquiry'
 import { ProductGrid } from '@/components/products/ProductGrid'
 
 type Args = {
@@ -314,6 +315,12 @@ export default async function ProductDetailPage({ params }: Args) {
           </div>
         </div>
       ) : null}
+
+      {/* CTA استعلام قیمت B2B — بعد از Lineup، طبق سند ۰۵. کاملاً نمایشی؛ کلیک روی دکمه پاپ‌آپ
+          فرم استعلام را باز می‌کند (بدون اتصال واقعی به بک‌اند). */}
+      <div data-section="quote-inquiry" className="py-section-y-lg">
+        <ProductQuoteInquiry productTitle={product.title[appLocale]} />
+      </div>
 
       <div data-section="back-link" className="py-section-y-sm flex justify-center">
         <Link

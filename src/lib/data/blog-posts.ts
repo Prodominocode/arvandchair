@@ -13,3 +13,13 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
 export async function getBlogPostBySlug(locale: AppLocale, slug: string): Promise<BlogPost | null> {
   return blogPosts.find((post) => post.slug[locale] === slug) ?? null
 }
+
+/** پست‌های مرتبط برای جزئیات پست (`05-pages-build-order.md` #۱۲) — اول هم‌دسته‌ها (بر اساس
+ * `category.fa` که یکتاکننده‌ی ساده‌ی دسته در mock است)، بعد در صورت کمبود از جدیدترین بقیه
+ * پر می‌شود؛ خودِ پست هیچ‌وقت در نتیجه نیست. */
+export async function getRelatedBlogPosts(post: BlogPost, limit = 3): Promise<BlogPost[]> {
+  const rest = blogPosts.filter((candidate) => candidate.id !== post.id)
+  const sameCategory = rest.filter((candidate) => candidate.category.fa === post.category.fa)
+  const others = rest.filter((candidate) => candidate.category.fa !== post.category.fa)
+  return [...sameCategory, ...others].slice(0, limit)
+}

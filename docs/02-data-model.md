@@ -90,8 +90,16 @@
 
 ### `PortfolioProjects` (نمونه‌کارها / پروژه‌های اجراشده)
 - `title` 🌐, `slug` 🌐, `clientName`, `industry`
+- `industryId` *(افزوده‌ی فاز ۳)*: relation → `PortfolioIndustries` (واژه‌نامه‌ی کنترل‌شده‌ی جدید،
+  مستقل از `industry` که متن نمایشی آزاد است) — مبنای فیلتر صنعت در آرشیو `/portfolio`
+  (`05-pages-build-order.md` بسته‌ی ۳ #۹)، هم‌رابطه‌ی `Product.materials[]`/`specs.material`.
+- `location`, `scope`, `duration` 🌐، `completionYear` *(افزوده‌ی فاز ۳)*: «مشخصات فنی پروژه»ی
+  جزئیات پروژه (`05-pages-build-order.md` بسته‌ی ۳ #۱۰)، به‌صورت لیست آیکنی زیر هیرو نمایش
+  داده می‌شوند؛ در Draft اولیه نبودند.
 - `coverImage`, `gallery[]`
 - `summary` 🌐 (rich text)
+- `challenge`, `solution` 🌐 *(افزوده‌ی فاز ۳)*: خلاصه‌ی چالش/راه‌حل که سند ۰۵ برای جزئیات پروژه
+  خواسته؛ در Draft اولیه نبودند.
 - `productsUsed[]`: relation → `Products`
 - `seo`
 

@@ -290,6 +290,415 @@
     "cta": {
       "addedToCart": "“{title}” added to your cart (demo)"
     },
-    "related": { "title": "Other Products" }
+    "related": { "title": "Other Products" },
+    "quoteInquiry": {
+      "title": "Bulk Price Inquiry",
+      "text": "Requesting this product for a corporate or project-based order? Submit a B2B price inquiry and the Arvand sales team will get in touch.",
+      "cta": "Request a Price Quote",
+      "dialog": {
+        "title": "B2B Price Inquiry",
+        "description": "Product: {product} — this form is a demo and does not submit a real request."
+      },
+      "form": {
+        "companyLabel": "Company / Organization",
+        "companyPlaceholder": "e.g. Sample Holding",
+        "contactNameLabel": "Contact Name",
+        "contactNamePlaceholder": "Full name",
+        "phoneLabel": "Phone",
+        "phonePlaceholder": "09xxxxxxxxx",
+        "emailLabel": "Email",
+        "emailPlaceholder": "name@company.com",
+        "quantityLabel": "Quantity Needed",
+        "quantityPlaceholder": "e.g. 50",
+        "messageLabel": "Project Details (optional)",
+        "messagePlaceholder": "Timeline, delivery location, special requirements, ...",
+        "cancel": "Cancel",
+        "submit": "Send Request"
+      },
+      "toastSuccess": "Your inquiry has been submitted (demo) — the Arvand sales team will reach out soon."
+    }
+  },
+  "Blog": {
+    "breadcrumb": { "home": "Home", "blog": "Blog" },
+    "archiveTitle": "Blog",
+    "empty": {
+      "title": "No posts published yet",
+      "hint": "New articles will appear here soon."
+    }
+  },
+  "BlogDetail": {
+    "meta": {
+      "by": "By {author}",
+      "minRead": "{minutes} min read"
+    },
+    "share": {
+      "label": "Share",
+      "telegram": "Share on Telegram",
+      "linkedin": "Share on LinkedIn",
+      "copyLink": "Copy link",
+      "copied": "Link copied"
+    },
+    "backToIndex": "← Back to Blog",
+    "related": { "title": "Related Articles" }
+  },
+  "Portfolio": {
+    "breadcrumb": { "home": "Home", "portfolio": "Portfolio" },
+    "archiveTitle": "Portfolio",
+    "subtitle": "Real projects Arvand has partnered on from design to installation — browse case studies by industry.",
+    "productsUsedCount": "{count, plural, one {# product used} other {# products used}}",
+    "empty": {
+      "title": "No projects match this industry",
+      "hint": "Try a different industry or view all projects."
+    }
+  },
+  "PortfolioDetail": {
+    "meta": {
+      "client": "Client",
+      "industry": "Industry",
+      "location": "Location",
+      "scope": "Scope",
+      "duration": "Duration",
+      "completed": "Completed"
+    },
+    "challenge": { "title": "The Challenge" },
+    "solution": { "title": "Our Solution" },
+    "gallery": { "title": "Project Gallery" },
+    "productsUsed": { "title": "Products Used in This Project" },
+    "cta": {
+      "title": "Planning a similar project?",
+      "text": "Tell our B2B team about your space and timeline — we’ll help you specify the right furniture from design to installation.",
+      "button": "Talk to Our Team"
+    },
+    "backToIndex": "← Back to Portfolio",
+    "related": { "title": "Related Projects" }
+  },
+  "Search": {
+    "metaTitle": "Search",
+    "title": "Search",
+    "resultsFor": "Results for “{query}”",
+    "resultsCount": "{count, plural, one {# result} other {# results}}",
+    "products": {
+      "title": "Products"
+    },
+    "blog": {
+      "title": "Blog"
+    },
+    "empty": {
+      "title": "No results found",
+      "hint": "Try different keywords or check the spelling."
+    },
+    "noQuery": {
+      "title": "Search Arvand",
+      "hint": "Type a keyword to search products and articles."
+    }
+  },
+  "NotFound": {
+    "metaTitle": "Page Not Found",
+    "title": "We couldn't find that page",
+    "subtitle": "The link might be broken, or the page may have moved.",
+    "backHome": "Back to Home",
+    "browseProducts": "Browse Products"
+  },
+  "PrivacyPolicy": {
+    "hero": {
+      "eyebrow": "Legal",
+      "title": "Privacy Policy",
+      "intro": "Arvand respects the privacy of its users and customers. This document explains what information we collect, how we use it, and what choices you have over it."
+    },
+    "lastUpdatedLabel": "Last updated: {date}",
+    "tocTitle": "Table of Contents",
+    "sections": [
+      {
+        "id": "intro",
+        "title": "1. Introduction",
+        "body": [
+          {
+            "type": "p",
+            "text": "This Privacy Policy explains what information Arvand (\"we\", \"Arvand\") collects when you use our website and related services, how we use it, and the choices you have for controlling your information."
+          },
+          {
+            "type": "p",
+            "text": "By using this website, you agree to the collection and use of information as described in this document. If you do not agree with any part of this policy, please refrain from using the website."
+          }
+        ]
+      },
+      {
+        "id": "collect",
+        "title": "2. Information We Collect",
+        "body": [
+          {
+            "type": "p",
+            "text": "We may collect the following information as you use the website:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Identity and contact details, such as name, phone number, email address and company name, when you fill in the contact form or a quote request.",
+              "Order and project information, such as the products you're interested in, quantities and delivery address.",
+              "Technical information, such as IP address, browser type, pages visited and time of visit, collected through cookies and analytics tools.",
+              "Information you voluntarily share with us through support requests or social media."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "use",
+        "title": "3. How We Use Information",
+        "body": [
+          { "type": "p", "text": "Collected information is used for the following purposes:" },
+          {
+            "type": "list",
+            "items": [
+              "Responding to quote requests and messages submitted through the contact form.",
+              "Processing and following up on orders and corporate projects.",
+              "Improving the performance, content and usability of the website.",
+              "Notifying you about products or important changes, where you have consented to this.",
+              "Complying with legal requirements and responding to competent authorities where required."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "cookies",
+        "title": "4. Cookies and Similar Technologies",
+        "body": [
+          {
+            "type": "p",
+            "text": "The Arvand website uses cookies and similar technologies to remember your language preference, analyze traffic and improve performance. You can manage or disable cookies through your browser settings; note that disabling some cookies may affect how the website functions."
+          }
+        ]
+      },
+      {
+        "id": "sharing",
+        "title": "5. Sharing Information",
+        "body": [
+          {
+            "type": "p",
+            "text": "Arvand does not sell your personal information. Information may only be shared with third parties in the following cases:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "With logistics and shipping partners, solely for order delivery.",
+              "With technical service providers (such as website hosting or analytics tools) who are bound by confidentiality obligations.",
+              "Where required by law or requested by a competent authority."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "security",
+        "title": "6. Data Security",
+        "body": [
+          {
+            "type": "p",
+            "text": "We use reasonable technical and organizational measures to protect your information against unauthorized access, disclosure or misuse. However, no method of transmission or storage over the internet is completely secure, and we cannot guarantee absolute security."
+          }
+        ]
+      },
+      {
+        "id": "rights",
+        "title": "7. Your Rights",
+        "body": [
+          { "type": "p", "text": "At any time, you may:" },
+          {
+            "type": "list",
+            "items": [
+              "Request access to, correction of, or deletion of your personal information.",
+              "Ask us to stop sending you promotional communications.",
+              "Ask us to explain how your information is being used."
+            ]
+          },
+          {
+            "type": "p",
+            "text": "To exercise any of these rights, please contact us using the details at the end of this page."
+          }
+        ]
+      },
+      {
+        "id": "retention",
+        "title": "8. Data Retention",
+        "body": [
+          {
+            "type": "p",
+            "text": "We retain your information only for as long as necessary for the purposes described in this policy or as required by law. After that, information is securely deleted or de-identified."
+          }
+        ]
+      },
+      {
+        "id": "children",
+        "title": "9. Children's Privacy",
+        "body": [
+          {
+            "type": "p",
+            "text": "Arvand's services are designed for corporate and adult audiences, and we do not knowingly collect information from anyone under 18. If you believe your child has submitted information without your consent, please contact us so we can remove it."
+          }
+        ]
+      },
+      {
+        "id": "changes",
+        "title": "10. Changes to This Policy",
+        "body": [
+          {
+            "type": "p",
+            "text": "Arvand may update this policy from time to time. Any change will be published with an updated \"Last updated\" date at the top of this page. Continued use of the website after changes take effect constitutes acceptance of the revised policy."
+          }
+        ]
+      },
+      {
+        "id": "contact",
+        "title": "11. Contact Us",
+        "body": [
+          {
+            "type": "p",
+            "text": "If you have any questions about this policy or how your information is used, you can reach us through the following channels:"
+          }
+        ]
+      }
+    ]
+  },
+  "TermsOfService": {
+    "hero": {
+      "eyebrow": "Legal",
+      "title": "Terms of Service",
+      "intro": "These terms set out the rules for using the Arvand website and your interaction with the products, forms and services offered on it."
+    },
+    "lastUpdatedLabel": "Last updated: {date}",
+    "tocTitle": "Table of Contents",
+    "sections": [
+      {
+        "id": "acceptance",
+        "title": "1. Acceptance of Terms",
+        "body": [
+          {
+            "type": "p",
+            "text": "Your use of the Arvand website constitutes full acceptance of these Terms of Service. If you do not agree with any part of these terms, please do not use this website."
+          }
+        ]
+      },
+      {
+        "id": "definitions",
+        "title": "2. Definitions",
+        "body": [
+          { "type": "p", "text": "In this document:" },
+          {
+            "type": "list",
+            "items": [
+              "\"Website\" refers to the Arvand website and all of its subpages.",
+              "\"Products\" refers to all office furniture items presented on the website.",
+              "\"User\" or \"you\" refers to any person who visits or uses the website."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "acceptable-use",
+        "title": "3. Acceptable Use of the Website",
+        "body": [
+          {
+            "type": "p",
+            "text": "You agree to use the website only for lawful purposes and to refrain from:"
+          },
+          {
+            "type": "list",
+            "items": [
+              "Any attempt to gain unauthorized access to Arvand's systems or data.",
+              "Submitting false, abusive content, or content that infringes the rights of others, through the website's forms.",
+              "Copying, reproducing or commercially using the website's content without written permission."
+            ]
+          }
+        ]
+      },
+      {
+        "id": "products",
+        "title": "4. Products and Technical Information",
+        "body": [
+          {
+            "type": "p",
+            "text": "Product images, dimensions and technical specifications are prepared with care, but may differ slightly from the final product due to display differences or manufacturing changes. Arvand reserves the right to update products and their specifications without prior notice."
+          }
+        ]
+      },
+      {
+        "id": "quotes",
+        "title": "5. Quote Requests and Orders",
+        "body": [
+          {
+            "type": "p",
+            "text": "Submitting a \"Request a Quote\" form does not constitute a confirmed order; the request is reviewed by Arvand's sales team and answered by phone or email. Final pricing, delivery timelines and payment terms for each project are set out in an official invoice or separate agreement."
+          }
+        ]
+      },
+      {
+        "id": "pricing",
+        "title": "6. Pricing and Payment",
+        "body": [
+          {
+            "type": "p",
+            "text": "Prices shown on the website, where displayed, are for informational purposes only and may change without prior notice. The final price for each project is confirmed in an official quote issued by Arvand."
+          }
+        ]
+      },
+      {
+        "id": "ip",
+        "title": "7. Intellectual Property",
+        "body": [
+          {
+            "type": "p",
+            "text": "All rights to the design, text content, images, logo and the \"Arvand\" brand name belong to the company, and any use, copying or redistribution without written permission is prohibited."
+          }
+        ]
+      },
+      {
+        "id": "liability",
+        "title": "8. Limitation of Liability",
+        "body": [
+          {
+            "type": "p",
+            "text": "Arvand strives to keep the information on this website accurate and up to date, but makes no guarantee that it is free of errors or continuously available. To the extent permitted by law, Arvand accepts no liability for damages arising from the use, or inability to use, the website."
+          }
+        ]
+      },
+      {
+        "id": "third-party-links",
+        "title": "9. Third-Party Links",
+        "body": [
+          {
+            "type": "p",
+            "text": "This website may contain links to third-party websites (such as social media). Arvand has no control over, and accepts no responsibility for, the content or privacy practices of those websites."
+          }
+        ]
+      },
+      {
+        "id": "governing-law",
+        "title": "10. Governing Law",
+        "body": [
+          {
+            "type": "p",
+            "text": "These Terms of Service are governed by the laws of the Islamic Republic of Iran, and any dispute arising from them will, absent an amicable resolution, be referred to the competent courts."
+          }
+        ]
+      },
+      {
+        "id": "changes",
+        "title": "11. Changes to These Terms",
+        "body": [
+          {
+            "type": "p",
+            "text": "Arvand may update these terms at any time. The revised version will be published with an updated \"Last updated\" date on this page, and continued use of the website constitutes acceptance of the new terms."
+          }
+        ]
+      },
+      {
+        "id": "contact",
+        "title": "12. Contact Us",
+        "body": [
+          {
+            "type": "p",
+            "text": "If you have any questions about these terms, you can reach us through the following channels:"
+          }
+        ]
+      }
+    ]
   }
 }

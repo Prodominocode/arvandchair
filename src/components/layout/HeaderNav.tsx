@@ -1,11 +1,11 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useTranslations } from 'next-intl'
 import { Menu, Search, X } from 'lucide-react'
 
-import { Link, usePathname } from '@/i18n/navigation'
+import { Link, usePathname, useRouter } from '@/i18n/navigation'
 import type { AppLocale } from '@/i18n/routing'
 import type { NavLink } from '@/lib/mock-data/site-settings'
 import { useHeaderTone } from '@/lib/hooks/use-header-tone'
@@ -52,13 +52,23 @@ export function HeaderNav({
 }: HeaderNavProps) {
   const t = useTranslations('Layout')
   const pathname = usePathname()
+  const router = useRouter()
   const tone = useHeaderTone(HEADER_HEIGHT_PX, pathname)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (isSearchOpen) searchInputRef.current?.focus()
   }, [isSearchOpen])
+
+  function handleSearchSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    const trimmed = searchQuery.trim()
+    setIsSearchOpen(false)
+    setSearchQuery('')
+    router.push(trimmed ? `/search?q=${encodeURIComponent(trimmed)}` : '/search')
+  }
 
   const navLinkClass = cn(
     'duration-fast inline-flex h-9 items-center rounded-md px-3 text-sm font-medium transition-colors',
@@ -206,11 +216,18 @@ export function HeaderNav({
       </div>
 
       {isSearchOpen ? (
-        <div className="bg-surface-mist absolute end-6 top-16 flex w-72 max-w-[calc(100vw-3rem)] items-center gap-2 rounded-lg px-4 py-2.5 shadow-sm sm:w-80">
+        <form
+          role="search"
+          onSubmit={handleSearchSubmit}
+          className="bg-surface-mist absolute end-6 top-16 flex w-72 max-w-[calc(100vw-3rem)] items-center gap-2 rounded-lg px-4 py-2.5 shadow-sm sm:w-80"
+        >
           <Search className="text-arvand-ink/60 size-4 shrink-0" aria-hidden="true" />
           <input
             ref={searchInputRef}
             type="search"
+            name="q"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
             placeholder={t('searchPlaceholder')}
             onKeyDown={(event) => {
               if (event.key === 'Escape') setIsSearchOpen(false)
@@ -225,7 +242,7 @@ export function HeaderNav({
           >
             <X className="size-4" aria-hidden="true" />
           </button>
-        </div>
+        </form>
       ) : null}
     </header>
   )
