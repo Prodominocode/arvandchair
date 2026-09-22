@@ -82,14 +82,6 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
       ].filter(Boolean)
 
       const heroTl = gsap.timeline({ defaults: { ease: GSAP_EASE.enter } })
-      if (heroBackdropRef.current) {
-        heroTl.fromTo(
-          heroBackdropRef.current,
-          { scale: 1.14 },
-          { scale: 1, duration: 2.6, ease: 'power2.out' },
-          0,
-        )
-      }
       if (heroEyebrowRef.current)
         heroTl.fromTo(
           heroEyebrowRef.current,
@@ -259,24 +251,16 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
         data-header-tone="dark"
         className="bg-arvand-ink relative -mt-16 flex min-h-svh items-center justify-center overflow-hidden"
       >
-        <div ref={heroBackdropRef} className="absolute -inset-[6%]">
+        <div ref={heroBackdropRef} className="absolute inset-0">
           <Image
-            src="/images/landing1/hero-img1.png"
+            src="/images/landing1/main-hero.jpg"
             alt=""
             fill
             priority
             className="object-cover"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/60" />
         </div>
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(120% 80% at 50% 50%, transparent 40%, rgba(0,0,0,.55) 100%)',
-          }}
-        />
 
         <div
           ref={heroContentRef}
@@ -314,7 +298,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
         data-header-tone="light"
         className="bg-surface-white flex min-h-[100svh] items-center"
       >
-        <div className="px-container-x mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div className="px-container-x max-w-container mx-auto grid w-full items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div
             ref={introMediaRef}
             className="border-border relative aspect-[3/2] overflow-hidden rounded-sm border shadow-xl"
@@ -364,7 +348,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
         data-header-tone="light"
         className="bg-surface-white flex min-h-[100svh] items-center"
       >
-        <div className="px-container-x mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div className="px-container-x max-w-container mx-auto grid w-full items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div {...revealProps} className="order-2 flex flex-col gap-6 lg:order-1">
             <span className="text-arvand-gold text-xs tracking-[0.16em] uppercase">
               {t('philosophy.eyebrow')}

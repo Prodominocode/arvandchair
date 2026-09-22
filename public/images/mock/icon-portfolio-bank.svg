@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title">
   <title id="title">آیکون جای‌گذار پروژه‌ی سالن همایش بانکی</title>
-  <rect width="800" height="800" fill="#E8E8EA" />
+  <rect width="800" height="800" fill="#ececec" />
   <path d="M180 300 L400 180 L620 300 Z" fill="none" stroke="#2B2A28" stroke-width="6" stroke-linejoin="round" />
   <path d="M200 300 L200 560 M300 300 L300 560 M400 300 L400 560 M500 300 L500 560 M600 300 L600 560" fill="none" stroke="#6D6F71" stroke-width="6" />
   <rect x="170" y="560" width="460" height="30" fill="none" stroke="#2B2A28" stroke-width="6" />

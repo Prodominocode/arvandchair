@@ -1,0 +1,131 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - link "Skip to main content" [ref=e3] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e4]:
+      - link "Arvand logo Arvand" [ref=e5] [cursor=pointer]:
+        - /url: /en
+        - img "Arvand logo" [ref=e6]
+        - generic [ref=e7]: Arvand
+      - generic [ref=e8]:
+        - navigation "Main navigation" [ref=e9]:
+          - link "Products" [ref=e10] [cursor=pointer]:
+            - /url: /en/products
+          - generic [ref=e11]: Philosophy
+          - link "Contact" [ref=e12] [cursor=pointer]:
+            - /url: /en/contact
+        - button "Search" [ref=e13]
+        - button "Language" [ref=e15]:
+          - generic [ref=e19]: English
+        - button "Open menu" [ref=e22]
+  - main [ref=e23]:
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - paragraph [ref=e26]: About Arvand
+        - heading "Over a decade of experience building workspaces" [level=1] [ref=e27]
+        - paragraph [ref=e28]: Arvand began as a small woodworking workshop in Tehran and is now a trusted furniture supplier to organizations, universities, and conference halls across Iran.
+      - generic [ref=e29]:
+        - heading "Our Journey" [level=2] [ref=e30]
+        - list [ref=e31]:
+          - listitem [ref=e32]:
+            - paragraph [ref=e33]: "2013"
+            - paragraph [ref=e34]: Started as a small chair-manufacturing workshop in Tehran.
+          - listitem [ref=e35]:
+            - paragraph [ref=e36]: "2018"
+            - paragraph [ref=e37]: Launched a desk production line and entered the B2B market.
+          - listitem [ref=e38]:
+            - paragraph [ref=e39]: "2021"
+            - paragraph [ref=e40]: Delivered our first university amphitheater seating project.
+          - listitem [ref=e41]:
+            - paragraph [ref=e42]: "2025"
+            - paragraph [ref=e43]: Over 200 successful organizational projects nationwide.
+      - generic [ref=e45]:
+        - heading "Our Values" [level=2] [ref=e46]
+        - generic [ref=e47]:
+          - generic [ref=e49]:
+            - paragraph [ref=e50]: Lasting Quality
+            - paragraph [ref=e51]: Every product passes load-bearing and daily-durability testing before delivery.
+          - generic [ref=e53]:
+            - paragraph [ref=e54]: Designed for People
+            - paragraph [ref=e55]: Ergonomics is the starting point of design, not an afterthought.
+          - generic [ref=e57]:
+            - paragraph [ref=e58]: Project Partnership
+            - paragraph [ref=e59]: From initial consulting to final installation, one accountable team stays with the client.
+      - generic [ref=e60]:
+        - heading "Our Team" [level=2] [ref=e61]
+        - paragraph [ref=e62]: More than 60 people work together across design, manufacturing, quality control, and project installation.
+      - generic [ref=e63]:
+        - heading "Work With Us" [level=2] [ref=e64]
+        - paragraph [ref=e65]: Get a free consultation for your next project.
+        - link "Contact Us" [ref=e66] [cursor=pointer]:
+          - /url: /en/contact
+  - contentinfo [ref=e67]:
+    - generic [ref=e68]:
+      - generic [ref=e69]:
+        - paragraph [ref=e70]: Arvand
+        - paragraph [ref=e71]: Office furniture for the modern workplace
+        - paragraph [ref=e72]: Follow Us
+        - list [ref=e73]:
+          - listitem [ref=e74]:
+            - link "اینستاگرام / Instagram" [ref=e75] [cursor=pointer]:
+              - /url: https://instagram.com/arvand.furniture
+          - listitem [ref=e76]:
+            - link "لینکدین / LinkedIn" [ref=e77] [cursor=pointer]:
+              - /url: https://linkedin.com/company/arvand-furniture
+          - listitem [ref=e78]:
+            - link "تلگرام / Telegram" [ref=e79] [cursor=pointer]:
+              - /url: https://t.me/arvand_furniture
+      - generic [ref=e80]:
+        - paragraph [ref=e81]: Quick Links
+        - list [ref=e82]:
+          - listitem [ref=e83]:
+            - link "Products" [ref=e84] [cursor=pointer]:
+              - /url: /en/products
+          - listitem [ref=e85]:
+            - link "Portfolio" [ref=e86] [cursor=pointer]:
+              - /url: /en/portfolio
+          - listitem [ref=e87]:
+            - link "Blog" [ref=e88] [cursor=pointer]:
+              - /url: /en/blog
+          - listitem [ref=e89]:
+            - link "About" [ref=e90] [cursor=pointer]:
+              - /url: /en/about
+          - listitem [ref=e91]:
+            - link "Contact" [ref=e92] [cursor=pointer]:
+              - /url: /en/contact
+          - listitem [ref=e93]:
+            - link "Loyalty Club" [ref=e94] [cursor=pointer]:
+              - /url: /en/loyalty-club
+      - generic [ref=e95]:
+        - paragraph [ref=e96]: Offices & Showrooms
+        - list [ref=e97]:
+          - listitem [ref=e98]:
+            - paragraph [ref=e99]: Tehran Factory
+            - paragraph [ref=e100]: Factory
+            - paragraph [ref=e101]: "02144667788"
+          - listitem [ref=e102]:
+            - paragraph [ref=e103]: Tehran Valiasr Showroom
+            - paragraph [ref=e104]: Showroom
+            - paragraph [ref=e105]: "02188112233"
+          - listitem [ref=e106]:
+            - paragraph [ref=e107]: Isfahan Sales Office
+            - paragraph [ref=e108]: Sales Office
+            - paragraph [ref=e109]: "03136223344"
+      - generic [ref=e110]:
+        - paragraph [ref=e111]: Contact
+        - list [ref=e112]:
+          - listitem [ref=e113]:
+            - link "info@arvand-furniture.example" [ref=e114] [cursor=pointer]:
+              - /url: mailto:info@arvand-furniture.example
+          - listitem [ref=e119]:
+            - link "02188112233" [ref=e120] [cursor=pointer]:
+              - /url: tel:02188112233
+        - list [ref=e124]:
+          - listitem [ref=e125]:
+            - link "Privacy Policy" [ref=e126] [cursor=pointer]:
+              - /url: /en/privacy-policy
+          - listitem [ref=e127]:
+            - link "Terms of Service" [ref=e128] [cursor=pointer]:
+              - /url: /en/terms-of-service
+    - paragraph [ref=e130]: © 2026 Arvand — All rights reserved by Arvand.
+  - region "Notifications alt+T"

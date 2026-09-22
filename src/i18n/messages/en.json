@@ -22,6 +22,12 @@
     "openMenu": "Open menu",
     "mobileNavTitle": "Arvand menu",
     "navAriaLabel": "Main navigation",
+    "navProducts": "Products",
+    "navPhilosophy": "Philosophy",
+    "navContact": "Contact",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Search",
+    "closeSearch": "Close search",
     "cart": "Cart",
     "account": "Account",
     "quoteRequestCta": "Request a Quote",
@@ -29,7 +35,6 @@
   },
   "Footer": {
     "quickLinksTitle": "Quick Links",
-    "officesTitle": "Offices & Showrooms",
     "socialTitle": "Follow Us",
     "contactTitle": "Contact",
     "rightsReserved": "All rights reserved by Arvand.",
@@ -168,6 +173,14 @@
       "prev": "Previous story",
       "next": "Next story"
     },
+    "productStories": {
+      "title": "The stories behind our products",
+      "subtitle": "Behind every Arvand chair is a detail built for long hours of sitting — take a closer look.",
+      "badge": "Product story",
+      "linkLabel": "View product",
+      "prev": "Previous story",
+      "next": "Next story"
+    },
     "catalog": {
       "eyebrow": "Product Catalog",
       "title": "See the full Arvand catalog",
@@ -219,5 +232,64 @@
       "quoteOnly": "Quote only",
       "newArrival": "New arrival"
     }
+  },
+  "Products": {
+    "breadcrumb": { "home": "Home", "products": "Products" },
+    "allProductsTitle": "All Products",
+    "filters": {
+      "tagsLabel": "Features",
+      "material": "Material",
+      "materialAll": "All materials",
+      "sort": "Sort",
+      "sortOptions": {
+        "featured": "Featured",
+        "newest": "Newest",
+        "nameAsc": "Name (A–Z)"
+      },
+      "clear": "Clear filters"
+    },
+    "empty": {
+      "title": "No products match these filters",
+      "hint": "Try changing or clearing the filters."
+    },
+    "loadMore": "Show more products",
+    "badges": {
+      "bestseller": "Bestseller",
+      "new-arrival": "New Arrival"
+    }
+  },
+  "ProductDetail": {
+    "sku": "SKU",
+    "keyFeatures": "Key Features",
+    "carousel": { "previous": "Previous image", "next": "Next image", "goTo": "Image {index}" },
+    "gallery": { "title": "Gallery" },
+    "features": { "title": "Features" },
+    "lineup": { "title": "Lineup" },
+    "regions": {
+      "title": "Available Regions",
+      "text": "Iran / Central Asia / Middle East (placeholder text — for orders in other regions please contact the Arvand sales team)."
+    },
+    "backToIndex": "← Back to Index",
+    "specs": {
+      "dimensions": "Dimensions (L × W × H)",
+      "dimensionsValue": "{length} × {width} × {height} cm",
+      "material": "Material",
+      "weight": "Weight",
+      "weightValue": "{weight} kg",
+      "capacity": "Capacity",
+      "materials": "Materials"
+    },
+    "variant": {
+      "label": "Options",
+      "outOfStock": "Out of stock",
+      "priceModifier": "{amount} {currency}"
+    },
+    "quote": {
+      "note": "Pricing for this product is project-based — request a quote and our team will follow up with details."
+    },
+    "cta": {
+      "addedToCart": "“{title}” added to your cart (demo)"
+    },
+    "related": { "title": "Other Products" }
   }
 }

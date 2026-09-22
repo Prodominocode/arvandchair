@@ -48,7 +48,7 @@ const COLOR_TOKENS = [
   { token: '--color-arvand-slate', className: 'bg-arvand-slate', hex: '#6D6F71' },
   { token: '--color-arvand-ink', className: 'bg-arvand-ink', hex: '#2B2A28' },
   { token: '--color-surface-white', className: 'border bg-surface-white', hex: '#FFFFFF' },
-  { token: '--color-surface-mist', className: 'bg-surface-mist', hex: '#E8E8EA' },
+  { token: '--color-surface-mist', className: 'bg-surface-mist', hex: '#ececec' },
   { token: '--color-success', className: 'bg-success', hex: '#4B7B4E' },
   { token: '--color-warning', className: 'bg-warning', hex: '#B8863B' },
   { token: '--color-danger', className: 'bg-danger', hex: '#B3453A' },
@@ -153,7 +153,7 @@ export function StyleGuideContent() {
           </div>
           <p className="text-muted-foreground mt-4 font-mono text-xs">
             py-section-y-sm (48px) / py-section-y-md (80px) / py-section-y-lg (128px) /
-            px-container-x (24px)
+            px-container-x (24px) / max-w-container (1440px)
           </p>
         </Section>
 

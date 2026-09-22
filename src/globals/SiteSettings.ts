@@ -10,11 +10,8 @@ export const SiteSettings: GlobalConfig = {
       name: 'enabledLocales',
       type: 'select',
       hasMany: true,
-      defaultValue: ['en', 'ar'],
-      options: [
-        { label: 'English', value: 'en' },
-        { label: 'العربية', value: 'ar' },
-      ],
+      defaultValue: ['en'],
+      options: [{ label: 'English', value: 'en' }],
       admin: {
         description:
           'فارسی همیشه فعال است. زبان‌هایی که اینجا انتخاب نشوند، مسیر عمومی‌شان 404 برمی‌گرداند.',

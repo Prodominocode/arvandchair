@@ -99,7 +99,7 @@ export function AboutContent() {
 
       {/* ارزش‌های ما */}
       <section {...revealProps} className="bg-surface-mist/60 py-section-y-md">
-        <div className="px-container-x mx-auto max-w-6xl">
+        <div className="px-container-x max-w-container mx-auto">
           <h2 className="text-arvand-ink mb-8 text-center text-3xl font-semibold">
             {t('values.title')}
           </h2>

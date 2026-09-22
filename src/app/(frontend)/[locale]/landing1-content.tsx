@@ -9,7 +9,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 import { Link } from '@/i18n/navigation'
 import type { AppLocale } from '@/i18n/routing'
-import type { Testimonial } from '@/lib/mock-data/testimonials'
 import {
   GSAP_DURATION,
   GSAP_EASE,
@@ -18,12 +17,12 @@ import {
 } from '@/lib/motion/scroll-tokens'
 import { Button } from '@/components/ui/button'
 import { ShowcaseSection, type ShowcaseProduct } from './showcase-section'
-import { StoriesSection } from './stories-section'
+import { StoriesSection, type StoryItem } from './stories-section'
 
 type Props = {
   locale: AppLocale
   products: ShowcaseProduct[]
-  testimonials: Testimonial[]
+  stories: StoryItem[]
 }
 
 /** هر کلمه را در یک span مجزا برای Stagger می‌پیچد، اما خودِ حروف داخل هر کلمه دست‌نخورده
@@ -48,7 +47,7 @@ function splitWords(el: HTMLElement) {
   return words
 }
 
-export function Landing1Content({ locale, products, testimonials }: Props) {
+export function Landing1Content({ locale, products, stories }: Props) {
   const t = useTranslations('Landing1')
 
   const rootRef = useRef<HTMLDivElement>(null)
@@ -82,14 +81,6 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
       ].filter(Boolean)
 
       const heroTl = gsap.timeline({ defaults: { ease: GSAP_EASE.enter } })
-      if (heroBackdropRef.current) {
-        heroTl.fromTo(
-          heroBackdropRef.current,
-          { scale: 1.14 },
-          { scale: 1, duration: 2.6, ease: 'power2.out' },
-          0,
-        )
-      }
       if (heroEyebrowRef.current)
         heroTl.fromTo(
           heroEyebrowRef.current,
@@ -259,7 +250,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
         data-header-tone="dark"
         className="bg-arvand-ink relative -mt-16 flex min-h-svh items-center justify-center overflow-hidden"
       >
-        <div ref={heroBackdropRef} className="absolute -inset-[6%]">
+        <div ref={heroBackdropRef} className="absolute inset-0">
           <Image
             src="/images/landing1/hero-img1.png"
             alt=""
@@ -268,15 +259,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
             className="object-cover"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/30 to-black/60" />
         </div>
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(120% 80% at 50% 50%, transparent 40%, rgba(0,0,0,.55) 100%)',
-          }}
-        />
 
         <div
           ref={heroContentRef}
@@ -314,7 +297,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
         data-header-tone="light"
         className="bg-surface-mist flex min-h-[100svh] items-center"
       >
-        <div className="px-container-x mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div className="px-container-x max-w-container mx-auto grid w-full items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div
             ref={introMediaRef}
             className="border-border relative aspect-[3/2] overflow-hidden rounded-sm border shadow-xl"
@@ -364,7 +347,7 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
         data-header-tone="light"
         className="bg-surface-mist flex min-h-[100svh] items-center"
       >
-        <div className="px-container-x mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div className="px-container-x max-w-container mx-auto grid w-full items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div {...revealProps} className="order-2 flex flex-col gap-6 lg:order-1">
             <span className="text-arvand-gold text-xs tracking-[0.16em] uppercase">
               {t('philosophy.eyebrow')}
@@ -390,22 +373,23 @@ export function Landing1Content({ locale, products, testimonials }: Props) {
         </div>
       </section>
 
-      {/* Stories */}
+      {/* Stories — داستان/ویژگی محصولات با تصاویر واقعی (نه نقل‌قول مشتریان) */}
       <StoriesSection
-        testimonials={testimonials}
-        locale={locale}
+        stories={stories}
         texts={{
-          title: t('stories.title'),
-          subtitle: t('stories.subtitle'),
-          trusted: t('stories.trusted'),
-          prev: t('stories.prev'),
-          next: t('stories.next'),
+          title: t('productStories.title'),
+          subtitle: t('productStories.subtitle'),
+          badge: t('productStories.badge'),
+          linkLabel: t('productStories.linkLabel'),
+          prev: t('productStories.prev'),
+          next: t('productStories.next'),
         }}
       />
 
       {/* Catalog CTA — نصف بالا در این سکشن (bg-surface-mist مثل سکشن‌های قبل)، نصف پایین
           روی فوتر اورلپ می‌شود؛ اندازه‌گیری و margin منفی در افکت syncCatalogOverlap بالا */}
       <section
+        id="catalog"
         data-header-tone="light"
         className="bg-surface-mist px-container-x pt-section-y-lg relative z-10"
         {...revealProps}

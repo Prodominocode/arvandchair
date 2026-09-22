@@ -22,6 +22,12 @@
     "openMenu": "باز کردن منو",
     "mobileNavTitle": "منوی اروند",
     "navAriaLabel": "ناوبری اصلی",
+    "navProducts": "محصولات",
+    "navPhilosophy": "فلسفه",
+    "navContact": "تماس با ما",
+    "searchLabel": "جست‌وجو",
+    "searchPlaceholder": "جست‌وجو",
+    "closeSearch": "بستن جست‌وجو",
     "cart": "سبد خرید",
     "account": "حساب کاربری",
     "quoteRequestCta": "درخواست استعلام قیمت",
@@ -29,7 +35,6 @@
   },
   "Footer": {
     "quickLinksTitle": "دسترسی سریع",
-    "officesTitle": "دفاتر و نمایشگاه‌ها",
     "socialTitle": "ما را دنبال کنید",
     "contactTitle": "تماس با ما",
     "rightsReserved": "تمامی حقوق برای اروند محفوظ است.",
@@ -168,6 +173,14 @@
       "prev": "روایت قبلی",
       "next": "روایت بعدی"
     },
+    "productStories": {
+      "title": "داستان محصولات اروند",
+      "subtitle": "پشت هر صندلی اروند جزئیاتی است که برای نشستن‌های طولانی ساخته شده؛ از نزدیک ببینید.",
+      "badge": "داستان محصول",
+      "linkLabel": "مشاهده‌ی محصول",
+      "prev": "داستان قبلی",
+      "next": "داستان بعدی"
+    },
     "catalog": {
       "eyebrow": "کاتالوگ محصولات",
       "title": "کاتالوگ کامل اروند را ببینید",
@@ -219,5 +232,64 @@
       "quoteOnly": "فقط استعلام",
       "newArrival": "تازه‌وارد"
     }
+  },
+  "Products": {
+    "breadcrumb": { "home": "خانه", "products": "محصولات" },
+    "allProductsTitle": "همه‌ی محصولات",
+    "filters": {
+      "tagsLabel": "ویژگی‌ها",
+      "material": "متریال",
+      "materialAll": "همه‌ی متریال‌ها",
+      "sort": "مرتب‌سازی",
+      "sortOptions": {
+        "featured": "ویژه",
+        "newest": "جدیدترین",
+        "nameAsc": "نام (الف تا ی)"
+      },
+      "clear": "پاک‌کردن فیلترها"
+    },
+    "empty": {
+      "title": "محصولی با این فیلتر پیدا نشد",
+      "hint": "فیلترها را تغییر دهید یا آن‌ها را پاک کنید."
+    },
+    "loadMore": "نمایش محصولات بیشتر",
+    "badges": {
+      "bestseller": "پرفروش",
+      "new-arrival": "تازه‌وارد"
+    }
+  },
+  "ProductDetail": {
+    "sku": "کد کالا",
+    "keyFeatures": "ویژگی‌های کلیدی",
+    "carousel": { "previous": "تصویر قبلی", "next": "تصویر بعدی", "goTo": "تصویر {index}" },
+    "gallery": { "title": "گالری تصاویر" },
+    "features": { "title": "ویژگی‌ها" },
+    "lineup": { "title": "گزینه‌های محصول" },
+    "regions": {
+      "title": "مناطق قابل عرضه",
+      "text": "ایران / آسیای میانه / خاورمیانه (متن آزمایشی — برای سفارش در سایر مناطق با تیم فروش اروند تماس بگیرید)."
+    },
+    "backToIndex": "→ بازگشت به فهرست",
+    "specs": {
+      "dimensions": "ابعاد (طول × عرض × ارتفاع)",
+      "dimensionsValue": "{length} × {width} × {height} سانتی‌متر",
+      "material": "متریال",
+      "weight": "وزن",
+      "weightValue": "{weight} کیلوگرم",
+      "capacity": "ظرفیت",
+      "materials": "متریال‌ها"
+    },
+    "variant": {
+      "label": "گزینه‌ها",
+      "outOfStock": "ناموجود",
+      "priceModifier": "{amount} {currency}"
+    },
+    "quote": {
+      "note": "قیمت این محصول پروژه‌محور است — درخواست استعلام ثبت کنید تا تیم ما با جزئیات پیگیری کند."
+    },
+    "cta": {
+      "addedToCart": "«{title}» به سبد خرید افزوده شد (نمایشی)"
+    },
+    "related": { "title": "سایر محصولات" }
   }
 }

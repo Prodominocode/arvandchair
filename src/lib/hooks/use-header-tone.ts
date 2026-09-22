@@ -11,13 +11,24 @@ const TONE_ATTRIBUTE = 'data-header-tone'
  * سکشنی که همین حالا زیر لبه‌ی هدر است چه ویژگی `data-header-tone` دارد (docs: سکشن‌های
  * پس‌زمینه‌تیره «dark» و سکشن‌های روشن «light» را علامت می‌زنند) تا رنگ متن/آیکن/لوگوی هدر
  * متناسب با آن (سفید روی تیره، تیره روی روشن) تنظیم شود.
+ *
+ * هدر در Layout سراسری است و بین ناوبری‌های کلاینتی Unmount نمی‌شود؛ پس `routeKey` (مسیر فعلی)
+ * لازم است تا با هر تغییر صفحه، سکشن‌های صفحه‌ی جدید دوباره Observe شوند (وگرنه Observer فقط
+ * سکشن‌های صفحه‌ی اولِ بارگذاری‌شده را می‌بیند و Tone صفحه‌ی قبل باقی می‌ماند).
  */
-export function useHeaderTone(headerHeightPx: number, fallback: HeaderTone = 'light'): HeaderTone {
+export function useHeaderTone(
+  headerHeightPx: number,
+  routeKey: string,
+  fallback: HeaderTone = 'light',
+): HeaderTone {
   const [tone, setTone] = useState<HeaderTone>(fallback)
 
   useEffect(() => {
     const sections = Array.from(document.querySelectorAll<HTMLElement>(`[${TONE_ATTRIBUTE}]`))
-    if (sections.length === 0) return
+    if (sections.length === 0) {
+      setTone(fallback)
+      return
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -37,7 +48,7 @@ export function useHeaderTone(headerHeightPx: number, fallback: HeaderTone = 'li
 
     sections.forEach((section) => observer.observe(section))
     return () => observer.disconnect()
-  }, [headerHeightPx])
+  }, [headerHeightPx, routeKey, fallback])
 
   return tone
 }

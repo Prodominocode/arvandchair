@@ -12,7 +12,7 @@ export type Customer = {
   email: string
   phone: string
   companyId: string | null
-  preferredLocale: 'fa' | 'en' | 'ar'
+  preferredLocale: 'fa' | 'en'
   addresses: IranAddress[]
   loyaltyTierId: string
   loyaltyPointsBalance: number

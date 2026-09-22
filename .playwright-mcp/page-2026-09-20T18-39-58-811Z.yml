@@ -1,0 +1,177 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - link "رفتن به محتوای اصلی" [ref=e3] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e4]:
+      - link "لوگوی اروند اروند" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img "لوگوی اروند" [ref=e6]
+        - generic [ref=e7]: اروند
+      - generic [ref=e8]:
+        - navigation "ناوبری اصلی" [ref=e9]:
+          - link "محصولات" [ref=e10] [cursor=pointer]:
+            - /url: /products
+          - generic [ref=e11]: فلسفه
+          - link "تماس با ما" [ref=e12] [cursor=pointer]:
+            - /url: /contact
+        - button "جست‌وجو" [ref=e13]
+        - button "زبان" [ref=e15]:
+          - generic [ref=e19]: فارسی
+        - button "باز کردن منو" [ref=e22]
+  - main [ref=e23]:
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - generic [ref=e29]:
+          - generic [ref=e30]: دقت در طراحی — اروند، از ۱۳۹۲
+          - heading "اروند راحتی" [level=1] [ref=e31]
+          - paragraph [ref=e32]: راحتی مهندسی‌شده برای فضای کار امروز؛ ساخته‌شده تا شکلش را در طول روزهای طولانی حفظ کند.
+        - generic [ref=e33]: اسکرول کنید
+      - generic [ref=e38]:
+        - img "اروند، از یک کارگاه کوچک تا امروز" [ref=e40]
+        - generic [ref=e41]:
+          - generic [ref=e42]: از ۱۳۹۲
+          - heading "اروند، از یک کارگاه کوچک تا امروز" [level=2] [ref=e43]
+          - paragraph [ref=e45]: "اروند کار خود را از یک کارگاه کوچک نجاری در تهران آغاز کرد، با یک قاعده که هرگز تغییر نکرده: هیچ محصولی از خط تولید خارج نمی‌شود مگر کاملاً درست باشد. بیش از یک دهه بعد، همان دقت و نظم -صبورانه و موشکافانه- هنوز پشت هر جوش، برش و دوخت ماست."
+          - link "مسیر ما را ببینید" [ref=e47] [cursor=pointer]:
+            - /url: /about
+      - region "کالکشن" [ref=e48]:
+        - generic [ref=e57]:
+          - generic [ref=e58]:
+            - img "صندلی مدیریتی آرا" [ref=e60]
+            - generic [ref=e61]:
+              - generic [ref=e62]: کالکشن
+              - generic [ref=e63]:
+                - generic [ref=e64]:
+                  - heading "صندلی مدیریتی آرا" [level=3] [ref=e65]
+                  - paragraph [ref=e66]: صندلی مدیریتی با پشتی مش تنفس‌پذیر و مکانیزم تنظیم ارتفاع/زاویه.
+                - link "مشاهده‌ی محصول" [ref=e67] [cursor=pointer]:
+                  - /url: /products/chairs-office/ara-managerial-chair
+          - generic [ref=e71]:
+            - img "صندلی کنفرانس وستا" [ref=e73]
+            - generic [ref=e74]:
+              - generic [ref=e75]: کالکشن
+              - generic [ref=e76]:
+                - generic [ref=e77]:
+                  - heading "صندلی کنفرانس وستا" [level=3] [ref=e78]
+                  - paragraph [ref=e79]: صندلی کنفرانس با پشتی بلند چرمی و ظاهر رسمی برای اتاق جلسات.
+                - link "مشاهده‌ی محصول" [ref=e80] [cursor=pointer]:
+                  - /url: /products/chairs-conference/vesta-conference-chair
+          - generic [ref=e84]:
+            - img "میز مدیریتی الوند" [ref=e86]
+            - generic [ref=e87]:
+              - generic [ref=e88]: کالکشن
+              - generic [ref=e89]:
+                - generic [ref=e90]:
+                  - heading "میز مدیریتی الوند" [level=3] [ref=e91]
+                  - paragraph [ref=e92]: میز مدیریتی با روکش ملامینه ضدخش و کشوی قفل‌دار جانبی.
+                - link "مشاهده‌ی محصول" [ref=e93] [cursor=pointer]:
+                  - /url: /products/desks/alvand-managerial-desk
+          - generic [ref=e97]:
+            - img "ست مبل پذیرایی اداری درسا" [ref=e99]
+            - generic [ref=e100]:
+              - generic [ref=e101]: کالکشن
+              - generic [ref=e102]:
+                - generic [ref=e103]:
+                  - heading "ست مبل پذیرایی اداری درسا" [level=3] [ref=e104]
+                  - paragraph [ref=e105]: ست مبل سه‌نفره + دو مبل تک‌نفره برای لابی و اتاق انتظار.
+                - link "مشاهده‌ی محصول" [ref=e106] [cursor=pointer]:
+                  - /url: /products/office-furniture/dorsa-reception-sofa-set
+      - generic [ref=e111]:
+        - generic [ref=e112]:
+          - generic [ref=e113]: چرا اروند
+          - heading "فلسفه‌ی طراحی" [level=2] [ref=e114]
+          - paragraph [ref=e115]: ما معتقدیم راحتی هرگز اتفاقی نیست. هر انحنا حاصل سال‌ها مطالعه‌ی وضعیت نشستن است، هر متریال طوری انتخاب می‌شود که از مد روز عمر بیشتری کند، و هر اتصال طوری ساخته می‌شود که تعویض یک قطعه‌ی فرسوده کار پنج دقیقه باشد، نه دلیلی برای خرید صندلی نو. دقت چیزی نیست که در پایان کار اضافه کنیم؛ همان نظمی است که کار را با آن شروع می‌کنیم.
+        - img "فلسفه‌ی طراحی" [ref=e117]
+      - generic [ref=e119]:
+        - generic [ref=e120]:
+          - heading "روایت مشتریان ما" [level=2] [ref=e121]
+          - paragraph [ref=e122]: ببینید چرا سازمان‌های پیشرو برای راحتی، دقت و کیفیت پایدار به اروند اعتماد می‌کنند.
+        - generic [ref=e123]:
+          - generic [ref=e124]:
+            - generic [ref=e125]: مورد اعتماد
+            - blockquote [ref=e128]: “تجهیز ۴ طبقه در ۳ هفته با کیفیت و زمان‌بندی که اروند تعهد داده بود انجام شد؛ حتی یک روز تأخیر هم نداشتیم.”
+            - generic [ref=e129]:
+              - generic [ref=e130]: مهدی رستمی
+              - generic [ref=e131]: مدیر اداری، کارگزاری بورس نمونه
+          - generic [ref=e140]:
+            - generic [ref=e141]:
+              - button "روایت قبلی" [ref=e142]
+              - button "روایت بعدی" [ref=e145]
+            - generic [ref=e148]: 01 / 05
+      - link "کاتالوگ محصولات کاتالوگ کامل اروند را ببینید همه‌ی مدل‌ها، متریال‌ها و رنگ‌بندی‌ها؛ ابعاد و مشخصات فنی در یک صفحه، آماده برای پروژه‌ی بعدی شما. مشاهده‌ی محصولات" [ref=e151] [cursor=pointer]:
+        - /url: /products
+        - generic [ref=e153]:
+          - generic [ref=e154]: کاتالوگ محصولات
+          - heading "کاتالوگ کامل اروند را ببینید" [level=3] [ref=e155]
+          - paragraph [ref=e156]: همه‌ی مدل‌ها، متریال‌ها و رنگ‌بندی‌ها؛ ابعاد و مشخصات فنی در یک صفحه، آماده برای پروژه‌ی بعدی شما.
+          - generic [ref=e157]: مشاهده‌ی محصولات
+  - contentinfo [ref=e161]:
+    - generic [ref=e162]:
+      - generic [ref=e163]:
+        - paragraph [ref=e164]: اروند
+        - paragraph [ref=e165]: مبلمان اداری برای فضای کاری امروز
+        - paragraph [ref=e166]: ما را دنبال کنید
+        - list [ref=e167]:
+          - listitem [ref=e168]:
+            - link "اینستاگرام / Instagram" [ref=e169] [cursor=pointer]:
+              - /url: https://instagram.com/arvand.furniture
+          - listitem [ref=e170]:
+            - link "لینکدین / LinkedIn" [ref=e171] [cursor=pointer]:
+              - /url: https://linkedin.com/company/arvand-furniture
+          - listitem [ref=e172]:
+            - link "تلگرام / Telegram" [ref=e173] [cursor=pointer]:
+              - /url: https://t.me/arvand_furniture
+      - generic [ref=e174]:
+        - paragraph [ref=e175]: دسترسی سریع
+        - list [ref=e176]:
+          - listitem [ref=e177]:
+            - link "محصولات" [ref=e178] [cursor=pointer]:
+              - /url: /products
+          - listitem [ref=e179]:
+            - link "نمونه‌کارها" [ref=e180] [cursor=pointer]:
+              - /url: /portfolio
+          - listitem [ref=e181]:
+            - link "وبلاگ" [ref=e182] [cursor=pointer]:
+              - /url: /blog
+          - listitem [ref=e183]:
+            - link "درباره‌ی ما" [ref=e184] [cursor=pointer]:
+              - /url: /about
+          - listitem [ref=e185]:
+            - link "تماس با ما" [ref=e186] [cursor=pointer]:
+              - /url: /contact
+          - listitem [ref=e187]:
+            - link "باشگاه مشتریان" [ref=e188] [cursor=pointer]:
+              - /url: /loyalty-club
+      - generic [ref=e189]:
+        - paragraph [ref=e190]: دفاتر و نمایشگاه‌ها
+        - list [ref=e191]:
+          - listitem [ref=e192]:
+            - paragraph [ref=e193]: کارخانه‌ی تهران
+            - paragraph [ref=e194]: کارخانه
+            - paragraph [ref=e195]: "02144667788"
+          - listitem [ref=e196]:
+            - paragraph [ref=e197]: نمایشگاه ولیعصر تهران
+            - paragraph [ref=e198]: نمایشگاه
+            - paragraph [ref=e199]: "02188112233"
+          - listitem [ref=e200]:
+            - paragraph [ref=e201]: دفتر فروش اصفهان
+            - paragraph [ref=e202]: دفتر فروش
+            - paragraph [ref=e203]: "03136223344"
+      - generic [ref=e204]:
+        - paragraph [ref=e205]: تماس با ما
+        - list [ref=e206]:
+          - listitem [ref=e207]:
+            - link "info@arvand-furniture.example" [ref=e208] [cursor=pointer]:
+              - /url: mailto:info@arvand-furniture.example
+          - listitem [ref=e213]:
+            - link "02188112233" [ref=e214] [cursor=pointer]:
+              - /url: tel:02188112233
+        - list [ref=e218]:
+          - listitem [ref=e219]:
+            - link "حریم خصوصی" [ref=e220] [cursor=pointer]:
+              - /url: /privacy-policy
+          - listitem [ref=e221]:
+            - link "شرایط استفاده" [ref=e222] [cursor=pointer]:
+              - /url: /terms-of-service
+    - paragraph [ref=e224]: © 2026 اروند — تمامی حقوق برای اروند محفوظ است.
+  - region "Notifications alt+T"

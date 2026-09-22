@@ -25,15 +25,14 @@ export type Page = {
 export const pages: Page[] = [
   {
     id: 'privacy-policy',
-    title: { fa: 'حریم خصوصی', en: 'Privacy Policy', ar: 'سياسة الخصوصية' },
-    slug: { fa: 'privacy-policy', en: 'privacy-policy', ar: 'privacy-policy' },
+    title: { fa: 'حریم خصوصی', en: 'Privacy Policy' },
+    slug: { fa: 'privacy-policy', en: 'privacy-policy' },
     layout: [
       {
         type: 'rich-text',
         content: {
           fa: 'این متن جای‌گذار سیاست حریم خصوصی است — محتوای نهایی در بسته‌ی ۶ فاز ۳ نوشته می‌شود.',
           en: 'This is placeholder privacy-policy text — final content is written in Package 6 of Phase 3.',
-          ar: 'هذا نص بديل مؤقت لسياسة الخصوصية — سيُكتب المحتوى النهائي في الحزمة ٦ من المرحلة ٣.',
         },
       },
     ],
@@ -41,26 +40,23 @@ export const pages: Page[] = [
       metaTitle: {
         fa: 'حریم خصوصی | اروند',
         en: 'Privacy Policy | Arvand',
-        ar: 'سياسة الخصوصية | أرواند',
       },
       metaDescription: {
         fa: 'سیاست حریم خصوصی فروشگاه اروند.',
         en: 'Arvand store privacy policy.',
-        ar: 'سياسة الخصوصية لمتجر أرواند.',
       },
     },
   },
   {
     id: 'terms-of-service',
-    title: { fa: 'شرایط استفاده', en: 'Terms of Service', ar: 'شروط الاستخدام' },
-    slug: { fa: 'terms-of-service', en: 'terms-of-service', ar: 'terms-of-service' },
+    title: { fa: 'شرایط استفاده', en: 'Terms of Service' },
+    slug: { fa: 'terms-of-service', en: 'terms-of-service' },
     layout: [
       {
         type: 'rich-text',
         content: {
           fa: 'این متن جای‌گذار شرایط استفاده است — محتوای نهایی در بسته‌ی ۶ فاز ۳ نوشته می‌شود.',
           en: 'This is placeholder terms-of-service text — final content is written in Package 6 of Phase 3.',
-          ar: 'هذا نص بديل مؤقت لشروط الاستخدام — سيُكتب المحتوى النهائي في الحزمة ٦ من المرحلة ٣.',
         },
       },
     ],
@@ -68,12 +64,10 @@ export const pages: Page[] = [
       metaTitle: {
         fa: 'شرایط استفاده | اروند',
         en: 'Terms of Service | Arvand',
-        ar: 'شروط الاستخدام | أرواند',
       },
       metaDescription: {
         fa: 'شرایط استفاده از فروشگاه اروند.',
         en: 'Arvand store terms of service.',
-        ar: 'شروط استخدام متجر أرواند.',
       },
     },
   },

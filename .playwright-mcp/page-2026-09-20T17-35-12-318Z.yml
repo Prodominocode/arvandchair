@@ -1,0 +1,187 @@
+- generic [ref=f2e1]:
+  - banner [ref=f2e2]:
+    - link "رفتن به محتوای اصلی" [ref=f2e3] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=f2e4]:
+      - link "لوگوی اروند اروند" [ref=f2e5] [cursor=pointer]:
+        - /url: /
+        - img "لوگوی اروند" [ref=f2e6]
+        - generic [ref=f2e7]: اروند
+      - generic [ref=f2e8]:
+        - navigation "ناوبری اصلی" [ref=f2e9]:
+          - link "محصولات" [ref=f2e10] [cursor=pointer]:
+            - /url: /products
+          - generic [ref=f2e11]: فلسفه
+          - link "تماس با ما" [ref=f2e12] [cursor=pointer]:
+            - /url: /contact
+        - button "جست‌وجو" [ref=f2e13]
+        - button "زبان" [ref=f2e15]:
+          - generic [ref=f2e19]: فارسی
+        - button "باز کردن منو" [ref=f2e22]
+  - main [ref=f2e23]:
+    - generic [ref=f2e24]:
+      - img "صندلی مدیریتی آرا در اتاق مدیریت، کنار میز کنفرانس" [ref=f2e25]
+      - heading "صندلی مدیریتی آرا" [level=1] [ref=f2e29]
+    - paragraph [ref=f2e31]: صندلی مدیریتی آرا برای ساعت‌های طولانی کار پشت میز طراحی شده. پشتی مش با تهویه‌ی هوا از خستگی کمر جلوگیری می‌کند، دسته‌های قابل تنظیم در سه جهت و مکانیزم Synchro-Tilt امکان تنظیم دقیق زاویه‌ی نشستن را می‌دهند. پایه‌ی آلومینیومی ریخته‌گری و چرخ‌های نرم مناسب کف سرامیک و پارکت.
+    - generic [ref=f2e33]:
+      - generic [ref=f2e34]:
+        - generic [ref=f2e35]:
+          - img "صندلی مدیریتی آرا اروند، نمای روبه‌رو" [ref=f2e37]
+          - img "صندلی مدیریتی آرا در اتاق مدیریت، کنار میز کنفرانس" [ref=f2e39]
+          - img "دو صندلی آرا زیر میز مدیریتی، رنگ سرمه‌ای و بژ" [ref=f2e41]
+          - img "نمای نزدیک قاب کروم پشتی صندلی آرا" [ref=f2e43]
+        - generic [ref=f2e44]:
+          - button "تصویر قبلی" [ref=f2e45]
+          - generic [ref=f2e48]:
+            - button "تصویر 1" [ref=f2e49]
+            - button "تصویر 2" [ref=f2e51]
+            - button "تصویر 3" [ref=f2e53]
+            - button "تصویر 4" [ref=f2e55]
+          - button "تصویر بعدی" [active] [ref=f2e57]
+      - generic [ref=f2e60]:
+        - generic [ref=f2e61]:
+          - heading [level=3] [ref=f2e63]:
+            - button "ابعاد (طول × عرض × ارتفاع)" [ref=f2e64]
+          - heading [level=3] [ref=f2e66]:
+            - button "متریال" [ref=f2e67]
+          - heading [level=3] [ref=f2e69]:
+            - button "گزینه‌ها" [ref=f2e70]
+        - generic [ref=f2e71]:
+          - paragraph [ref=f2e73]: ۸٬۵۰۰٬۰۰۰ تومان
+          - generic [ref=f2e74]:
+            - button "افزودن به سبد" [ref=f2e75]
+            - generic [ref=f2e76]: موجود
+          - paragraph [ref=f2e77]: "کد کالا: ARV-CHR-ARA-001"
+    - generic [ref=f2e78]:
+      - paragraph [ref=f2e79]: گالری تصاویر
+      - generic [ref=f2e80]:
+        - generic [ref=f2e81]:
+          - img "صندلی مدیریتی آرا اروند، نمای روبه‌رو" [ref=f2e83]
+          - img "صندلی مدیریتی آرا در اتاق مدیریت، کنار میز کنفرانس" [ref=f2e85]
+          - img "دو صندلی آرا زیر میز مدیریتی، رنگ سرمه‌ای و بژ" [ref=f2e87]
+          - img "نمای نزدیک قاب کروم پشتی صندلی آرا" [ref=f2e89]
+          - img "نمای نزدیک دسته‌ی قابل‌تنظیم و بازوی آلومینیومی" [ref=f2e91]
+          - img "نمای نزدیک بافت پارچه‌ی پشتی و اتصال بازوی پولیش‌خورده" [ref=f2e93]
+          - img "صندلی آرا رنگ بژ، نمای کامل کنار میز کار" [ref=f2e95]
+        - generic [ref=f2e96]:
+          - button "Previous" [ref=f2e97]
+          - generic [ref=f2e100]: 01 / 07
+          - button "Next" [ref=f2e101]
+    - generic [ref=f2e104]:
+      - paragraph [ref=f2e105]: ویژگی‌ها
+      - generic [ref=f2e106]:
+        - generic [ref=f2e107]:
+          - generic [ref=f2e108]:
+            - img "نمای نزدیک بافت مش هرینگ‌بون پشتی" [ref=f2e110]
+            - img "نمای نزدیک قاب کروم پشتی" [ref=f2e112]
+          - generic [ref=f2e113]:
+            - heading "پشتی مش تنفس‌پذیر، همیشه خنک" [level=3] [ref=f2e114]
+            - paragraph [ref=f2e115]: بافت مش با خط‌دوزی هرینگ‌بون هوا را از پشتی عبور می‌دهد و در جلسات طولانی دما و رطوبت را پایین نگه می‌دارد، بدون اینکه از حمایت کمر کم شود.
+        - generic [ref=f2e116]:
+          - img "نمای نزدیک دسته‌ی قابل‌تنظیم آلومینیومی" [ref=f2e119]
+          - generic [ref=f2e120]:
+            - heading "دسته و بازو، دقیقاً برای اندام شما" [level=3] [ref=f2e121]
+            - paragraph [ref=f2e122]: دسته‌های قابل‌تنظیم در سه جهت روی هر ارتفاع و عرض شانه می‌نشینند، و مکانیزم Synchro-Tilt زاویه‌ی نشیمن و پشتی را هم‌زمان و متناسب با فشار بدن تنظیم می‌کند.
+        - generic [ref=f2e123]:
+          - img "صندلی آرا رنگ بژ، نمای کامل کنار میز کار" [ref=f2e126]
+          - generic [ref=f2e127]:
+            - heading "پایه‌ای ساخته‌شده برای استفاده‌ی روزانه" [level=3] [ref=f2e128]
+            - paragraph [ref=f2e129]: پایه‌ی آلومینیومی ریخته‌گری وزن را به‌طور یکنواخت پخش می‌کند و چرخ‌های نرم آن روی کف سرامیک و پارکت بدون خط‌انداختن حرکت می‌کنند.
+    - generic [ref=f2e130]:
+      - paragraph [ref=f2e131]: گزینه‌های محصول
+      - generic [ref=f2e133]:
+        - heading [level=3] [ref=f2e135]:
+          - button "گزینه‌ها" [ref=f2e136]
+        - heading [level=3] [ref=f2e138]:
+          - button "متریال‌ها" [ref=f2e139]
+        - heading [level=3] [ref=f2e141]:
+          - button "ویژگی‌های کلیدی" [ref=f2e142]
+    - link "→ بازگشت به فهرست" [ref=f2e144] [cursor=pointer]:
+      - /url: /products/chairs-office
+    - generic [ref=f2e145]:
+      - paragraph [ref=f2e146]: سایر محصولات
+      - generic [ref=f2e148]:
+        - link [ref=f2e150] [cursor=pointer]:
+          - /url: /products/chairs-office/sabk-task-chair
+          - img "صندلی کارمندی سبک اروند" [ref=f2e152]
+          - paragraph [ref=f2e153]: صندلی کارمندی سبک
+        - link [ref=f2e155] [cursor=pointer]:
+          - /url: /products/chairs-conference/vesta-conference-chair
+          - img "صندلی کنفرانس وستا اروند" [ref=f2e157]
+          - paragraph [ref=f2e158]: صندلی کنفرانس وستا
+        - link [ref=f2e160] [cursor=pointer]:
+          - /url: /products/desks/alvand-managerial-desk
+          - img "میز مدیریتی الوند اروند" [ref=f2e162]
+          - paragraph [ref=f2e163]: میز مدیریتی الوند
+  - contentinfo [ref=f2e164]:
+    - generic [ref=f2e165]:
+      - generic [ref=f2e166]:
+        - paragraph [ref=f2e167]: اروند
+        - paragraph [ref=f2e168]: مبلمان اداری برای فضای کاری امروز
+        - paragraph [ref=f2e169]: ما را دنبال کنید
+        - list [ref=f2e170]:
+          - listitem [ref=f2e171]:
+            - link "اینستاگرام / Instagram" [ref=f2e172] [cursor=pointer]:
+              - /url: https://instagram.com/arvand.furniture
+          - listitem [ref=f2e173]:
+            - link "لینکدین / LinkedIn" [ref=f2e174] [cursor=pointer]:
+              - /url: https://linkedin.com/company/arvand-furniture
+          - listitem [ref=f2e175]:
+            - link "تلگرام / Telegram" [ref=f2e176] [cursor=pointer]:
+              - /url: https://t.me/arvand_furniture
+      - generic [ref=f2e177]:
+        - paragraph [ref=f2e178]: دسترسی سریع
+        - list [ref=f2e179]:
+          - listitem [ref=f2e180]:
+            - link "محصولات" [ref=f2e181] [cursor=pointer]:
+              - /url: /products
+          - listitem [ref=f2e182]:
+            - link "نمونه‌کارها" [ref=f2e183] [cursor=pointer]:
+              - /url: /portfolio
+          - listitem [ref=f2e184]:
+            - link "وبلاگ" [ref=f2e185] [cursor=pointer]:
+              - /url: /blog
+          - listitem [ref=f2e186]:
+            - link "درباره‌ی ما" [ref=f2e187] [cursor=pointer]:
+              - /url: /about
+          - listitem [ref=f2e188]:
+            - link "تماس با ما" [ref=f2e189] [cursor=pointer]:
+              - /url: /contact
+          - listitem [ref=f2e190]:
+            - link "باشگاه مشتریان" [ref=f2e191] [cursor=pointer]:
+              - /url: /loyalty-club
+      - generic [ref=f2e192]:
+        - paragraph [ref=f2e193]: دفاتر و نمایشگاه‌ها
+        - list [ref=f2e194]:
+          - listitem [ref=f2e195]:
+            - paragraph [ref=f2e196]: کارخانه‌ی تهران
+            - paragraph [ref=f2e197]: کارخانه
+            - paragraph [ref=f2e198]: "02144667788"
+          - listitem [ref=f2e199]:
+            - paragraph [ref=f2e200]: نمایشگاه ولیعصر تهران
+            - paragraph [ref=f2e201]: نمایشگاه
+            - paragraph [ref=f2e202]: "02188112233"
+          - listitem [ref=f2e203]:
+            - paragraph [ref=f2e204]: دفتر فروش اصفهان
+            - paragraph [ref=f2e205]: دفتر فروش
+            - paragraph [ref=f2e206]: "03136223344"
+      - generic [ref=f2e207]:
+        - paragraph [ref=f2e208]: تماس با ما
+        - list [ref=f2e209]:
+          - listitem [ref=f2e210]:
+            - link "info@arvand-furniture.example" [ref=f2e211] [cursor=pointer]:
+              - /url: mailto:info@arvand-furniture.example
+          - listitem [ref=f2e216]:
+            - link "02188112233" [ref=f2e217] [cursor=pointer]:
+              - /url: tel:02188112233
+        - list [ref=f2e221]:
+          - listitem [ref=f2e222]:
+            - link "حریم خصوصی" [ref=f2e223] [cursor=pointer]:
+              - /url: /privacy-policy
+          - listitem [ref=f2e224]:
+            - link "شرایط استفاده" [ref=f2e225] [cursor=pointer]:
+              - /url: /terms-of-service
+    - paragraph [ref=f2e227]: © 2026 اروند — تمامی حقوق برای اروند محفوظ است.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f2e233] [cursor=pointer]
+  - alert [ref=f2e237]

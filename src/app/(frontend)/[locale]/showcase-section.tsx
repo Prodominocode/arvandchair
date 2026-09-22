@@ -55,7 +55,7 @@ type Props = { products: ShowcaseProduct[]; eyebrow: string; linkLabel: string; 
  * محور افقی (اسلاید راست به چپ). ثابت‌های سرعت/نرمی/Snap/Handoff عیناً مشترک‌اند تا افکت هر دو
  * یکسان حس شود.
  *
- * چیدمان دو ستون/ردیف عمداً `dir="ltr"` دارد و در fa/ar جابه‌جا نمی‌شود — طبق بازخورد، فقط خودِ
+ * چیدمان دو ستون/ردیف عمداً `dir="ltr"` دارد و در fa جابه‌جا نمی‌شود — طبق بازخورد، فقط خودِ
  * متن باید راست‌به‌چپ بشود، نه ترتیب فیزیکی صحنه‌ها؛ متن پنل هر محصول با `dir` مطابق زبان صفحه
  * رندر می‌شود تا شکل/چینش نوشتار درست بماند.
  */
@@ -402,7 +402,12 @@ export function ShowcaseSection({ products, eyebrow, linkLabel, locale }: Props)
       </section>
 
       {/* Showcase — موبایل: همان Pin+Snap با محورهای عمود‌شده، دو ردیف (نصفه‌ی بالا/پایین) */}
-      <section data-header-tone="light" className="bg-surface-mist lg:hidden" aria-label={eyebrow}>
+      <section
+        id="showcase-mobile"
+        data-header-tone="light"
+        className="bg-surface-mist lg:hidden"
+        aria-label={eyebrow}
+      >
         <div ref={mobileTrackRef} className="relative">
           <div ref={mobilePinRef} className="relative flex h-svh flex-col overflow-hidden">
             {/* نصفه‌ی بالا — تصویر اتمسفریک، Wipe عمودی از خط مرکز رو به بالا */}

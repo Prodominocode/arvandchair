@@ -9,7 +9,7 @@
 ```
 src/
   app/
-    (frontend)/[locale]/   → همه‌ی صفحات عمومی سایت (فارسی/انگلیسی/عربی)
+    (frontend)/[locale]/   → همه‌ی صفحات عمومی سایت (فارسی/انگلیسی)
     (payload)/             → پنل ادمین + API پیلود (بدون locale)
   collections/              → تعریف مدل‌های داده‌ی Payload (فاز ۴ کامل می‌شود)
   globals/                  → تنظیمات سراسری Payload (مثل SiteSettings)
@@ -18,6 +18,8 @@ src/
     layout/                  → Header/Footer/LocaleSwitcher و ناوبری سراسری سایت — فاز ۳
     scroll/                  → کامپوننت‌های GSAP/ScrollTrigger — فاز ۳
     three/                   → صحنه‌های React Three Fiber — اسکلتش فاز ۲، محتوا فاز ۳
+    products/                → کامپوننت‌های آرشیو محصول (Tab دسته، فیلتر تگ/متریال، Grid، کارت) —
+                               مشترک بین `/products` و `/products/{category}` — فاز ۳
   lib/
     data/                    → لایه‌ی Data Access (فاز ۳: از mock-data، فاز ۵: از Payload)
     mock-data/               → داده‌ی نمونه‌ی TypeScript (فاز ۳)
@@ -68,7 +70,7 @@ src/app/(payload)/...             →  /admin, /api/*
 | `(payload)/admin/[[...segments]]/page.tsx` | `/admin` | (بدون locale — عمداً) |
 
 فارسی چون `defaultLocale` است، پیشوند نمی‌گیرد (`localePrefix: 'as-needed'` در `src/i18n/routing.ts` — طبق تصمیم `03-url-structure-seo.md`). این منطق در سه‌جا با هم هماهنگ کار می‌کنند:
-1. **`src/i18n/routing.ts`** — لیست زبان‌ها (`fa`/`en`/`ar`) و این‌که کدام پیش‌فرض است.
+1. **`src/i18n/routing.ts`** — لیست زبان‌ها (`fa`/`en`) و این‌که کدام پیش‌فرض است.
 2. **`src/middleware.ts`** — روی هر درخواست (به‌جز `/admin`, `/api`, فایل‌های استاتیک) اجرا می‌شود و URL را به locale درست map می‌کند.
 3. **`(frontend)/[locale]/layout.tsx`** — علاوه‌بر تشخیص خود next-intl، یک چک اضافه هم دارد: اگر locale غیر از فارسی باشد، از Payload (`SiteSettings.enabledLocales`) می‌پرسد آیا این زبان واقعاً «فعال» شده یا نه؛ اگر نه → `notFound()`.
 
@@ -92,10 +94,10 @@ export default async function AboutPage({ params }: Args) {
 ```
 
 ۳. اگر بخش‌های تعاملی (فرم، تب، مودال) لازم است، یک فایل جدا کنارش با `'use client'` بساز (مثل الگوی `style-guide/page.tsx` + `style-guide-content.tsx`) — صفحه Server می‌ماند، فقط قسمت تعاملی Client می‌شود.
-۴. namespace ترجمه (`About`) را به هر سه `src/i18n/messages/fa.json`, `en.json`, `ar.json` اضافه کن (بخش ۳ همین سند).
+۴. namespace ترجمه (`About`) را به هر دو `src/i18n/messages/fa.json`, `en.json` اضافه کن (بخش ۳ همین سند).
 ۵. اگر صفحه در نقشه‌ی سئوی `03-url-structure-seo.md` است، `canonical`/`hreflang`/Structured Data طبق چک‌لیست همان سند اضافه شود (فاز ۹ کامل می‌شود، ولی ساختار پایه از همین الان رعایت شود).
 
-نتیجه خودکار: `/about` (فارسی)، `/en/about`، `/ar/about` — بدون نوشتن هیچ Route جداگانه‌ای.
+نتیجه خودکار: `/about` (فارسی)، `/en/about` — بدون نوشتن هیچ Route جداگانه‌ای.
 
 ---
 
@@ -109,7 +111,7 @@ export default async function AboutPage({ params }: Args) {
 | `src/middleware.ts` | اجرای Routing next-intl روی هر درخواست |
 | `src/i18n/request.ts` | مشخص می‌کند برای هر درخواست کدام فایل JSON ترجمه لود شود |
 | `src/i18n/navigation.ts` | نسخه‌ی locale-آگاه از `Link`/`redirect`/`usePathname` — همیشه از این‌ها استفاده کن، نه از `next/link` خام |
-| `src/i18n/messages/fa.json`, `en.json`, `ar.json` | خود متن‌ها |
+| `src/i18n/messages/fa.json`, `en.json` | خود متن‌ها |
 
 ### ۳.۲ کجا از ترجمه استفاده کنیم؟
 
@@ -118,11 +120,11 @@ export default async function AboutPage({ params }: Args) {
 
 ### ۳.۳ ساختار فایل پیام‌ها
 
-هر فایل یک شیء تخت با namespace های سطح بالا است (`Placeholder`, `StyleGuide`, ...). داخل هر namespace می‌توان تودرتو رفت (مثلاً `StyleGuide.sections.colors`). **قانون:** هیچ رشته‌ی فارسی/انگلیسی/عربی مستقیم در JSX نوشته نشود — همیشه از `t('key')` بخوان، حتی برای متن‌های ظاهراً بی‌اهمیت (مثل placeholder یک Input) — نمونه‌اش را در `style-guide-content.tsx` ببین.
+هر فایل یک شیء تخت با namespace های سطح بالا است (`Placeholder`, `StyleGuide`, ...). داخل هر namespace می‌توان تودرتو رفت (مثلاً `StyleGuide.sections.colors`). **قانون:** هیچ رشته‌ی فارسی/انگلیسی مستقیم در JSX نوشته نشود — همیشه از `t('key')` بخوان، حتی برای متن‌های ظاهراً بی‌اهمیت (مثل placeholder یک Input) — نمونه‌اش را در `style-guide-content.tsx` ببین.
 
-### ۳.۴ فعال/غیرفعال‌بودن en/ar
+### ۳.۴ فعال/غیرفعال‌بودن en
 
-این یک قانون تجاری است، نه فقط UI: `SiteSettings.enabledLocales` (یک Global در `src/globals/SiteSettings.ts`، مدیریت‌شده از پنل ادمین `/admin`) تعیین می‌کند آیا `/en` و `/ar` اصلاً باید ساخته شوند یا `404` بدهند. اگر صفحه‌ای تازه اضافه کردی و در انگلیسی/عربی «کار نکرد»، اول این تنظیم را در `/admin` چک کن، نه کد را.
+این یک قانون تجاری است، نه فقط UI: `SiteSettings.enabledLocales` (یک Global در `src/globals/SiteSettings.ts`، مدیریت‌شده از پنل ادمین `/admin`) تعیین می‌کند آیا `/en` اصلاً باید ساخته شود یا `404` بدهد. اگر صفحه‌ای تازه اضافه کردی و در انگلیسی «کار نکرد»، اول این تنظیم را در `/admin` چک کن، نه کد را.
 
 ---
 
@@ -149,7 +151,7 @@ export default async function AboutPage({ params }: Args) {
 
 ### ۵.۲ فونت
 
-`src/styles/fonts.ts` — تعریف دو فونت Self-hosted (Peyda فارسی/عربی، Manrope انگلیسی) با `next/font/local`؛ فایل‌های واقعی در `public/fonts/`. سوییچ بین این دو بر اساس `dir` صفحه در همان `globals.css` انجام می‌شود، نه در جاوااسکریپت.
+`src/styles/fonts.ts` — تعریف دو فونت Self-hosted (Peyda فارسی، Manrope انگلیسی) با `next/font/local`؛ فایل‌های واقعی در `public/fonts/`. سوییچ بین این دو بر اساس `dir` صفحه در همان `globals.css` انجام می‌شود، نه در جاوااسکریپت.
 
 ### ۵.۳ کامپوننت‌های پایه (shadcn/ui)
 
@@ -187,7 +189,7 @@ pnpm dlx shadcn@latest add <نام-کامپوننت>
 |---|---|
 | تعریف URL/Route هر صفحه | `src/app/(frontend)/[locale]/**/page.tsx` |
 | Layout سراسری سایت (فونت، جهت، Provider ترجمه) | `src/app/(frontend)/[locale]/layout.tsx` |
-| متن‌های هر زبان | `src/i18n/messages/{fa,en,ar}.json` |
+| متن‌های هر زبان | `src/i18n/messages/{fa,en}.json` |
 | تنظیم لیست زبان‌ها/پیش‌فرض | `src/i18n/routing.ts` |
 | رنگ/فونت/Spacing/Radius/Shadow/Motion | `src/styles/globals.css` |
 | فونت‌های Self-hosted | `src/styles/fonts.ts` + `public/fonts/` |

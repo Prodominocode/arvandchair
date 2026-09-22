@@ -3,7 +3,7 @@
  *
  * ⚠️ توجه مهم: این با Global واقعی Payload در `src/globals/SiteSettings.ts` (که فعلاً فقط
  * `enabledLocales` دارد و فاز ۴ کامل می‌شود) فرق دارد — همان یکی همچنان منبع واقعی تشخیص
- * فعال/غیرفعال بودن en/ar است و در `[locale]/layout.tsx` دست‌نخورده مانده. این فایل فقط
+ * فعال/غیرفعال بودن en است و در `[locale]/layout.tsx` دست‌نخورده مانده. این فایل فقط
  * محتوای نمایشی (نام سایت، منو، شعب، شبکه‌های اجتماعی) را برای فاز ۳ شبیه‌سازی می‌کند.
  *
  * لوگو: دو نسخه‌ی PNG شفاف موجود است — `arvand-logo-bl.png` (متن تیره، برای پس‌زمینه‌ی روشن)
@@ -49,15 +49,14 @@ export type SiteSettingsMock = {
 }
 
 export const siteSettings: SiteSettingsMock = {
-  siteName: { fa: 'اروند', en: 'Arvand', ar: 'أرواند' },
+  siteName: { fa: 'اروند', en: 'Arvand' },
   tagline: {
     fa: 'مبلمان اداری برای فضای کاری امروز',
     en: 'Office furniture for the modern workplace',
-    ar: 'أثاث مكتبي لمساحة العمل الحديثة',
   },
   logo: {
     src: '/images/brand/arvand-logo-bl.png',
-    alt: { fa: 'لوگوی اروند', en: 'Arvand logo', ar: 'شعار أرواند' },
+    alt: { fa: 'لوگوی اروند', en: 'Arvand logo' },
   },
   logoOnDark: '/images/brand/arvand-logo-wh.png',
   socialLinks: [
@@ -67,38 +66,38 @@ export const siteSettings: SiteSettingsMock = {
   ],
   navMenu: [
     {
-      label: { fa: 'محصولات', en: 'Products', ar: 'المنتجات' },
+      label: { fa: 'محصولات', en: 'Products' },
       href: '/products',
       children: [
-        { label: { fa: 'صندلی', en: 'Chairs', ar: 'الكراسي' }, href: '/products/chairs' },
-        { label: { fa: 'میز', en: 'Desks', ar: 'المكاتب' }, href: '/products/desks' },
+        { label: { fa: 'صندلی', en: 'Chairs' }, href: '/products/chairs' },
+        { label: { fa: 'میز', en: 'Desks' }, href: '/products/desks' },
         {
-          label: { fa: 'مبلمان اداری', en: 'Office Furniture', ar: 'الأثاث المكتبي' },
+          label: { fa: 'مبلمان اداری', en: 'Office Furniture' },
           href: '/products/office-furniture',
         },
         {
-          label: { fa: 'آمفی‌تئاتر', en: 'Amphitheater', ar: 'المدرجات' },
+          label: { fa: 'آمفی‌تئاتر', en: 'Amphitheater' },
           href: '/products/amphitheater',
         },
         {
-          label: { fa: 'همایش و سینما', en: 'Cinema & Conference', ar: 'المؤتمرات والسينما' },
+          label: { fa: 'همایش و سینما', en: 'Cinema & Conference' },
           href: '/products/cinema-conference',
         },
       ],
     },
-    { label: { fa: 'نمونه‌کارها', en: 'Portfolio', ar: 'أعمالنا' }, href: '/portfolio' },
-    { label: { fa: 'وبلاگ', en: 'Blog', ar: 'المدونة' }, href: '/blog' },
-    { label: { fa: 'درباره‌ی ما', en: 'About', ar: 'من نحن' }, href: '/about' },
-    { label: { fa: 'تماس با ما', en: 'Contact', ar: 'اتصل بنا' }, href: '/contact' },
+    { label: { fa: 'نمونه‌کارها', en: 'Portfolio' }, href: '/portfolio' },
+    { label: { fa: 'وبلاگ', en: 'Blog' }, href: '/blog' },
+    { label: { fa: 'درباره‌ی ما', en: 'About' }, href: '/about' },
+    { label: { fa: 'تماس با ما', en: 'Contact' }, href: '/contact' },
     {
-      label: { fa: 'باشگاه مشتریان', en: 'Loyalty Club', ar: 'نادي العملاء' },
+      label: { fa: 'باشگاه مشتریان', en: 'Loyalty Club' },
       href: '/loyalty-club',
     },
   ],
   offices: [
     {
       id: 'tehran-factory',
-      title: { fa: 'کارخانه‌ی تهران', en: 'Tehran Factory', ar: 'مصنع طهران' },
+      title: { fa: 'کارخانه‌ی تهران', en: 'Tehran Factory' },
       type: 'factory',
       address: {
         title: 'کارخانه‌ی تهران',
@@ -112,7 +111,6 @@ export const siteSettings: SiteSettingsMock = {
       hours: {
         fa: 'شنبه تا چهارشنبه، ۸ تا ۱۷',
         en: 'Saturday–Wednesday, 8 AM–5 PM',
-        ar: 'السبت إلى الأربعاء، ٨ صباحًا حتى ٥ مساءً',
       },
     },
     {
@@ -120,7 +118,6 @@ export const siteSettings: SiteSettingsMock = {
       title: {
         fa: 'نمایشگاه ولیعصر تهران',
         en: 'Tehran Valiasr Showroom',
-        ar: 'معرض وليعصر طهران',
       },
       type: 'showroom',
       address: {
@@ -135,12 +132,11 @@ export const siteSettings: SiteSettingsMock = {
       hours: {
         fa: 'همه‌روزه، ۹ تا ۲۰',
         en: 'Daily, 9 AM–8 PM',
-        ar: 'يوميًا، ٩ صباحًا حتى ٨ مساءً',
       },
     },
     {
       id: 'isfahan-sales-office',
-      title: { fa: 'دفتر فروش اصفهان', en: 'Isfahan Sales Office', ar: 'مكتب مبيعات أصفهان' },
+      title: { fa: 'دفتر فروش اصفهان', en: 'Isfahan Sales Office' },
       type: 'sales-office',
       address: {
         title: 'دفتر فروش اصفهان',
@@ -154,7 +150,6 @@ export const siteSettings: SiteSettingsMock = {
       hours: {
         fa: 'شنبه تا پنجشنبه، ۹ تا ۱۸',
         en: 'Saturday–Thursday, 9 AM–6 PM',
-        ar: 'السبت إلى الخميس، ٩ صباحًا حتى ٦ مساءً',
       },
     },
   ],

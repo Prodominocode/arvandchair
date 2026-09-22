@@ -24,14 +24,14 @@ type Args = {
 }
 
 /**
- * فارسی همیشه فعال است؛ en/ar از Payload Global واقعی خوانده می‌شوند (سند ۰۳ بخش ۲) — همان
+ * فارسی همیشه فعال است؛ en از Payload Global واقعی خوانده می‌شود (سند ۰۳ بخش ۲) — همان
  * منبعی که پیش از این فقط برای notFound() چک می‌شد، حالا برای سوییچر زبان هم مصرف می‌شود.
  *
  * قبل از این تغییر، فارسی (defaultLocale) هرگز Payload را صدا نمی‌زد (Short-circuit فوری)؛
- * چون حالا حتی صفحه‌ی فارسی هم برای ساخت سوییچر زبان باید بداند en/ar فعال‌اند یا نه، این
+ * چون حالا حتی صفحه‌ی فارسی هم برای ساخت سوییچر زبان باید بداند en فعال است یا نه، این
  * فراخوانی دیگر قابل‌حذف نیست — اما طبق سیاست Local-First (docs/00-tech-stack.md بخش ۱.۲)،
  * یک قطعی موقت دیتابیس نباید فارسی (تجربه‌ی پیش‌فرض) را هم بشکند؛ در آن حالت فقط سوییچر
- * en/ar را مخفی می‌کنیم، فارسی همیشه در دسترس می‌ماند.
+ * en را مخفی می‌کنیم، فارسی همیشه در دسترس می‌ماند.
  */
 async function getEnabledLocales(): Promise<AppLocale[]> {
   try {
@@ -64,7 +64,7 @@ export default async function LocaleLayout({ children, params }: Args) {
 
   return (
     <html lang={locale} dir={dir} className={`${manrope.variable} ${persianFont.variable}`}>
-      <body className="flex min-h-svh flex-col">
+      <body className="group/body flex min-h-svh flex-col">
         <NextIntlClientProvider messages={messages}>
           <Header locale={locale} enabledLocales={enabledLocales} />
           {/* هدر اکنون fixed و بدون پس‌زمینه است (بدون فضای خودش در flow)؛ pt-16 دقیقاً معادل

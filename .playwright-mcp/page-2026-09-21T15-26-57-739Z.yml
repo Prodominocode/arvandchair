@@ -1,0 +1,103 @@
+- generic [active] [ref=f6e1]:
+  - banner [ref=f6e2]:
+    - link "رفتن به محتوای اصلی" [ref=f6e3] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=f6e4]:
+      - link "لوگوی اروند اروند" [ref=f6e5] [cursor=pointer]:
+        - /url: /
+        - img "لوگوی اروند" [ref=f6e6]
+        - generic [ref=f6e7]: اروند
+      - generic [ref=f6e8]:
+        - button "جست‌وجو" [ref=f6e9]
+        - button "باز کردن منو" [ref=f6e10]
+  - main [ref=f6e11]:
+    - generic [ref=f6e12]:
+      - generic [ref=f6e13]:
+        - paragraph [ref=f6e14]: درباره‌ی اروند
+        - heading "بیش از یک دهه تجربه در ساخت فضای کار" [level=1] [ref=f6e15]
+        - paragraph [ref=f6e16]: اروند از یک کارگاه کوچک نجاری در تهران آغاز شد و امروز یکی از تأمین‌کنندگان مبلمان اداری سازمان‌ها، دانشگاه‌ها و سالن‌های همایش در سراسر ایران است.
+      - generic [ref=f6e17]:
+        - heading "مسیر ما" [level=2] [ref=f6e18]
+        - list [ref=f6e19]:
+          - listitem [ref=f6e20]:
+            - paragraph [ref=f6e21]: ۱۳۹۲
+            - paragraph [ref=f6e22]: شروع کار به‌عنوان یک کارگاه تولید صندلی در تهران.
+          - listitem [ref=f6e23]:
+            - paragraph [ref=f6e24]: ۱۳۹۷
+            - paragraph [ref=f6e25]: راه‌اندازی خط تولید میز اداری و ورود به بازار سازمانی.
+          - listitem [ref=f6e26]:
+            - paragraph [ref=f6e27]: ۱۴۰۰
+            - paragraph [ref=f6e28]: اجرای اولین پروژه‌ی صندلی‌بندی آمفی‌تئاتر دانشگاهی.
+          - listitem [ref=f6e29]:
+            - paragraph [ref=f6e30]: ۱۴۰۴
+            - paragraph [ref=f6e31]: بیش از ۲۰۰ پروژه‌ی سازمانی موفق در سراسر کشور.
+      - generic [ref=f6e33]:
+        - heading "ارزش‌های ما" [level=2] [ref=f6e34]
+        - generic [ref=f6e35]:
+          - generic [ref=f6e37]:
+            - paragraph [ref=f6e38]: کیفیت بادوام
+            - paragraph [ref=f6e39]: هر محصول قبل از تحویل، آزمون تحمل وزن و دوام روزانه را پشت سر می‌گذارد.
+          - generic [ref=f6e41]:
+            - paragraph [ref=f6e42]: طراحی برای انسان
+            - paragraph [ref=f6e43]: ارگونومی نقطه‌ی شروع طراحی است، نه یک ویژگی اضافه.
+          - generic [ref=f6e45]:
+            - paragraph [ref=f6e46]: همراهی در پروژه
+            - paragraph [ref=f6e47]: از مشاوره‌ی اولیه تا نصب نهایی، یک تیم پاسخگو کنار کارفرما می‌ماند.
+      - generic [ref=f6e48]:
+        - heading "تیم ما" [level=2] [ref=f6e49]
+        - paragraph [ref=f6e50]: بیش از ۶۰ نفر در واحدهای طراحی، تولید، کنترل کیفیت و نصب پروژه در کنار هم کار می‌کنند.
+      - generic [ref=f6e51]:
+        - heading "با ما همکاری کنید" [level=2] [ref=f6e52]
+        - paragraph [ref=f6e53]: برای پروژه‌ی بعدی خود مشاوره‌ی رایگان بگیرید.
+        - link "تماس با ما" [ref=f6e54] [cursor=pointer]:
+          - /url: /contact
+  - contentinfo [ref=f6e55]:
+    - generic [ref=f6e56]:
+      - generic [ref=f6e57]:
+        - link [ref=f6e58] [cursor=pointer]:
+          - /url: /
+          - img "لوگوی اروند" [ref=f6e59]
+        - paragraph [ref=f6e60]: مبلمان اداری برای فضای کاری امروز
+        - list "ما را دنبال کنید" [ref=f6e61]:
+          - listitem [ref=f6e62]:
+            - link "اینستاگرام / Instagram" [ref=f6e63] [cursor=pointer]:
+              - /url: https://instagram.com/arvand.furniture
+          - listitem [ref=f6e68]:
+            - link "لینکدین / LinkedIn" [ref=f6e69] [cursor=pointer]:
+              - /url: https://linkedin.com/company/arvand-furniture
+          - listitem [ref=f6e72]:
+            - link "تلگرام / Telegram" [ref=f6e73] [cursor=pointer]:
+              - /url: https://t.me/arvand_furniture
+      - generic [ref=f6e77]:
+        - paragraph [ref=f6e78]: دسترسی سریع
+        - list [ref=f6e79]:
+          - listitem [ref=f6e80]:
+            - link "محصولات" [ref=f6e81] [cursor=pointer]:
+              - /url: /products
+          - listitem [ref=f6e82]:
+            - link "نمونه‌کارها" [ref=f6e83] [cursor=pointer]:
+              - /url: /portfolio
+          - listitem [ref=f6e84]:
+            - link "درباره‌ی ما" [ref=f6e85] [cursor=pointer]:
+              - /url: /about
+          - listitem [ref=f6e86]:
+            - link "تماس با ما" [ref=f6e87] [cursor=pointer]:
+              - /url: /contact
+      - generic [ref=f6e88]:
+        - paragraph [ref=f6e89]: تماس با ما
+        - list [ref=f6e90]:
+          - listitem [ref=f6e91]:
+            - link "info@arvand-furniture.example" [ref=f6e92] [cursor=pointer]:
+              - /url: mailto:info@arvand-furniture.example
+          - listitem [ref=f6e97]:
+            - link "02188112233" [ref=f6e98] [cursor=pointer]:
+              - /url: tel:02188112233
+        - list [ref=f6e102]:
+          - listitem [ref=f6e103]:
+            - link "حریم خصوصی" [ref=f6e104] [cursor=pointer]:
+              - /url: /privacy-policy
+          - listitem [ref=f6e105]:
+            - link "شرایط استفاده" [ref=f6e106] [cursor=pointer]:
+              - /url: /terms-of-service
+    - paragraph [ref=f6e108]: © 2026 اروند — تمامی حقوق برای اروند محفوظ است.
+  - region "Notifications alt+T"

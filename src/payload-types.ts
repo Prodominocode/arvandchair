@@ -332,7 +332,7 @@ export interface SiteSetting {
   /**
    * فارسی همیشه فعال است. زبان‌هایی که اینجا انتخاب نشوند، مسیر عمومی‌شان 404 برمی‌گرداند.
    */
-  enabledLocales?: ('en' | 'ar')[] | null;
+  enabledLocales?: 'en'[] | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }

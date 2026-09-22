@@ -1,16 +1,35 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
 import Image from 'next/image'
-import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
+import { ArrowLeft, ArrowRight, ArrowUpRight, Sparkles } from 'lucide-react'
 import gsap from 'gsap'
 
-import type { AppLocale } from '@/i18n/routing'
-import type { Testimonial } from '@/lib/mock-data/testimonials'
+import { Link } from '@/i18n/navigation'
+import type { ProductStoryImage } from '@/lib/mock-data/product-stories'
 import { SCROLL_DATA_ATTR } from '@/lib/motion/scroll-tokens'
 
-type Texts = { title: string; subtitle: string; trusted: string; prev: string; next: string }
-type Props = { testimonials: Testimonial[]; locale: AppLocale; texts: Texts }
+/** استوری آماده‌ی نمایش — همه‌ی متن‌ها از قبل به زبان جاری حل شده‌اند (نگاشت در page.tsx). */
+export type StoryItem = {
+  id: string
+  productName: string
+  title: string
+  text: string
+  /** مسیر بدون پیشوند زبان — `Link` پیشوند را خودش اضافه می‌کند. */
+  href: string
+  image: ProductStoryImage
+}
+
+type Texts = {
+  title: string
+  subtitle: string
+  badge: string
+  linkLabel: string
+  prev: string
+  next: string
+}
+type Props = { stories: StoryItem[]; texts: Texts }
 
 type Slot = {
   left: string
@@ -79,35 +98,37 @@ function pad(n: number) {
   return n < 10 ? `0${n}` : String(n)
 }
 
+function mod(n: number, m: number) {
+  return ((n % m) + m) % m
+}
+
 /**
- * کاروسل نظرات مشتریان — پورت دقیق ساختار/موشن Stack سه‌عکسی رفرنس (ref/html/app.js:
- * SLOTS/applySlot/goNext/goPrev/renderText؛ ۳ عکس هم‌زمان روی صفحه با نقش top/center/bottom،
- * با هر Next/Prev سه‌تایی می‌چرخند و نقش‌ها/موقعیت‌ها با GSAP جابه‌جا می‌شوند).
+ * کاروسل «داستان محصول» — ساختار/موشن Stack سه‌عکسی رفرنس (ref/html/app.js: SLOTS/applySlot/
+ * goNext/goPrev/renderText؛ ۳ عکس هم‌زمان روی صفحه با نقش top/center/bottom و جابه‌جایی نقش‌ها با
+ * GSAP).
  *
- * کاملاً Imperative است — نه از طریق React state — دقیقاً مثل رفرنس، چون موقعیت/اندازه/z-index
- * هر عکس مستقیم با gsap.to/gsap.set روی DOM ست می‌شود، نه با Re-render. تصویر آواتار هر سه اسلات
- * از ابتدا ثابت است (داده‌ی lib/mock-data/testimonials برای همه‌ی مشتریان یک آیکون Placeholder
- * یکسان دارد)، پس برخلاف رفرنس نیازی به عوض‌کردن src هنگام چرخش نیست — فقط موقعیت/متن می‌چرخد.
+ * رفرنس با ۳ المان بازچرخانی‌شده کار می‌کرد و `src` را هنگام چرخش عوض می‌کرد. اینجا به‌ازای هر
+ * استوری یک قاب مستقل با تصویر واقعی خودش رندر می‌شود (N قاب): موقعیت/اندازه/z-index هر قاب
+ * همچنان Imperative و مستقیم روی DOM با gsap ست می‌شود (نه Re-render)، و قاب‌های خارج از سه
+ * اسلات با opacity صفر بیرون از باکس نگه داشته می‌شوند. فقط متن (عنوان/توضیح/محصول) با state
+ * رندر می‌شود تا لینک محصول از `Link` سمت‌کلاینتِ next-intl بگذرد.
  */
-export function StoriesSection({ testimonials, locale, texts }: Props) {
-  const N = testimonials.length
-  const photoRefs = useRef<(HTMLDivElement | null)[]>([])
-  const quoteRef = useRef<HTMLQuoteElement>(null)
-  const nameRef = useRef<HTMLSpanElement>(null)
-  const roleRef = useRef<HTMLSpanElement>(null)
-  const countRef = useRef<HTMLSpanElement>(null)
+export function StoriesSection({ stories, texts }: Props) {
+  const N = stories.length
+  const frameRefs = useRef<(HTMLDivElement | null)[]>([])
+  const copyRef = useRef<HTMLDivElement>(null)
   const prevBtnRef = useRef<HTMLButtonElement>(null)
   const nextBtnRef = useRef<HTMLButtonElement>(null)
+  const [active, setActive] = useState(0)
 
   useEffect(() => {
-    if (N === 0) return
-    const photoEls = photoRefs.current.filter((el): el is HTMLDivElement => Boolean(el))
-    if (photoEls.length < 3) return
+    if (N < 3) return
+    const frames = frameRefs.current.slice(0, N)
+    if (frames.length !== N || frames.some((el) => !el)) return
+    const els = frames as HTMLDivElement[]
+    const copyEl = copyRef.current
 
-    let elTop = photoEls[0]!
-    let elCenter = photoEls[1]!
-    let elBottom = photoEls[2]!
-    let centerIndex = 0
+    let center = 0
     let animating = false
 
     function applySlot(el: HTMLDivElement, spec: Slot, animate: boolean) {
@@ -124,38 +145,28 @@ export function StoriesSection({ testimonials, locale, texts }: Props) {
       else gsap.set(el, vars)
     }
 
-    function renderText(item: Testimonial, animate: boolean) {
-      const quoteEl = quoteRef.current
-      const nameEl = nameRef.current
-      const roleEl = roleRef.current
-      const countEl = countRef.current
-      if (!quoteEl || !nameEl || !roleEl || !countEl) return
-      const count = `${pad(centerIndex + 1)} / ${pad(N)}`
+    /** اسلات استراحت هر قاب نسبت به قاب مرکزی فعلی؛ بقیه بیرون از باکس و نامرئی‌اند. */
+    function slotFor(index: number): Slot {
+      const rel = mod(index - center, N)
+      if (rel === 0) return SLOTS.center
+      if (rel === 1) return SLOTS.bottom
+      if (rel === N - 1) return SLOTS.top
+      return SLOTS.offBelow
+    }
 
-      const apply = () => {
-        quoteEl.textContent = `“${item.quote[locale]}”`
-        nameEl.textContent = item.authorName[locale]
-        roleEl.textContent = item.authorCompany[locale]
-        countEl.textContent = count
-      }
-
-      if (!animate) {
-        apply()
+    function renderText() {
+      if (!copyEl) {
+        setActive(center)
         return
       }
-      gsap.to([quoteEl, nameEl, roleEl], {
+      gsap.to(copyEl, {
         autoAlpha: 0,
         y: 8,
         duration: 0.22,
         ease: 'power2.in',
         onComplete: () => {
-          apply()
-          gsap.to([quoteEl, nameEl, roleEl], {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.4,
-            ease: 'power2.out',
-          })
+          flushSync(() => setActive(center))
+          gsap.to(copyEl, { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' })
         },
       })
     }
@@ -166,49 +177,33 @@ export function StoriesSection({ testimonials, locale, texts }: Props) {
       if (nextBtnRef.current) nextBtnRef.current.disabled = locked
     }
 
-    function goNext() {
+    /** یک گام چرخش: قاب خروجی از سمت مقابل بیرون می‌رود و قاب ورودی از بیرون باکس می‌آید.
+     * با N=3 قاب خروجی و ورودی یکی است (همان بازچرخانی رفرنس): بدون انیمیشن ناپدید می‌شود
+     * و از سمت مقابل وارد می‌شود. */
+    function step(dir: 1 | -1) {
       if (animating) return
       setLock(true)
-      centerIndex = (centerIndex + 1) % N
 
-      const incoming = elTop
-      applySlot(incoming, SLOTS.offBelow, false)
-      applySlot(elCenter, SLOTS.top, true)
-      applySlot(elBottom, SLOTS.center, true)
-      applySlot(incoming, SLOTS.bottom, true)
+      const leaving = mod(center - dir, N)
+      const incoming = mod(center + 2 * dir, N)
+      center = mod(center + dir, N)
 
-      elTop = elCenter
-      elCenter = elBottom
-      elBottom = incoming
+      applySlot(els[leaving]!, dir === 1 ? SLOTS.offAbove : SLOTS.offBelow, leaving !== incoming)
+      applySlot(els[incoming]!, dir === 1 ? SLOTS.offBelow : SLOTS.offAbove, false)
 
-      renderText(testimonials[centerIndex]!, true)
+      applySlot(els[mod(center - 1, N)]!, SLOTS.top, true)
+      applySlot(els[center]!, SLOTS.center, true)
+      applySlot(els[mod(center + 1, N)]!, SLOTS.bottom, true)
+
+      renderText()
       gsap.delayedCall(0.75, () => setLock(false))
     }
 
-    function goPrev() {
-      if (animating) return
-      setLock(true)
-      centerIndex = (centerIndex - 1 + N) % N
-
-      const incoming = elBottom
-      applySlot(incoming, SLOTS.offAbove, false)
-      applySlot(elCenter, SLOTS.bottom, true)
-      applySlot(elTop, SLOTS.center, true)
-      applySlot(incoming, SLOTS.top, true)
-
-      elBottom = elCenter
-      elCenter = elTop
-      elTop = incoming
-
-      renderText(testimonials[centerIndex]!, true)
-      gsap.delayedCall(0.75, () => setLock(false))
-    }
+    const goNext = () => step(1)
+    const goPrev = () => step(-1)
 
     // نقاشی اولیه — بدون انیمیشن
-    applySlot(elTop, SLOTS.top, false)
-    applySlot(elCenter, SLOTS.center, false)
-    applySlot(elBottom, SLOTS.bottom, false)
-    renderText(testimonials[centerIndex]!, false)
+    els.forEach((el, i) => applySlot(el, slotFor(i), false))
 
     const nextBtn = nextBtnRef.current
     const prevBtn = prevBtnRef.current
@@ -218,11 +213,13 @@ export function StoriesSection({ testimonials, locale, texts }: Props) {
     return () => {
       nextBtn?.removeEventListener('click', goNext)
       prevBtn?.removeEventListener('click', goPrev)
+      gsap.killTweensOf(copyEl)
+      gsap.killTweensOf(els)
     }
-  }, [testimonials, locale, N])
+  }, [N])
 
-  if (N === 0) return null
-  const first = testimonials[0]!
+  if (N < 3) return null
+  const current = stories[active]!
 
   return (
     <section
@@ -231,7 +228,7 @@ export function StoriesSection({ testimonials, locale, texts }: Props) {
       className="bg-surface-mist py-section-y-lg"
       {...{ [SCROLL_DATA_ATTR]: 'reveal' }}
     >
-      <div className="px-container-x mx-auto max-w-6xl">
+      <div className="px-container-x max-w-container mx-auto">
         <div className="mb-8 flex flex-wrap items-start justify-between gap-8 md:mb-4">
           <h2 className="text-arvand-ink max-w-[14ch] text-3xl leading-tight font-bold text-balance md:text-4xl">
             {texts.title}
@@ -242,23 +239,29 @@ export function StoriesSection({ testimonials, locale, texts }: Props) {
         <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-[1fr_auto_1fr] md:gap-8">
           {/* متن — اسلات اول در ترتیب DOM، طبق dir صفحه خودش را می‌چیند */}
           <div className="order-2 flex max-w-[400px] flex-col items-center gap-5 justify-self-center text-center md:order-1 md:items-start md:justify-self-end md:text-start">
-            <span className="text-arvand-ink inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
-              <Check className="size-3.5" aria-hidden="true" />
-              {texts.trusted}
+            <span className="text-arvand-gold inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
+              <Sparkles className="size-3.5" aria-hidden="true" />
+              {texts.badge}
             </span>
-            <blockquote
-              ref={quoteRef}
-              className="text-arvand-ink text-xl leading-snug font-semibold text-balance md:text-2xl"
+            <div
+              ref={copyRef}
+              aria-live="polite"
+              className="flex flex-col items-center gap-5 md:items-start"
             >
-              &ldquo;{first.quote[locale]}&rdquo;
-            </blockquote>
-            <div className="flex flex-col gap-0.5">
-              <span ref={nameRef} className="text-foreground text-sm font-bold">
-                {first.authorName[locale]}
-              </span>
-              <span ref={roleRef} className="text-muted-foreground text-xs">
-                {first.authorCompany[locale]}
-              </span>
+              <h3 className="text-arvand-ink text-xl leading-snug font-semibold text-balance md:text-2xl">
+                {current.title}
+              </h3>
+              <p className="text-muted-foreground text-sm leading-relaxed">{current.text}</p>
+              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 md:justify-start">
+                <span className="text-foreground text-sm font-bold">{current.productName}</span>
+                <Link
+                  href={current.href}
+                  className="border-border hover:bg-background inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold transition-colors"
+                >
+                  {texts.linkLabel}
+                  <ArrowUpRight className="size-3.5 rtl:-scale-x-100" aria-hidden="true" />
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -277,20 +280,28 @@ export function StoriesSection({ testimonials, locale, texts }: Props) {
               className="relative h-auto w-[min(380px,86vw)] md:h-[min(71.5vh,660px)] md:w-auto"
               style={{ aspectRatio: '460 / 600' }}
             >
-              {[0, 1, 2].map((i) => (
+              {stories.map((story, i) => (
                 <div
-                  key={i}
+                  key={story.id}
                   ref={(el) => {
-                    photoRefs.current[i] = el
+                    frameRefs.current[i] = el
                   }}
-                  className="border-background bg-surface-mist absolute overflow-hidden border-4 shadow-xl"
+                  className="border-background absolute overflow-hidden border-4 bg-white shadow-xl"
                 >
                   <Image
-                    src="/images/mock/icon-avatar.svg"
+                    src={story.image.src}
                     alt=""
                     fill
                     aria-hidden="true"
-                    className="object-contain p-6"
+                    sizes="(min-width: 768px) 340px, 60vw"
+                    className={
+                      story.image.fit === 'contain' ? 'object-contain p-3' : 'object-cover'
+                    }
+                    style={
+                      story.image.fit === 'cover' && story.image.position
+                        ? { objectPosition: story.image.position }
+                        : undefined
+                    }
                   />
                 </div>
               ))}
@@ -319,8 +330,8 @@ export function StoriesSection({ testimonials, locale, texts }: Props) {
             </div>
             {/* dir="ltr" عمدی: شمارنده‌ی «۰۱ / ۰۵» یک رشته‌ی خنثی از ارقام لاتین است — بدون این،
                 الگوریتم Bidi داخل والد RTL جای دو عدد را با هم عوض می‌کند («۰۵ / ۰۱»). */}
-            <span ref={countRef} dir="ltr" className="text-muted-foreground text-xs">
-              {pad(1)} / {pad(N)}
+            <span dir="ltr" className="text-muted-foreground text-xs">
+              {pad(active + 1)} / {pad(N)}
             </span>
           </div>
         </div>

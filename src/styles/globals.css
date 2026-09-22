@@ -19,7 +19,14 @@
   --color-arvand-slate: #6d6f71;
   --color-arvand-ink: #2b2a28;
   --color-surface-white: #ffffff;
-  --color-surface-mist: #e8e8ea;
+  --color-surface-mist: #ececec;
+  /* یک پله تیره‌تر از surface-mist — فقط برای حالت Hover روی سطوحی که پس‌زمینه‌شان همین‌الان
+     surface-mist است (مثل باکس هر محصول در آرشیو)؛ چون خودِ زمینه mist است، یک رنگ خنثی/Ring
+     برای دیدن Hover کافی نیست، به یک سایه‌ی جدا نیاز است. */
+  --color-surface-mist-hover: #e7e7e7;
+  /* Accordion صفحه‌ی جزئیات محصول (الگوی رفرنس Okamura) — خط جداکننده و پس‌زمینه‌ی Hover ردیف. */
+  --color-accordion-border: #d9d9d9;
+  --color-accordion-hover: #e7e7e7;
 
   /* رنگ‌های وضعیت — برند این‌ها را تعریف نکرده؛ انتخاب فاز ۲ برای Badge/Alert سفارش و موجودی
      (فاز ۶/۸). قهوه‌ای‌سوخته برای warning عمداً از arvand-gold متفاوت است تا با قانون
@@ -59,6 +66,7 @@
   --spacing-section-y-md: 5rem; /* 80px */
   --spacing-section-y-lg: 8rem; /* 128px */
   --spacing-container-x: 1.5rem; /* 24px */
+  --max-width-container: 90rem; /* 1440px — عرض حداکثر کانتینر سطح صفحه، رجوع به phase-02-design-system.md بخش ۲.۴ */
 
   /* Shadow — طیف الوانی گرم (بر پایه‌ی arvand-ink #2B2A28)، نه سیاه خنثی، برای هماهنگی با برند */
   --shadow-xs: 0 1px 2px 0 rgb(43 42 40 / 0.05);
@@ -80,7 +88,11 @@
 :root {
   --radius: 0.625rem; /* 10px — گرد اما نه گرد افراطی، هم‌راستا با ترمینال‌های نرم لوگو */
 
-  --background: var(--color-surface-white);
+  /* تصمیم: پس‌زمینه‌ی پیش‌فرض کل سایت روی surface-mist است، نه سفید خالص — طبق رفرنس بصری
+     آرشیو محصول (طیف خاکستری گرم، نه سفید مطلق)؛ `--card`/`--popover` عمداً همچنان سفید ماندند
+     تا هر جا (مثل بخش «ارزش‌های ما» در about-content.tsx) کارت روی این پس‌زمینه کنتراست داشته
+     باشد. */
+  --background: var(--color-surface-mist);
   --foreground: var(--color-arvand-slate); /* متن بدنه، طبق قانون استفاده سند ۰۶ */
 
   --card: var(--color-surface-white);

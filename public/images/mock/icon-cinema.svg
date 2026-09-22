@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title">
   <title id="title">آیکون جای‌گذار صندلی سالن همایش و سینما</title>
-  <rect width="800" height="800" fill="#E8E8EA" />
+  <rect width="800" height="800" fill="#ececec" />
   <rect x="180" y="160" width="440" height="90" rx="8" fill="none" stroke="#2B2A28" stroke-width="6" />
   <g stroke="#6D6F71" stroke-width="6">
     <rect x="180" y="380" width="90" height="70" rx="10" fill="none" />

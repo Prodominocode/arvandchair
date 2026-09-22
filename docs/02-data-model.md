@@ -49,6 +49,14 @@
 
 > دسته‌های ۴ و ۵ معمولاً **پروژه‌محور** هستند (تیراژ بالا، طراحی سفارشی سالن) برخلاف ۱ تا ۳ که می‌توانند خرید مستقیم/تکی هم داشته باشند. **تصمیم دقیق پیش‌فرض هر دسته عمداً به بعد موکول شده** — فیلد `salesMode` هم در سطح دسته هم در سطح محصول (قابل override) از همین حالا در مدل وجود دارد، پس وقتی تصمیم گرفته شد فقط مقداردهی می‌شود، نیازی به تغییر Schema نیست.
 
+> **افزوده‌ی فاز ۳ (صفحه‌ی آرشیو محصول، `05-pages-build-order.md` بسته‌ی ۲ #۵):** دسته‌ی «صندلی» حالا در Mock ۵ زیردسته هم دارد (`chairs-office`, `chairs-side-guest`, `chairs-conference`, `chairs-stools`, `chairs-lounge`، هرکدام با `parentId: chairs`) — اولین مثال واقعی دسته‌بندی دوسطحی در داده، برای تست الگوی Tab «همه/زیردسته‌ها». ساختار `Category` تغییری نکرد، فقط داده‌ی Seed زیاد شد.
+
+### `ProductTags` *(افزوده‌ی فاز ۳)*
+- `label` 🌐 — واژه‌نامه‌ی کنترل‌شده‌ی برچسب ویژگی/بازاریابی محصول (پرفروش، تازه‌وارد، قابل تنظیم ارتفاع، ...)؛ `Products.tags[]` relation چندگانه به همین Collection می‌زند. برای فیلتر «تگ» در آرشیو محصول لازم شد؛ Mock در `lib/mock-data/tags.ts`.
+
+### `ProductMaterials` *(افزوده‌ی فاز ۳)*
+- `label` 🌐 — واژه‌نامه‌ی کنترل‌شده‌ی متریال، جدا از `Products.specs.material` (که متن نمایشی آزاد برای صفحه‌ی جزئیات است). `Products.materials[]` relation چندگانه به همین Collection می‌زند و مبنای فیلتر «متریال» در آرشیو است. Mock در `lib/mock-data/materials.ts`.
+
 ### `Products`
 - `title` 🌐, `slug` 🌐
 - `sku`: string (یکتا، مشترک بین زبان‌ها)
@@ -61,6 +69,8 @@
 - `basePrice`: number (واحد: تومان — تک‌ارزی، چون فروش فعلاً فقط داخل ایران است) + `currency` (فیلد نگه‌داشته‌شده برای توسعه‌ی آینده، فعلاً همیشه IRR/تومان)
 - `stock`: number
 - `relatedProducts[]`: relation چندگانه → `Products`
+- `tags[]` *(افزوده‌ی فاز ۳)*: relation چندگانه → `ProductTags` — فیلتر Facet آرشیو محصول
+- `materials[]` *(افزوده‌ی فاز ۳)*: relation چندگانه → `ProductMaterials` — فیلتر Facet دیگر آرشیو؛ مستقل از `specs.material`
 - `salesMode`: enum → `inherit-from-category` (پیش‌فرض) | `direct-purchase` | `quote-only`
   **تصمیم نهایی فاز ۰:** قیمت‌ها همیشه عمومی هستند (بدون نیاز به ورود/تأیید حساب برای دیدن قیمت). تفاوت B2B/B2C فقط در `salesMode` است: محصولات `direct-purchase` قیمت + دکمه‌ی «افزودن به سبد» نشان می‌دهند؛ محصولات `quote-only` به‌جای قیمت فقط دکمه‌ی «درخواست استعلام» دارند. فیلد جدای `priceVisibility`/ورود اجباری حذف شد — نیازی نبود.
 - `seo`: 🌐 metaTitle/metaDescription/ogImage

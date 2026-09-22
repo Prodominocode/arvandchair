@@ -231,7 +231,7 @@ export function StoriesSection({ testimonials, locale, texts }: Props) {
       className="bg-surface-white py-section-y-lg"
       {...{ [SCROLL_DATA_ATTR]: 'reveal' }}
     >
-      <div className="px-container-x mx-auto max-w-6xl">
+      <div className="px-container-x max-w-container mx-auto">
         <div className="mb-8 flex flex-wrap items-start justify-between gap-8 md:mb-4">
           <h2 className="text-arvand-ink max-w-[14ch] text-3xl leading-tight font-bold text-balance md:text-4xl">
             {texts.title}

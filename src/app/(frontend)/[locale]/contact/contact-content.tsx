@@ -40,7 +40,7 @@ export function ContactContent({ offices, contactEmail }: ContactContentProps) {
   }
 
   return (
-    <div className="px-container-x py-section-y-lg mx-auto max-w-6xl">
+    <div className="px-container-x py-section-y-lg max-w-container mx-auto">
       <header className="mx-auto max-w-2xl text-center">
         <h1 className="text-arvand-ink text-4xl font-bold text-balance">{t('title')}</h1>
         <p className="text-muted-foreground mt-4 text-lg">{t('subtitle')}</p>

@@ -1,11 +1,11 @@
 import { defineRouting } from 'next-intl/routing'
 
-export const locales = ['fa', 'en', 'ar'] as const
+export const locales = ['fa', 'en'] as const
 export type AppLocale = (typeof locales)[number]
 
 export const defaultLocale: AppLocale = 'fa'
 
-export const rtlLocales: AppLocale[] = ['fa', 'ar']
+export const rtlLocales: AppLocale[] = ['fa']
 
 export const routing = defineRouting({
   locales,

@@ -1,0 +1,198 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - link "Skip to main content" [ref=e3] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e4]:
+      - link "Arvand logo Arvand" [ref=e5] [cursor=pointer]:
+        - /url: /en
+        - img "Arvand logo" [ref=e6]
+        - generic [ref=e7]: Arvand
+      - generic [ref=e8]:
+        - navigation "Main navigation" [ref=e9]:
+          - link "Products" [ref=e10] [cursor=pointer]:
+            - /url: /en/products
+          - generic [ref=e11]: Philosophy
+          - link "Contact" [ref=e12] [cursor=pointer]:
+            - /url: /en/contact
+        - button "Search" [ref=e13]
+        - button "Language" [ref=e15]:
+          - generic [ref=e19]: English
+        - button "Open menu" [ref=e22]
+  - main [ref=e23]:
+    - generic [ref=e24]:
+      - img "Arvand Ara managerial chair in an executive office, beside a conference table" [ref=e25]
+      - heading "Arvand Ara Managerial Chair" [level=1] [ref=e29]
+    - paragraph [ref=e31]: The Ara managerial chair is built for long hours at the desk. The ventilated mesh backrest reduces back fatigue, tri-directional armrests and a synchro-tilt mechanism allow precise seating adjustment, and the cast-aluminum base pairs with soft casters safe for tile and parquet floors.
+    - generic [ref=e33]:
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - img "Arvand Ara managerial chair, front view" [ref=e37]
+          - img "Arvand Ara managerial chair in an executive office, beside a conference table" [ref=e39]
+          - img "Two Ara chairs under a managerial desk, in navy and beige" [ref=e41]
+          - img "Close-up of the Ara backrest chrome frame" [ref=e43]
+        - generic [ref=e44]:
+          - button "Previous image" [ref=e45]
+          - generic [ref=e48]:
+            - button "Image 1" [ref=e49]
+            - button "Image 2" [ref=e51]
+            - button "Image 3" [ref=e53]
+            - button "Image 4" [ref=e55]
+          - button "Next image" [ref=e57]
+      - generic [ref=e60]:
+        - generic [ref=e61]:
+          - generic [ref=e62]:
+            - heading [level=3] [ref=e63]:
+              - button "Dimensions (L × W × H)" [expanded] [active] [ref=e64]
+            - region "Dimensions (L × W × H)" [ref=e227]:
+              - generic [ref=e228]:
+                - paragraph [ref=e229]: 68 × 72 × 128 cm
+                - paragraph [ref=e230]: "Weight: 18 kg"
+          - heading [level=3] [ref=e66]:
+            - button "Material" [ref=e67]
+          - heading [level=3] [ref=e69]:
+            - button "Options" [ref=e70]
+        - generic [ref=e71]:
+          - paragraph [ref=e73]: 8,500,000 Toman
+          - generic [ref=e74]:
+            - button "Add to Cart" [ref=e75]
+            - generic [ref=e76]: In Stock
+          - paragraph [ref=e77]: "SKU: ARV-CHR-ARA-001"
+    - generic [ref=e78]:
+      - paragraph [ref=e79]: Gallery
+      - generic [ref=e80]:
+        - generic [ref=e81]:
+          - img "Arvand Ara managerial chair, front view" [ref=e83]
+          - img "Arvand Ara managerial chair in an executive office, beside a conference table" [ref=e85]
+          - img "Two Ara chairs under a managerial desk, in navy and beige" [ref=e87]
+          - img "Close-up of the Ara backrest chrome frame" [ref=e89]
+          - img "Close-up of the adjustable armrest and aluminum arm" [ref=e91]
+          - img "Close-up of the backrest weave and polished arm joint" [ref=e93]
+          - img "Ara chair in beige, full view beside a desk" [ref=e95]
+        - generic [ref=e96]:
+          - button "Previous" [ref=e97]
+          - generic [ref=e100]: 01 / 07
+          - button "Next" [ref=e101]
+    - generic [ref=e104]:
+      - paragraph [ref=e105]: Features
+      - generic [ref=e106]:
+        - generic [ref=e107]:
+          - generic:
+            - generic:
+              - img "Close-up of the herringbone mesh weave"
+            - generic:
+              - img "Close-up of the chrome backrest frame"
+          - generic [ref=e108]:
+            - heading "Ventilated mesh that stays cool all day" [level=3] [ref=e109]
+            - paragraph [ref=e110]: The herringbone-weave mesh lets air pass straight through the backrest, keeping heat and moisture down through long sessions without giving up lumbar support.
+        - generic [ref=e111]:
+          - generic:
+            - generic:
+              - img "Close-up of the adjustable aluminum armrest"
+          - generic [ref=e112]:
+            - heading "Armrests and recline, tuned to you" [level=3] [ref=e113]
+            - paragraph [ref=e114]: Tri-directional armrests adjust to any shoulder height and width, while the synchro-tilt mechanism balances seat and backrest angle together as you shift your weight.
+        - generic [ref=e115]:
+          - generic:
+            - generic:
+              - img "Ara chair in beige, full view beside a desk"
+          - generic [ref=e116]:
+            - heading "A base built for everyday use" [level=3] [ref=e117]
+            - paragraph [ref=e118]: The cast-aluminum base spreads weight evenly, and its soft casters roll cleanly across tile and parquet floors without marking them.
+    - generic [ref=e119]:
+      - paragraph [ref=e120]: Lineup
+      - generic [ref=e122]:
+        - heading [level=3] [ref=e124]:
+          - button "Options" [ref=e125]
+        - heading [level=3] [ref=e127]:
+          - button "Materials" [ref=e128]
+        - heading [level=3] [ref=e130]:
+          - button "Key Features" [ref=e131]
+    - link "← Back to Index" [ref=e133] [cursor=pointer]:
+      - /url: /en/products/chairs-office
+    - generic [ref=e134]:
+      - paragraph [ref=e135]: Other Products
+      - generic [ref=e137]:
+        - link [ref=e139] [cursor=pointer]:
+          - /url: /en/products/chairs-office/sabk-task-chair
+          - img "Arvand Sabk task chair" [ref=e141]
+          - paragraph [ref=e142]: Arvand Sabk Task Chair
+        - link [ref=e144] [cursor=pointer]:
+          - /url: /en/products/chairs-conference/vesta-conference-chair
+          - img "Arvand Vesta conference chair" [ref=e146]
+          - paragraph [ref=e147]: Arvand Vesta Conference Chair
+        - link [ref=e149] [cursor=pointer]:
+          - /url: /en/products/desks/alvand-managerial-desk
+          - img "Arvand Alvand managerial desk" [ref=e151]
+          - paragraph [ref=e152]: Arvand Alvand Managerial Desk
+  - contentinfo [ref=e153]:
+    - generic [ref=e154]:
+      - generic [ref=e155]:
+        - paragraph [ref=e156]: Arvand
+        - paragraph [ref=e157]: Office furniture for the modern workplace
+        - paragraph [ref=e158]: Follow Us
+        - list [ref=e159]:
+          - listitem [ref=e160]:
+            - link "اینستاگرام / Instagram" [ref=e161] [cursor=pointer]:
+              - /url: https://instagram.com/arvand.furniture
+          - listitem [ref=e162]:
+            - link "لینکدین / LinkedIn" [ref=e163] [cursor=pointer]:
+              - /url: https://linkedin.com/company/arvand-furniture
+          - listitem [ref=e164]:
+            - link "تلگرام / Telegram" [ref=e165] [cursor=pointer]:
+              - /url: https://t.me/arvand_furniture
+      - generic [ref=e166]:
+        - paragraph [ref=e167]: Quick Links
+        - list [ref=e168]:
+          - listitem [ref=e169]:
+            - link "Products" [ref=e170] [cursor=pointer]:
+              - /url: /en/products
+          - listitem [ref=e171]:
+            - link "Portfolio" [ref=e172] [cursor=pointer]:
+              - /url: /en/portfolio
+          - listitem [ref=e173]:
+            - link "Blog" [ref=e174] [cursor=pointer]:
+              - /url: /en/blog
+          - listitem [ref=e175]:
+            - link "About" [ref=e176] [cursor=pointer]:
+              - /url: /en/about
+          - listitem [ref=e177]:
+            - link "Contact" [ref=e178] [cursor=pointer]:
+              - /url: /en/contact
+          - listitem [ref=e179]:
+            - link "Loyalty Club" [ref=e180] [cursor=pointer]:
+              - /url: /en/loyalty-club
+      - generic [ref=e181]:
+        - paragraph [ref=e182]: Offices & Showrooms
+        - list [ref=e183]:
+          - listitem [ref=e184]:
+            - paragraph [ref=e185]: Tehran Factory
+            - paragraph [ref=e186]: Factory
+            - paragraph [ref=e187]: "02144667788"
+          - listitem [ref=e188]:
+            - paragraph [ref=e189]: Tehran Valiasr Showroom
+            - paragraph [ref=e190]: Showroom
+            - paragraph [ref=e191]: "02188112233"
+          - listitem [ref=e192]:
+            - paragraph [ref=e193]: Isfahan Sales Office
+            - paragraph [ref=e194]: Sales Office
+            - paragraph [ref=e195]: "03136223344"
+      - generic [ref=e196]:
+        - paragraph [ref=e197]: Contact
+        - list [ref=e198]:
+          - listitem [ref=e199]:
+            - link "info@arvand-furniture.example" [ref=e200] [cursor=pointer]:
+              - /url: mailto:info@arvand-furniture.example
+          - listitem [ref=e205]:
+            - link "02188112233" [ref=e206] [cursor=pointer]:
+              - /url: tel:02188112233
+        - list [ref=e210]:
+          - listitem [ref=e211]:
+            - link "Privacy Policy" [ref=e212] [cursor=pointer]:
+              - /url: /en/privacy-policy
+          - listitem [ref=e213]:
+            - link "Terms of Service" [ref=e214] [cursor=pointer]:
+              - /url: /en/terms-of-service
+    - paragraph [ref=e216]: © 2026 Arvand — All rights reserved by Arvand.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e222] [cursor=pointer]
+  - alert [ref=e226]

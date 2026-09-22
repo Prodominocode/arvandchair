@@ -27,7 +27,7 @@ export type Order = {
   /** فقط `mock` تا فاز ۱۱ (docs/00-tech-stack.md بخش ۱.۲) */
   paymentProvider: 'mock'
   totals: { subtotal: number; shipping: number; tax: number; discount: number; total: number }
-  locale: 'fa' | 'en' | 'ar'
+  locale: 'fa' | 'en'
   createdAt: string
 }
 
