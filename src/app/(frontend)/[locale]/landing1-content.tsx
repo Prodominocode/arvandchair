@@ -9,6 +9,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 import { Link } from '@/i18n/navigation'
 import type { AppLocale } from '@/i18n/routing'
+import { cn } from '@/lib/utils/cn'
 import {
   GSAP_DURATION,
   GSAP_EASE,
@@ -105,6 +106,16 @@ export function Landing1Content({ locale, products, stories }: Props) {
       if (heroScrollRef.current)
         heroTl.fromTo(heroScrollRef.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.8 }, 1.1)
 
+      // ورود تصویر hero: fade + zoom-out (طبق ref/html/app.js — heroBackdrop از scale 1.14
+      // به 1 می‌رسد؛ autoAlpha هم اضافه شده چون رفرنس فید نداشت ولی اینجا خواسته شده)
+      if (heroBackdropRef.current)
+        heroTl.fromTo(
+          heroBackdropRef.current,
+          { autoAlpha: 0, scale: 1.14 },
+          { autoAlpha: 1, scale: 1, duration: 1.8, ease: 'power2.out' },
+          0,
+        )
+
       if (heroBackdropRef.current) {
         gsap.to(heroBackdropRef.current, {
           yPercent: 14,
@@ -195,6 +206,7 @@ export function Landing1Content({ locale, products, stories }: Props) {
     })
 
     mm.add('(prefers-reduced-motion: reduce)', () => {
+      if (heroBackdropRef.current) gsap.set(heroBackdropRef.current, { autoAlpha: 1, scale: 1 })
       if (introMediaRef.current) gsap.set(introMediaRef.current, { clipPath: 'inset(0 0% 0 0)' })
       if (philoMediaRef.current) gsap.set(philoMediaRef.current, { clipPath: 'inset(0 0 0 0)' })
       const sections = gsap.utils.toArray<HTMLElement>(`[${SCROLL_DATA_ATTR}="reveal"]`, root)
@@ -240,17 +252,33 @@ export function Landing1Content({ locale, products, stories }: Props) {
   }, [])
 
   const revealProps = { [SCROLL_DATA_ATTR]: 'reveal' } as const
+  const isHeroDark: boolean = false
 
   return (
     <div ref={rootRef}>
-      {/* Hero — data-header-tone="dark" چون پس‌زمینه‌ی تیره دارد، هدر شفاف رویش شناور می‌شود؛
+      {/* Hero — تصویر hero-img1.png روشن است، پس data-header-tone="light" (هدر تیره روی آن
+          شناور می‌شود) و به همین دلیل متن خودِ هیرو هم به‌جای سفید، رنگ تیره می‌گیرد تا با
+          پس‌زمینه‌ی روشن Contrast داشته باشد؛ isHeroDark تک‌منبع هر دو — رنگ متن/هدر و رنگ
+          پس‌زمینه‌ی ثابتِ سکشن — است تا از هم واگرا نشوند.
+          پس‌زمینه‌ی سکشن (bg-surface-mist/bg-arvand-ink) عمداً معکوسِ رنگ متن/هدر انتخاب شده:
+          تا وقتی تصویر با fade+zoom-out لود و نمایان می‌شود (opacity/scale اولیه‌اش به‌صورت
+          inline style ست شده تا پیش از اجرای GSAP هم پنهان بماند)، متنِ تیره و آیکون‌های هدر
+          روی یک رنگ ساده‌ی روشن (نه تیره‌ی هم‌رنگ خودشان) خوانا بمانند؛ برای isHeroDark=true
+          همین منطق برعکس می‌شود (پس‌زمینه‌ی تیره زیر متن/هدر سفید).
           mt-16- فاصله‌ی pt-16 پیش‌فرض main را لغو می‌کند تا هیرو زیر هدر تا بالای صفحه ادامه یابد. */}
       <section
         id="hero"
-        data-header-tone="dark"
-        className="bg-arvand-ink relative -mt-16 flex min-h-svh items-center justify-center overflow-hidden"
+        data-header-tone={isHeroDark ? 'dark' : 'light'}
+        className={cn(
+          'relative -mt-16 flex min-h-svh items-center justify-center overflow-hidden',
+          isHeroDark ? 'bg-arvand-ink' : 'bg-surface-mist',
+        )}
       >
-        <div ref={heroBackdropRef} className="absolute inset-0">
+        <div
+          ref={heroBackdropRef}
+          className="absolute inset-0"
+          style={{ opacity: 0, transform: 'scale(1.14)' }}
+        >
           <Image
             src="/images/landing1/hero-img1.png"
             alt=""
@@ -263,9 +291,18 @@ export function Landing1Content({ locale, products, stories }: Props) {
 
         <div
           ref={heroContentRef}
-          className="relative z-[2] flex flex-col items-center gap-4 px-6 text-center text-white sm:gap-5"
+          className={cn(
+            'relative z-[2] flex flex-col items-center gap-4 px-6 text-center sm:gap-5',
+            isHeroDark ? 'text-white' : 'text-arvand-ink',
+          )}
         >
-          <span ref={heroEyebrowRef} className="text-xs tracking-[0.16em] text-white/70 uppercase">
+          <span
+            ref={heroEyebrowRef}
+            className={cn(
+              'text-xs tracking-[0.16em] uppercase',
+              isHeroDark ? 'text-white/70' : 'text-arvand-slate',
+            )}
+          >
             {t('hero.eyebrow')}
           </span>
           <h1
@@ -273,20 +310,42 @@ export function Landing1Content({ locale, products, stories }: Props) {
             className="text-5xl leading-[0.96] font-extrabold text-balance sm:text-7xl lg:text-8xl"
           >
             {t('hero.titleLine1')}{' '}
-            <span className="font-light text-white/70">{t('hero.titleLine2')}</span>
+            <span className={cn('font-light', isHeroDark ? 'text-white/70' : 'text-arvand-slate')}>
+              {t('hero.titleLine2')}
+            </span>
           </h1>
-          <p ref={heroSubtitleRef} className="max-w-[34ch] text-base text-white/80 sm:text-lg">
+          <p
+            ref={heroSubtitleRef}
+            className={cn(
+              'max-w-[34ch] text-base sm:text-lg',
+              isHeroDark ? 'text-white/80' : 'text-arvand-slate',
+            )}
+          >
             {t('hero.subtitle')}
           </p>
         </div>
 
         <div
           ref={heroScrollRef}
-          className="absolute inset-x-0 bottom-8 z-[2] flex flex-col items-center gap-2 text-white/70"
+          className={cn(
+            'absolute inset-x-0 bottom-8 z-[2] flex flex-col items-center gap-2',
+            isHeroDark ? 'text-white/70' : 'text-arvand-slate',
+          )}
         >
           <span className="text-[0.68rem] tracking-[0.2em] uppercase">{t('hero.scroll')}</span>
-          <span className="relative h-8 w-px overflow-hidden bg-white/40">
-            <span ref={scrollLineRef} className="absolute inset-x-0 top-0 h-full bg-white" />
+          <span
+            className={cn(
+              'relative h-8 w-px overflow-hidden',
+              isHeroDark ? 'bg-white/40' : 'bg-arvand-ink/20',
+            )}
+          >
+            <span
+              ref={scrollLineRef}
+              className={cn(
+                'absolute inset-x-0 top-0 h-full',
+                isHeroDark ? 'bg-white' : 'bg-arvand-ink',
+              )}
+            />
           </span>
         </div>
       </section>
