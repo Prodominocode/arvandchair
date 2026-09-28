@@ -49,4 +49,9 @@ export const productTags: ProductTag[] = [
     id: 'project-grade',
     label: { fa: 'درجه‌ی پروژه‌ای (تیراژ بالا)', en: 'Project Grade' },
   },
+  {
+    // فاز ۵: ۷ محصول از فاز ۳ به این id ارجاع می‌دادند ولی در واژه‌نامه نبود (Seed آن را گرفت).
+    id: 'upholstered',
+    label: { fa: 'رویه‌دار', en: 'Upholstered' },
+  },
 ]

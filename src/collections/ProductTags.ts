@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 import { isContentEditor, publicRead } from '@/access/roles'
+import { keyField } from './fields/key'
 
 /** واژه‌نامه‌ی کنترل‌شده‌ی برچسب محصول (docs/02-data-model.md بخش ۲؛ افزوده‌ی فاز ۳ برای فیلتر آرشیو). */
 export const ProductTags: CollectionConfig = {
@@ -15,6 +16,7 @@ export const ProductTags: CollectionConfig = {
     delete: isContentEditor,
   },
   fields: [
+    keyField,
     {
       name: 'label',
       type: 'text',

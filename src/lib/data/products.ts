@@ -1,25 +1,169 @@
 /**
- * لایه‌ی Data Access برای Collection `Products`. توضیح کلی معماری در `lib/data/categories.ts`.
+ * لایه‌ی Data Access برای Collection `Products` — فاز ۵ به Payload وصل شد؛ خروجی به شکل Mock
+ * (`Product`) Adapt می‌شود. توضیح کلی معماری در `lib/data/categories.ts`. نگاشت فیلدها:
+ * `category` → `categoryId`، `relatedProducts` → `relatedProductIds`، `tags`/`materials` →
+ * `tagIds`/`materialIds` (با `key` واژه‌نامه، نه id عددی — همان مقداری که در URL فیلتر است)،
+ * `variants[].key` → `variants[].id` (مبنای رنگ Swatch)، `description` (Lexical) → متن ساده.
  */
 
-import { products, type Product } from '@/lib/mock-data/products'
+import { cache } from 'react'
+
+import { products as mockProducts, type Product } from '@/lib/mock-data/products'
+import type { Product as PayloadProduct } from '@/payload-types'
 import type { AppLocale } from '@/i18n/routing'
 import { getCategoryById, getCategoryWithDescendantIds } from './categories'
+import { lexicalToPlainText } from './lexical'
+import {
+  getPayloadClient,
+  relationId,
+  toImages,
+  toLocalized,
+  toSeo,
+  type LocalizedValue,
+} from './payload'
+
+type LocalizedProductDoc = Omit<
+  PayloadProduct,
+  'title' | 'slug' | 'shortDescription' | 'description' | 'specs' | 'variants' | 'features' | 'seo'
+> & {
+  title: LocalizedValue
+  slug: LocalizedValue
+  shortDescription: LocalizedValue
+  description?: { fa?: PayloadProduct['description']; en?: PayloadProduct['description'] } | null
+  specs?: {
+    dimensions?: {
+      lengthCm?: number | null
+      widthCm?: number | null
+      heightCm?: number | null
+    } | null
+    material?: LocalizedValue
+    weightKg?: number | null
+    capacity?: LocalizedValue
+  } | null
+  variants?:
+    | {
+        id?: string | null
+        key?: string | null
+        label: LocalizedValue
+        priceModifier?: number | null
+        stock?: number | null
+      }[]
+    | null
+  features?: { title: LocalizedValue; text: LocalizedValue; images?: unknown }[] | null
+  seo?: { metaTitle?: LocalizedValue; metaDescription?: LocalizedValue } | null
+}
+
+/** tag/material populate‌شده → `key`؛ اگر populate نشده بود (depth) خود id برمی‌گردد. */
+function vocabularyKeys(value: unknown): string[] {
+  if (!Array.isArray(value)) return []
+  return value
+    .map((item) =>
+      item && typeof item === 'object' && 'key' in item ? String(item.key) : relationId(item),
+    )
+    .filter((key): key is string => Boolean(key))
+}
+
+function relationIds(value: unknown): string[] {
+  if (!Array.isArray(value)) return []
+  return value.map(relationId).filter((id): id is string => Boolean(id))
+}
+
+function toProduct(doc: LocalizedProductDoc): Product {
+  const descriptionFa = lexicalToPlainText(doc.description?.fa)
+  const capacity = toLocalized(doc.specs?.capacity)
+  const features = (doc.features ?? []).map((feature) => ({
+    title: toLocalized(feature.title),
+    text: toLocalized(feature.text),
+    images: toImages(feature.images),
+  }))
+
+  return {
+    id: String(doc.id),
+    title: toLocalized(doc.title),
+    slug: toLocalized(doc.slug),
+    sku: doc.sku,
+    categoryId: relationId(doc.category) ?? '',
+    shortDescription: toLocalized(doc.shortDescription),
+    description: {
+      fa: descriptionFa,
+      en: lexicalToPlainText(doc.description?.en) || descriptionFa,
+    },
+    images: toImages(doc.images),
+    // پایپ‌لاین 3D هنوز موکول است؛ Type فاز ۳ فقط null را می‌پذیرد.
+    model3d: null,
+    specs: {
+      dimensions: {
+        lengthCm: doc.specs?.dimensions?.lengthCm ?? 0,
+        widthCm: doc.specs?.dimensions?.widthCm ?? 0,
+        heightCm: doc.specs?.dimensions?.heightCm ?? 0,
+      },
+      material: toLocalized(doc.specs?.material),
+      weightKg: doc.specs?.weightKg ?? 0,
+      // UI فقط وقتی سطر «ظرفیت» را نشان می‌دهد که مقدار داشته باشد — خالی باید undefined باشد.
+      capacity: capacity.fa ? capacity : undefined,
+    },
+    variants: (doc.variants ?? []).map((variant, index) => ({
+      id: variant.key || variant.id || String(index),
+      label: toLocalized(variant.label),
+      priceModifier: variant.priceModifier ?? 0,
+      stock: variant.stock ?? 0,
+    })),
+    basePrice: doc.basePrice,
+    currency: 'IRR',
+    stock: doc.stock,
+    relatedProductIds: relationIds(doc.relatedProducts),
+    salesMode: doc.salesMode,
+    tagIds: vocabularyKeys(doc.tags),
+    materialIds: vocabularyKeys(doc.materials),
+    features: features.length ? features : undefined,
+    seo: toSeo(doc.seo),
+  }
+}
+
+type LoadedProducts = { list: Product[]; createdAt: Map<string, string> }
+
+const loadProducts = cache(async (): Promise<LoadedProducts> => {
+  const payload = await getPayloadClient()
+  const { docs } = await payload.find({
+    collection: 'products',
+    locale: 'all',
+    depth: 1,
+    pagination: false,
+    // ترتیب درج (= ترتیب Mock/Seed) — مبنای مرتب‌سازی پیش‌فرض «ویژه».
+    sort: 'id',
+  })
+  const typed = docs as unknown as LocalizedProductDoc[]
+  return {
+    list: typed.map(toProduct),
+    createdAt: new Map(typed.map((doc) => [String(doc.id), doc.createdAt])),
+  }
+})
 
 export async function getProducts(): Promise<Product[]> {
-  return products
+  return (await loadProducts()).list
 }
 
 export async function getProductById(id: string): Promise<Product | null> {
-  return products.find((product) => product.id === id) ?? null
+  return (await getProducts()).find((product) => product.id === id) ?? null
+}
+
+/**
+ * id رشته‌ای Mock (مثلاً `ara-managerial-chair`) → id واقعی Payload، از طریق `sku` که کلید
+ * پایدار و غیرLocalized مشترک بین Mock و دیتابیس است. مصرف: داده‌هایی که هنوز (یا برای همیشه)
+ * Mock هستند و به محصول ارجاع می‌دهند — `product-stories` (Collection ندارد).
+ */
+export async function getProductIdByMockId(mockId: string): Promise<string | null> {
+  const sku = mockProducts.find((product) => product.id === mockId)?.sku
+  if (!sku) return null
+  return (await getProducts()).find((product) => product.sku === sku)?.id ?? null
 }
 
 export async function getProductBySlug(locale: AppLocale, slug: string): Promise<Product | null> {
-  return products.find((product) => product.slug[locale] === slug) ?? null
+  return (await getProducts()).find((product) => product.slug[locale] === slug) ?? null
 }
 
 export async function getProductsByCategoryId(categoryId: string): Promise<Product[]> {
-  return products.filter((product) => product.categoryId === categoryId)
+  return (await getProducts()).filter((product) => product.categoryId === categoryId)
 }
 
 /** برای بخش «محصولات ویژه»ی Home — فعلاً ساده‌ترین قانون: N محصول اول هر دسته را نمی‌گیرد،
@@ -27,7 +171,7 @@ export async function getProductsByCategoryId(categoryId: string): Promise<Produ
 export async function getFeaturedProducts(limit = 4): Promise<Product[]> {
   const seen = new Set<string>()
   const featured: Product[] = []
-  for (const product of products) {
+  for (const product of await getProducts()) {
     if (seen.has(product.categoryId)) continue
     seen.add(product.categoryId)
     featured.push(product)
@@ -37,7 +181,9 @@ export async function getFeaturedProducts(limit = 4): Promise<Product[]> {
 }
 
 export async function getRelatedProducts(product: Product): Promise<Product[]> {
-  return products.filter((candidate) => product.relatedProductIds.includes(candidate.id))
+  return (await getProducts()).filter((candidate) =>
+    product.relatedProductIds.includes(candidate.id),
+  )
 }
 
 export type ProductSortOption = 'featured' | 'newest' | 'name-asc'
@@ -61,7 +207,8 @@ export async function getFilteredProducts(
   locale: AppLocale,
   params: ProductFilterParams = {},
 ): Promise<Product[]> {
-  let result = products
+  const { list, createdAt } = await loadProducts()
+  let result = list
 
   if (params.categoryId) {
     const familyIds = new Set(await getCategoryWithDescendantIds(params.categoryId))
@@ -80,18 +227,26 @@ export async function getFilteredProducts(
     )
   }
 
-  return sortProducts(result, locale, params.sort ?? 'featured')
+  return sortProducts(result, locale, params.sort ?? 'featured', createdAt)
 }
 
-function sortProducts(list: Product[], locale: AppLocale, sort: ProductSortOption): Product[] {
+function sortProducts(
+  list: Product[],
+  locale: AppLocale,
+  sort: ProductSortOption,
+  createdAt: Map<string, string>,
+): Product[] {
   const copy = [...list]
   if (sort === 'name-asc') {
     return copy.sort((a, b) => a.title[locale].localeCompare(b.title[locale], locale))
   }
   if (sort === 'newest') {
-    // Mock فاقد `createdAt` است؛ ترتیب معکوس آرایه به‌عنوان تقریب «جدیدترین اول» استفاده می‌شود —
-    // فاز ۵ این را با `createdAt` واقعی از Payload جایگزین می‌کند، امضای تابع تغییر نمی‌کند.
-    return copy.reverse()
+    // `createdAt` واقعی Payload؛ id (ترتیب درج) برای ردیف‌های هم‌زمان (مثلاً Seed) Tie-breaker است.
+    return copy.sort(
+      (a, b) =>
+        (createdAt.get(b.id) ?? '').localeCompare(createdAt.get(a.id) ?? '') ||
+        Number(b.id) - Number(a.id),
+    )
   }
   return copy
 }

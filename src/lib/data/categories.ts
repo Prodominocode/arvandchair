@@ -1,33 +1,80 @@
 /**
- * لایه‌ی Data Access برای Collection `Categories` — فاز ۳ از `lib/mock-data` می‌خواند،
- * فاز ۵ فقط بدنه‌ی همین توابع به Payload Local API وصل می‌شود (کامپوننت‌های UI دست‌نخورده می‌مانند).
+ * لایه‌ی Data Access برای Collection `Categories` — فاز ۳ از `lib/mock-data` می‌خواند؛ فاز ۵
+ * بدنه‌ی همین توابع به Payload Local API وصل شد و خروجی به همان شکل Mock (`Category`) Adapt
+ * می‌شود (کامپوننت‌های UI دست‌نخورده می‌مانند). نگاشت فیلدها: `parent` → `parentId`، id عددی
+ * Payload → رشته.
  *
- * همه‌ی توابع عمداً `async` هستند با اینکه Mock همگام (sync) است — چون فراخوان واقعی Payload
- * در فاز ۵ async است؛ این یعنی هیچ Call-site ای در UI موقع سوییچ به داده‌ی واقعی تغییر نمی‌کند.
+ * کل دسته‌ها با `cache()` یک بار در هر Request خوانده و بقیه‌ی توابع روی همان فیلتر می‌شوند —
+ * تعداد دسته‌ها کم است و منطق دقیقاً همان منطق فاز ۳ می‌ماند.
  */
 
-import { categories, type Category } from '@/lib/mock-data/categories'
+import { cache } from 'react'
+
+import type { Category } from '@/lib/mock-data/categories'
+import type { Category as PayloadCategory } from '@/payload-types'
 import type { AppLocale } from '@/i18n/routing'
-import type { LocalizedText } from '@/lib/mock-data/types'
+import { ALL_TAB_LABEL, type CategoryTab } from './categories.shared'
+import {
+  getPayloadClient,
+  relationId,
+  toImage,
+  toLocalized,
+  toSeo,
+  type LocalizedValue,
+} from './payload'
+
+export { ALL_TAB_LABEL, type CategoryTab }
+
+type LocalizedCategoryDoc = Omit<PayloadCategory, 'title' | 'slug' | 'seo'> & {
+  title: LocalizedValue
+  slug: LocalizedValue
+  seo?: { metaTitle?: LocalizedValue; metaDescription?: LocalizedValue } | null
+}
+
+function toCategory(doc: LocalizedCategoryDoc): Category {
+  const title = toLocalized(doc.title)
+  return {
+    id: String(doc.id),
+    title,
+    slug: toLocalized(doc.slug),
+    parentId: relationId(doc.parent),
+    image: toImage(doc.image, title),
+    salesMode: doc.salesMode,
+    seo: toSeo(doc.seo),
+  }
+}
+
+const loadCategories = cache(async (): Promise<Category[]> => {
+  const payload = await getPayloadClient()
+  const { docs } = await payload.find({
+    collection: 'categories',
+    locale: 'all',
+    depth: 1,
+    pagination: false,
+    // ترتیب درج (= ترتیب Mock/Seed)؛ ترتیب دستی دسته‌ها هنوز فیلدی در Schema ندارد.
+    sort: 'id',
+  })
+  return (docs as unknown as LocalizedCategoryDoc[]).map(toCategory)
+})
 
 export async function getCategories(): Promise<Category[]> {
-  return categories
+  return loadCategories()
 }
 
 export async function getCategoryById(id: string): Promise<Category | null> {
-  return categories.find((category) => category.id === id) ?? null
+  return (await loadCategories()).find((category) => category.id === id) ?? null
 }
 
 export async function getCategoryBySlug(locale: AppLocale, slug: string): Promise<Category | null> {
-  return categories.find((category) => category.slug[locale] === slug) ?? null
+  return (await loadCategories()).find((category) => category.slug[locale] === slug) ?? null
 }
 
 export async function getTopLevelCategories(): Promise<Category[]> {
-  return categories.filter((category) => category.parentId === null)
+  return (await loadCategories()).filter((category) => category.parentId === null)
 }
 
 export async function getSubcategories(parentId: string): Promise<Category[]> {
-  return categories.filter((category) => category.parentId === parentId)
+  return (await loadCategories()).filter((category) => category.parentId === parentId)
 }
 
 /**
@@ -42,16 +89,6 @@ export async function getCategoryWithDescendantIds(categoryId: string): Promise<
     ids.push(...(await getCategoryWithDescendantIds(child.id)))
   }
   return ids
-}
-
-export type CategoryTab = {
-  /** `null` فقط برای تب «همه‌ی محصولات» در ریشه‌ی `/products` — بدون Category واقعی، چون خودِ
-   * ریشه معادل هیچ رکورد Category‌ای نیست. */
-  category: Category | null
-  /** تب «همه» روی خودِ دسته‌ی جاری (اگر والد است)، والدش (اگر زیردسته است)، یا ریشه‌ی
-   * `/products` اشاره می‌کند — برچسبش همیشه از `ALL_TAB_LABEL` می‌آید، نه عنوان واقعی دسته. */
-  isAllTab: boolean
-  isActive: boolean
 }
 
 /**
@@ -99,5 +136,3 @@ export async function getCategoryTabs(currentCategoryId: string | null): Promise
 
   return [{ category: current, isAllTab: false, isActive: true }]
 }
-
-export const ALL_TAB_LABEL: LocalizedText = { fa: 'همه', en: 'All' }

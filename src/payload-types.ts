@@ -213,6 +213,10 @@ export interface Category {
  */
 export interface ProductTag {
   id: number;
+  /**
+   * شناسه‌ی لاتین ثابت (مثلاً `bestseller`) — در URL فیلترها استفاده می‌شود؛ بعد از انتشار عوضش نکنید.
+   */
+  key: string;
   label: string;
   updatedAt: string;
   createdAt: string;
@@ -223,6 +227,10 @@ export interface ProductTag {
  */
 export interface ProductMaterial {
   id: number;
+  /**
+   * شناسه‌ی لاتین ثابت (مثلاً `bestseller`) — در URL فیلترها استفاده می‌شود؛ بعد از انتشار عوضش نکنید.
+   */
+  key: string;
   label: string;
   updatedAt: string;
   createdAt: string;
@@ -276,6 +284,10 @@ export interface Product {
   };
   variants?:
     | {
+        /**
+         * شناسه‌ی لاتین رنگ/مدل (مثلاً `black`) — مبنای رنگ Swatch در `lib/utils/variant-swatch.ts`.
+         */
+        key: string;
         label: string;
         priceModifier?: number | null;
         stock?: number | null;
@@ -316,6 +328,10 @@ export interface Product {
  */
 export interface PortfolioIndustry {
   id: number;
+  /**
+   * شناسه‌ی لاتین ثابت (مثلاً `bestseller`) — در URL فیلترها استفاده می‌شود؛ بعد از انتشار عوضش نکنید.
+   */
+  key: string;
   label: string;
   updatedAt: string;
   createdAt: string;
@@ -662,6 +678,7 @@ export interface CategoriesSelect<T extends boolean = true> {
  * via the `definition` "product-tags_select".
  */
 export interface ProductTagsSelect<T extends boolean = true> {
+  key?: T;
   label?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -671,6 +688,7 @@ export interface ProductTagsSelect<T extends boolean = true> {
  * via the `definition` "product-materials_select".
  */
 export interface ProductMaterialsSelect<T extends boolean = true> {
+  key?: T;
   label?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -705,6 +723,7 @@ export interface ProductsSelect<T extends boolean = true> {
   variants?:
     | T
     | {
+        key?: T;
         label?: T;
         priceModifier?: T;
         stock?: T;
@@ -739,6 +758,7 @@ export interface ProductsSelect<T extends boolean = true> {
  * via the `definition` "portfolio-industries_select".
  */
 export interface PortfolioIndustriesSelect<T extends boolean = true> {
+  key?: T;
   label?: T;
   updatedAt?: T;
   createdAt?: T;

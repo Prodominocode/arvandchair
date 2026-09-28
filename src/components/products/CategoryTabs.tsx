@@ -1,6 +1,6 @@
 import { Link } from '@/i18n/navigation'
 import { rtlLocales, type AppLocale } from '@/i18n/routing'
-import { ALL_TAB_LABEL, type CategoryTab } from '@/lib/data/categories'
+import { ALL_TAB_LABEL, type CategoryTab } from '@/lib/data/categories.shared'
 import { cn } from '@/lib/utils/cn'
 
 type CategoryTabsProps = {

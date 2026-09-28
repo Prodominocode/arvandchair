@@ -98,6 +98,15 @@ export const Products: CollectionConfig = {
       name: 'variants',
       type: 'array',
       fields: [
+        {
+          name: 'key',
+          type: 'text',
+          required: true,
+          admin: {
+            description:
+              'شناسه‌ی لاتین رنگ/مدل (مثلاً `black`) — مبنای رنگ Swatch در `lib/utils/variant-swatch.ts`.',
+          },
+        },
         { name: 'label', type: 'text', localized: true, required: true },
         { name: 'priceModifier', type: 'number', defaultValue: 0 },
         { name: 'stock', type: 'number', defaultValue: 0 },

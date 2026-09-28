@@ -1,10 +1,12 @@
 /**
- * لایه‌ی Data Access برای واژه‌نامه‌ی `PortfolioIndustries` (`lib/mock-data/portfolio-industries.ts`).
+ * لایه‌ی Data Access برای واژه‌نامه‌ی `PortfolioIndustries` — فاز ۵ به Payload وصل شد
+ * (`loadVocabulary` در `./payload`؛ `id` = فیلد `key`، همان مقدار `?industry=` در URL آرشیو).
  * توضیح کلی معماری در `lib/data/categories.ts`.
  */
 
-import { portfolioIndustries, type PortfolioIndustry } from '@/lib/mock-data/portfolio-industries'
+import type { PortfolioIndustry } from '@/lib/mock-data/portfolio-industries'
+import { loadVocabulary } from './payload'
 
 export async function getPortfolioIndustries(): Promise<PortfolioIndustry[]> {
-  return portfolioIndustries
+  return loadVocabulary('portfolio-industries')
 }
