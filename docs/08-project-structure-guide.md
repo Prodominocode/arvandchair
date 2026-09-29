@@ -158,7 +158,7 @@ export default async function AboutPage({ params }: Args) {
 `src/components/ui/` — کامپوننت‌های عمومی (Button, Card, Input, ...). این‌ها را دستی نمی‌نویسیم؛ برای افزودن یک کامپوننت جدید:
 
 ```bash
-pnpm dlx shadcn@latest add <نام-کامپوننت>
+npx shadcn@latest add <نام-کامپوننت>
 ```
 
 ⚠️ بعد از هر اجرا چک کن که import داخلی‌اش `from '@/lib/utils/cn'` باشد نه `from "cn"` — رجیستری فعلی shadcn گاهی یک پکیج بیرونی به همین اسم می‌نویسد (در فاز ۲ این اتفاق افتاد و اصلاح شد؛ به `phase-02-design-system.md` بخش ۳ نگاه کن). این فایل‌ها را با کلاس‌های معنایی (`bg-primary`, `text-muted-foreground`, ...) می‌نویسند، پس با تغییر توکن در `globals.css`، ظاهرشان خودکار عوض می‌شود — نیازی به ویرایش دستی این فایل‌ها برای تغییر رنگ/رادیوس نیست.

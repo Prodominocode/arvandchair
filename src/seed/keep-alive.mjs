@@ -1,4 +1,4 @@
-// Preload برای `pnpm seed`: bin پکیج payload اسکریپت را با `void start()` از مسیر Loader ناهمگام
+// Preload برای `npm run seed`: bin پکیج payload اسکریپت را با `void start()` از مسیر Loader ناهمگام
 // tsx اجرا می‌کند؛ گاهی Event Loop وسط انتظار برای Worker لودر خالی می‌شود و Node قبل از شروع
 // اسکریپت با کد ۰ و بدون هیچ خروجی بسته می‌شود (در تست: حدود نصف اجراها). این تایمر Loop را زنده
 // نگه می‌دارد؛ خود Seed در پایان `process.exit` را صدا می‌زند.

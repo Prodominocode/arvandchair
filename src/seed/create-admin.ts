@@ -1,5 +1,5 @@
 /**
- * ساخت (یا بازنشانی رمز) کاربر سوپرادمین پنل — `pnpm create-admin <email> [password]`.
+ * ساخت (یا بازنشانی رمز) کاربر سوپرادمین پنل — `npm run create-admin -- <email> [password]`.
  * لازم است چون Seed کاربر نویسنده‌ی بلاگ را می‌سازد و از آن به بعد Payload دیگر صفحه‌ی «ساخت
  * اولین کاربر» را نشان نمی‌دهد. اگر رمز داده نشود، یک رمز تصادفی ساخته و یک بار چاپ می‌شود.
  */
@@ -12,7 +12,7 @@ import config from '../payload.config'
 const [email, givenPassword] = process.argv.slice(2)
 
 try {
-  if (!email) throw new Error('Usage: pnpm create-admin <email> [password]')
+  if (!email) throw new Error('Usage: npm run create-admin -- <email> [password]')
   const password = givenPassword ?? randomBytes(12).toString('base64url')
   const payload = await getPayload({ config })
 

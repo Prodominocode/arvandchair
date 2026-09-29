@@ -148,7 +148,7 @@ volumes:
 
 ```
 Node.js        >= 20.x LTS
-Package Manager: pnpm >= 9.x
+Package Manager: npm (package-lock.json) — لیارا پروژه‌های pnpm را با pnpm 12 نصب می‌کند که با تنظیمات این پروژه سازگار نیست
 PostgreSQL     >= 16
 Next.js        15.x (App Router)
 Payload CMS    3.x

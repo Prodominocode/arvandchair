@@ -108,7 +108,7 @@
 ## فاز ۵ — اتصال داده‌ی واقعی (Data Wiring)
 
 - [x] هر تابع در `lib/data/*` که در فاز ۳ روی Mock بود، به Payload Local API/REST واقعی وصل شود — **فقط دامنه‌ی ۴‑الف** (Customers/Orders/Loyalty*/Rewards و product-stories عمداً Mock ماندند)
-- [x] Seed داده‌ی واقعی (یا نزدیک‌به‌واقعی) برای محصولات/دسته‌ها/صفحات/وبلاگ — `pnpm seed` (+ `pnpm create-admin`)
+- [x] Seed داده‌ی واقعی (یا نزدیک‌به‌واقعی) برای محصولات/دسته‌ها/صفحات/وبلاگ — `npm run seed` (+ `npm run create-admin`)
 - [x] بازبینی دوباره‌ی هر صفحه‌ی فاز ۳ با داده‌ی واقعی — حالت خالی/طولانی/خطا را چک کن (داده‌ی واقعی رفتار متفاوتی از Mock تمیز دارد) — انجام شد؛ **مشکلات پیدا‌شده هنوز رفع نشده‌اند** (جدول بخش ۶ `docs/progress/phase-05-data-wiring.md`)
 - [ ] **(تصمیم کارفرما، ۲۰۲۶-۰۹-۲۸)** اتصال صفحات حقوقی (`/privacy-policy`، `/terms-of-service`) به Collection `Pages`: الان متن‌شان از پیام‌های next-intl (`LegalPageContent`) می‌آید و `getPageBySlug` هیچ مصرف‌کننده‌ای ندارد. کار: انتقال متن فعلی ترجمه‌ها به Pages (fa/en) + تغییر دو Route به خواندن از `getPageBySlug` (تغییر آگاهانه‌ی UI). زمان پیشنهادی: بلافاصله بعد از تکمیل اتصال همه‌ی `lib/data/*` فاز ۵.
 

@@ -1,6 +1,6 @@
 /**
  * Seed فاز ۵ — انتقال `lib/mock-data/*` به Collectionهای دامنه‌ی ۴‑الف در Payload.
- * اجرا: `pnpm seed` (= `payload run src/seed/index.ts`).
+ * اجرا: `npm run seed` (= `payload run src/seed/index.ts`).
  *
  * - هر بار اجرا، اول همین Collectionها را کامل خالی می‌کند و از نو می‌سازد (Idempotent). به
  *   `users` دست نمی‌زند، جز ساختن/یافتن کاربر نویسنده‌ی بلاگ.
@@ -465,7 +465,7 @@ async function seed() {
   if (!admins.totalDocs) {
     // کاربر نویسنده‌ی بالا صفحه‌ی «ساخت اولین کاربر» پنل را از کار می‌اندازد.
     payload.logger.warn(
-      'No superadmin exists — run `pnpm create-admin <email>` to log in to /admin.',
+      'No superadmin exists — run `npm run create-admin -- <email>` to log in to /admin.',
     )
   }
 
