@@ -1,16 +1,22 @@
+import fs from 'node:fs'
 import { withPayload } from '@payloadcms/next/withPayload'
 import createNextIntlPlugin from 'next-intl/plugin'
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
-// کانفیگ اصلی Next. خارج از ریشه است چون پلتفرم Next لیارا قبل از build فایل‌های next.config.* را
-// با یک wrapper از نوع CommonJS بازنویسی می‌کند که با `"type": "module"` پروژه اجرا نمی‌شود؛
-// `scripts/liara-prebuild.mjs` بعد از آن، next.config.js را به همین فایل برمی‌گرداند.
-// `output: 'standalone'` همان چیزی است که لیارا برای اجرا لازم دارد.
+// روی بیلدر لیارا (set_standalone.sh): این فایل به user.next.config.mjs کپی و با یک wrapper از نوع ESM
+// (import + `output: 'standalone'`) جایگزین می‌شود. پسوند باید `.mjs` بماند: برای `next.config.js`
+// لیارا wrapper از نوع CommonJS می‌سازد که با `"type": "module"` پروژه اجرا نمی‌شود.
+const isLiaraBuild = fs.existsSync('/usr/local/lib/liara') || process.env.LIARA_BUILD === '1'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  // بیلد لیارا سقف زمانی دارد و CPU آن محدود است؛ Type-check و ESLint آنجا تکرار نمی‌شوند
+  // (لوکال: `npm run build` هر دو را اجرا می‌کند + ESLint در pre-commit).
+  eslint: { ignoreDuringBuilds: isLiaraBuild },
+  typescript: { ignoreBuildErrors: isLiaraBuild },
   webpack: (config, { dev }) => {
     // واچر dev کل ریشه‌ی پروژه را می‌بیند؛ ابزارهایی که خروجی/لاگ خود را داخل پروژه می‌نویسند
     // (مثل `.playwright-mcp/` که هر پیام کنسول را در یک فایل لاگ اضافه می‌کند) با هر خط لاگِ
