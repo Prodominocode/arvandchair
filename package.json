@@ -6,6 +6,7 @@
   "engines": {
     "node": ">=20.9.0"
   },
+  "packageManager": "pnpm@9.15.9",
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
