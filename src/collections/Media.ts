@@ -1,9 +1,5 @@
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import type { CollectionConfig } from 'payload'
-
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -15,7 +11,9 @@ export const Media: CollectionConfig = {
     read: () => true,
   },
   upload: {
-    staticDir: path.resolve(dirname, '../../media'),
+    // نسبت به پوشه‌ی اجرا، نه import.meta.url: در build، مسیر مطلقِ ماشینِ build داخل باندل ثابت
+    // می‌شود. در لیارا (standalone) دیسک `media` نسبت به ریشه‌ی اجرای برنامه mount می‌شود (liara.json).
+    staticDir: path.resolve(process.cwd(), 'media'),
   },
   fields: [
     {
