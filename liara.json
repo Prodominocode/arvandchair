@@ -1,0 +1,14 @@
+{
+  "platform": "next",
+  "app": "arvandchair",
+  "port": 3000,
+  "next": {
+    "nodeVersion": "22"
+  },
+  "disks": [
+    {
+      "name": "media",
+      "mountTo": "media"
+    }
+  ]
+}

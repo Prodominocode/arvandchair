@@ -18,6 +18,7 @@ import { QuoteRequests } from './collections/QuoteRequests'
 import { Testimonials } from './collections/Testimonials'
 import { Users } from './collections/Users'
 import { SiteSettings } from './globals/SiteSettings'
+import { migrations } from './migrations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -55,6 +56,8 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URI ?? '',
     },
+    // در Production (لیارا) push غیرفعال است؛ migrationهای اجرانشده موقع استارت سرور اجرا می‌شوند.
+    prodMigrations: migrations,
   }),
   sharp,
 })
