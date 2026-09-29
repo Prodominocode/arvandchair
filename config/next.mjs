@@ -1,0 +1,38 @@
+import { withPayload } from '@payloadcms/next/withPayload'
+import createNextIntlPlugin from 'next-intl/plugin'
+
+const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
+
+// کانفیگ اصلی Next. خارج از ریشه است چون پلتفرم Next لیارا قبل از build فایل‌های next.config.* را
+// با یک wrapper از نوع CommonJS بازنویسی می‌کند که با `"type": "module"` پروژه اجرا نمی‌شود؛
+// `scripts/liara-prebuild.mjs` بعد از آن، next.config.js را به همین فایل برمی‌گرداند.
+// `output: 'standalone'` همان چیزی است که لیارا برای اجرا لازم دارد.
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  output: 'standalone',
+  webpack: (config, { dev }) => {
+    // واچر dev کل ریشه‌ی پروژه را می‌بیند؛ ابزارهایی که خروجی/لاگ خود را داخل پروژه می‌نویسند
+    // (مثل `.playwright-mcp/` که هر پیام کنسول را در یک فایل لاگ اضافه می‌کند) با هر خط لاگِ
+    // Fast Refresh یک بازسازی جدید راه می‌اندازند → حلقه‌ی بی‌پایان HMR که استیت کامپوننت‌ها
+    // (اسلایدر/GSAP) را مدام ریست و کش `.next` را خراب می‌کند.
+    if (dev) {
+      const extraIgnored = '**/.playwright-mcp/**'
+      const ignored = config.watchOptions?.ignored
+      // webpack فقط «یک RegExp» یا «آرایه‌ی رشته‌ی Glob» می‌پذیرد؛ پیش‌فرض Next ممکن است هر
+      // کدام باشد، پس هر دو شکل را جداگانه با Glob ما ترکیب می‌کنیم.
+      const nextIgnored =
+        ignored instanceof RegExp
+          ? new RegExp(`${ignored.source}|[\\\\/]\\.playwright-mcp[\\\\/]`)
+          : [
+              ...(Array.isArray(ignored) ? ignored.filter((p) => typeof p === 'string' && p) : []),
+              ...(typeof ignored === 'string' && ignored ? [ignored] : []),
+              extraIgnored,
+            ]
+      config.watchOptions = { ...config.watchOptions, ignored: nextIgnored }
+    }
+    return config
+  },
+}
+
+export default withPayload(withNextIntl(nextConfig), { devBundleServerPackages: false })
