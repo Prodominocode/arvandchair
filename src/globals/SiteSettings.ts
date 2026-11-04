@@ -16,6 +16,17 @@ export const SiteSettings: GlobalConfig = {
   },
   fields: [
     {
+      name: 'noindex',
+      type: 'checkbox',
+      label: '⚠️ مخفی‌کردن کل سایت از موتورهای جستجو (noindex)',
+      defaultValue: true,
+      admin: {
+        description:
+          'تا وقتی این گزینه فعال است، گوگل و بقیه‌ی موتورهای جستجو هیچ صفحه‌ای از سایت را ایندکس نمی‌کنند (متای robots=noindex,nofollow روی همه‌ی صفحات). ' +
+          'موقع انتشار نسخه‌ی نهایی روی دامنه‌ی اصلی، حتماً این تیک را بردارید و ذخیره کنید؛ در غیر این صورت سایت در گوگل دیده نمی‌شود.',
+      },
+    },
+    {
       name: 'enabledLocales',
       type: 'select',
       hasMany: true,
@@ -39,6 +50,15 @@ export const SiteSettings: GlobalConfig = {
       type: 'upload',
       relationTo: 'media',
       admin: { description: 'نسخه‌ی متن سفید — برای پس‌زمینه‌ی تیره.' },
+    },
+    {
+      name: 'footerLogo',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description:
+          'لوگوی فوتر (پس‌زمینه‌ی روشن، متن تیره). اگر خالی بماند، همان «logo» بالا نمایش داده می‌شود.',
+      },
     },
     {
       name: 'socialLinks',

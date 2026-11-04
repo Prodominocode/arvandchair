@@ -41,6 +41,8 @@ export type SiteSettingsMock = {
   logo: MockImage
   /** نسخه‌ی متن‌سفید لوگو، برای وقتی هدر روی سکشن پس‌زمینه‌تیره شناور است. */
   logoOnDark: string
+  /** لوگوی فوتر؛ اگر در پنل خالی باشد همان `logo` است. */
+  footerLogo: MockImage
   socialLinks: SocialLink[]
   navMenu: NavLink[]
   offices: Office[]
@@ -59,6 +61,10 @@ export const siteSettings: SiteSettingsMock = {
     alt: { fa: 'لوگوی اروند', en: 'Arvand logo' },
   },
   logoOnDark: '/images/brand/arvand-logo-wh.png',
+  footerLogo: {
+    src: '/images/brand/arvand-logo-bl.png',
+    alt: { fa: 'لوگوی اروند', en: 'Arvand logo' },
+  },
   socialLinks: [
     { platform: 'instagram', url: 'https://instagram.com/arvand.furniture' },
     { platform: 'linkedin', url: 'https://linkedin.com/company/arvand-furniture' },

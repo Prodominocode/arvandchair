@@ -25,12 +25,13 @@ type LocalizedNavLink = {
 
 type LocalizedSettingsDoc = Omit<
   SiteSetting,
-  'siteName' | 'tagline' | 'navMenu' | 'offices' | 'logo' | 'logoOnDark'
+  'siteName' | 'tagline' | 'navMenu' | 'offices' | 'logo' | 'logoOnDark' | 'footerLogo'
 > & {
   siteName: LocalizedValue
   tagline?: LocalizedValue
   logo?: unknown
   logoOnDark?: unknown
+  footerLogo?: unknown
   navMenu?: LocalizedNavLink[] | null
   offices?:
     | (Omit<NonNullable<SiteSetting['offices']>[number], 'title' | 'hours'> & {
@@ -87,11 +88,31 @@ export const getSiteSettings = cache(async (): Promise<SiteSettingsMock> => {
     tagline: toLocalized(doc.tagline),
     logo: toImage(doc.logo, siteName, FALLBACK_LOGO_SRC),
     logoOnDark: toImage(doc.logoOnDark, siteName, FALLBACK_LOGO_ON_DARK_SRC).src,
+    // فوتر خالی → همان لوگوی اصلی (که خودش Fallback فایل برند دارد).
+    footerLogo: toImage(doc.footerLogo ?? doc.logo, siteName, FALLBACK_LOGO_SRC),
     socialLinks: (doc.socialLinks ?? []).map(({ platform, url }) => ({ platform, url })),
     navMenu: (doc.navMenu ?? []).map(toNavLink),
     offices: (doc.offices ?? []).map(toOffice),
     contactEmail: doc.contactEmail ?? '',
     contactPhone: doc.contactPhone ?? '',
+  }
+})
+
+/**
+ * آیا کل سایت باید noindex باشد؟ (چک‌باکس «noindex» در تنظیمات سایت). هنگام خطای دیتابیس
+ * false برمی‌گرداند تا یک قطعی کوتاه باعث ارسال noindex برای خزنده‌ها نشود.
+ */
+export const getSiteNoindex = cache(async (): Promise<boolean> => {
+  try {
+    const payload = await getPayloadClient()
+    const doc = await payload.findGlobal({
+      slug: 'site-settings',
+      depth: 0,
+      select: { noindex: true },
+    })
+    return Boolean(doc.noindex)
+  } catch {
+    return false
   }
 })
 

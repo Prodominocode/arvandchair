@@ -31,3 +31,8 @@ Thumbs.db
 
 # playwright mcp output
 .playwright-mcp/
+
+
+
+# graphify
+graphify-out/

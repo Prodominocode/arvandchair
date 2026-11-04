@@ -938,6 +938,10 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface SiteSetting {
   id: number;
   /**
+   * تا وقتی این گزینه فعال است، گوگل و بقیه‌ی موتورهای جستجو هیچ صفحه‌ای از سایت را ایندکس نمی‌کنند (متای robots=noindex,nofollow روی همه‌ی صفحات). موقع انتشار نسخه‌ی نهایی روی دامنه‌ی اصلی، حتماً این تیک را بردارید و ذخیره کنید؛ در غیر این صورت سایت در گوگل دیده نمی‌شود.
+   */
+  noindex?: boolean | null;
+  /**
    * فارسی همیشه فعال است. زبان‌هایی که اینجا انتخاب نشوند، مسیر عمومی‌شان 404 برمی‌گرداند.
    */
   enabledLocales?: 'en'[] | null;
@@ -951,6 +955,10 @@ export interface SiteSetting {
    * نسخه‌ی متن سفید — برای پس‌زمینه‌ی تیره.
    */
   logoOnDark?: (number | null) | Media;
+  /**
+   * لوگوی فوتر (پس‌زمینه‌ی روشن، متن تیره). اگر خالی بماند، همان «logo» بالا نمایش داده می‌شود.
+   */
+  footerLogo?: (number | null) | Media;
   socialLinks?:
     | {
         platform: 'instagram' | 'linkedin' | 'telegram';
@@ -1005,11 +1013,13 @@ export interface SiteSetting {
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
+  noindex?: T;
   enabledLocales?: T;
   siteName?: T;
   tagline?: T;
   logo?: T;
   logoOnDark?: T;
+  footerLogo?: T;
   socialLinks?:
     | T
     | {

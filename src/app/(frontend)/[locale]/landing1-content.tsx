@@ -354,12 +354,12 @@ export function Landing1Content({ locale, products, stories }: Props) {
       <section
         id="intro"
         data-header-tone="light"
-        className="bg-surface-mist flex min-h-[100svh] items-center"
+        className="bg-surface-mist flex min-h-[85svh] items-center py-12"
       >
         <div className="px-container-x max-w-container mx-auto grid w-full items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div
             ref={introMediaRef}
-            className="border-border relative aspect-[3/2] overflow-hidden rounded-sm border shadow-xl"
+            className="border-border relative aspect-[3/2] overflow-hidden rounded-sm border shadow-xl lg:aspect-auto lg:h-[70svh]"
             style={{ clipPath: 'inset(0 100% 0 0)' }}
           >
             <Image
@@ -458,7 +458,7 @@ export function Landing1Content({ locale, products, stories }: Props) {
             ref={catalogCardRef}
             href="/products"
             style={{ marginBottom: 'calc(-1 * var(--catalog-overlap, 0px))' }}
-            className="bg-card group flex flex-col items-center gap-8 overflow-hidden rounded-2xl border p-8 shadow-lg transition-shadow hover:shadow-2xl sm:flex-row md:p-12"
+            className="bg-card border-border group flex flex-col items-center gap-8 overflow-hidden rounded-2xl border p-8 sm:flex-row md:p-12"
           >
             <div className="relative aspect-[3/4] w-full max-w-[220px] shrink-0 overflow-hidden rounded-sm">
               <Image

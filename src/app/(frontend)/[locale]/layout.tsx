@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 
 import config from '@/payload.config'
+import { getSiteNoindex } from '@/lib/data/site-settings'
 import { defaultLocale, routing, rtlLocales, type AppLocale } from '@/i18n/routing'
 import { manrope, persianFont } from '@/styles/fonts'
 import { Header } from '@/components/layout/Header'
@@ -14,8 +15,14 @@ import { Footer } from '@/components/layout/Footer'
 import { Toaster } from '@/components/ui/sonner'
 import '@/styles/globals.css'
 
-export const metadata: Metadata = {
-  title: 'اروند',
+// noindex سراسری از چک‌باکس «noindex» در تنظیمات سایت (پنل ادمین) می‌آید. صفحاتی که خودشان
+// `robots` تعریف کرده‌اند (مثل search/style-guide) همچنان روی این مقدار اولویت دارند.
+export async function generateMetadata(): Promise<Metadata> {
+  const noindex = await getSiteNoindex()
+  return {
+    title: 'اروند',
+    ...(noindex ? { robots: { index: false, follow: false } } : {}),
+  }
 }
 
 type Args = {

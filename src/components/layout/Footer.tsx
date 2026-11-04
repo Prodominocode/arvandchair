@@ -87,8 +87,8 @@ export async function Footer({ locale }: FooterProps) {
         <div className="col-span-2 sm:col-span-1">
           <Link href="/" className="inline-block">
             <Image
-              src={siteSettings.logo.src}
-              alt={siteSettings.logo.alt[locale]}
+              src={siteSettings.footerLogo.src}
+              alt={siteSettings.footerLogo.alt[locale]}
               width={120}
               height={30}
               className="h-8 w-auto"

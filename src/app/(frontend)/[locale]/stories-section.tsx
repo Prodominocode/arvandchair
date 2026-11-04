@@ -236,9 +236,9 @@ export function StoriesSection({ stories, texts }: Props) {
           <p className="text-muted-foreground max-w-[34ch] text-sm md:pt-2">{texts.subtitle}</p>
         </div>
 
-        <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-[1fr_auto_1fr] md:gap-8">
+        <div className="grid grid-cols-1 items-center gap-0 md:grid-cols-[1fr_auto_1fr] md:gap-8">
           {/* متن — اسلات اول در ترتیب DOM، طبق dir صفحه خودش را می‌چیند */}
-          <div className="order-2 flex max-w-[400px] flex-col items-center gap-5 justify-self-center text-center md:order-1 md:items-start md:justify-self-end md:text-start">
+          <div className="order-3 mt-10 flex max-w-[400px] flex-col items-center gap-5 justify-self-center text-center md:order-1 md:mt-0 md:items-start md:justify-self-end md:text-start">
             <span className="text-arvand-gold inline-flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
               <Sparkles className="size-3.5" aria-hidden="true" />
               {texts.badge}
@@ -309,7 +309,7 @@ export function StoriesSection({ stories, texts }: Props) {
           </div>
 
           {/* ناوبری */}
-          <div className="order-3 flex flex-col items-center gap-3 justify-self-center md:items-start md:justify-self-start">
+          <div className="order-2 flex flex-col items-center gap-3 justify-self-center md:order-3 md:items-start md:justify-self-start">
             <div className="flex gap-2">
               <button
                 ref={prevBtnRef}
