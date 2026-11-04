@@ -267,11 +267,11 @@ function Slides({
     // ناقص می‌ماند همین‌طور هم کاملاً محو است.
     const THETA = (Math.PI * 2) / Math.max(count, 10)
     const Rx = sheet
+      ? (gap * W) / THETA
+      : Math.min(Math.max(vw * 0.4, (gap * W) / THETA), (1.9 * gap * W) / THETA)
+    const panelPx = sheet ? 0 : 364
     const usableW = vw - (panelPx / size.width) * vw
-    const neighborDx =
-      usableW * (sheet ? 0.36 : 0.32)
-        ? (gap * W) / THETA
-        : Math.min(Math.max(vw * 0.4, (gap * W) / THETA), (1.9 * gap * W) / THETA)
+    const neighborDx = usableW * (sheet ? 0.36 : 0.32)
     const Rz = Rx * DEPTH_RATIO
     engine.state.unitPx = Rx * THETA * (size.width / vw)
 
@@ -280,7 +280,6 @@ function Slides({
     // کوچک‌تر و کم‌رنگ‌تر دو طرفش می‌مانند و با کلیک/اسکرول جابه‌جا می‌شوند.
     const focusScale = sheet ? 0.8 : 1.15
     const neighborScale = focusScale * (sheet ? 0.66 : 0.64)
-    const panelPx = sheet ? 0 : 364
     const focusX = sheet ? 0 : -(panelPx / 2 / size.width) * vw
     const focusY = sheet ? vh * 0.15 : -y0 * 0.7
 
@@ -295,12 +294,12 @@ function Slides({
       const a = Math.abs(o)
       const ang = o * THETA
       let rotY = Math.sin(ang) * EDGE_TURN
-      let zz = z
 
       const back = (1 - Math.cos(ang)) / 2 // ۰ جلو … ۱ پشت دایره
       const push = Math.max(W * BACK_PUSH, Rx * THETA * 0.7) // هم‌ارز برای تصویر باریک و پهن
       let x = Rx * Math.sin(ang) + Math.sign(o) * push * smooth(1.6, 3.3, a)
       const z = -Rz * (1 - Math.cos(ang))
+      let zz = z
       let y = y0 + H * 0.06 * back // دورتر = کمی بالاتر روی «کف»
       let s = 1 / (1 + 0.04 * a)
       // پشتِ دایره (نیم‌دایره‌ی مقابل مرکز) هرگز دیده نشود، هر تعداد اسلایدی که باشد

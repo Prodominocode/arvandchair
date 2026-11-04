@@ -1,24 +1,26 @@
-import { dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { FlatCompat } from '@eslint/eslintrc'
+import { defineConfig, globalIgnores } from 'eslint/config'
+import nextVitals from 'eslint-config-next/core-web-vitals'
+import nextTs from 'eslint-config-next/typescript'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-})
-
-const eslintConfig = [
-  ...compat.extends('next/core-web-vitals', 'next/typescript'),
+// eslint-config-next v16 مستقیماً Flat Config است؛ دیگر به FlatCompat نیازی نیست.
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
   {
-    ignores: [
-      '.next/**',
-      'node_modules/**',
-      'src/app/(payload)/admin/importMap.js',
-      'src/payload-types.ts',
-    ],
+    // قوانین جدید React Compiler که با eslint-config-next v16 آمده‌اند؛ روی کد موجود (کارکرد درست)
+    // خطا می‌دهند. فعلاً هشدار می‌مانند تا کامیت‌ها بلاک نشوند و در فرصت مناسب بازنویسی شوند.
+    rules: {
+      'react-hooks/refs': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
+    },
   },
-]
+  globalIgnores([
+    '.next/**',
+    'node_modules/**',
+    'src/app/(payload)/admin/importMap.js',
+    'src/payload-types.ts',
+  ]),
+])
 
 export default eslintConfig

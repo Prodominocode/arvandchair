@@ -13,9 +13,9 @@ const isLiaraBuild = fs.existsSync('/usr/local/lib/liara') || process.env.LIARA_
 const nextConfig = {
   reactStrictMode: true,
   output: 'standalone',
-  // بیلد لیارا سقف زمانی دارد و CPU آن محدود است؛ Type-check و ESLint آنجا تکرار نمی‌شوند
-  // (لوکال: `npm run build` هر دو را اجرا می‌کند + ESLint در pre-commit).
-  eslint: { ignoreDuringBuilds: isLiaraBuild },
+  // بیلد لیارا سقف زمانی دارد و CPU آن محدود است؛ Type-check آنجا تکرار نمی‌شود
+  // (لوکال: `npm run build` آن را اجرا می‌کند + ESLint در pre-commit). از Next 16 به بعد
+  // `next build` اصلاً ESLint اجرا نمی‌کند، پس کلید `eslint` حذف شده است.
   typescript: { ignoreBuildErrors: isLiaraBuild },
   webpack: (config, { dev }) => {
     // واچر dev کل ریشه‌ی پروژه را می‌بیند؛ ابزارهایی که خروجی/لاگ خود را داخل پروژه می‌نویسند
