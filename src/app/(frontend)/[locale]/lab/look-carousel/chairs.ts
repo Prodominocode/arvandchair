@@ -1,28 +1,31 @@
 import type { Look } from './looks'
 
 /**
- * صندلی‌های نمونه (public/images/products/side-guest) — نرمال‌شده با scripts/lab/gen-chair-samples.mjs.
- * نام/رنگ‌ها Placeholder آزمایشی‌اند و از کاتالوگ واقعی نیامده‌اند.
+ * نسخه‌ی صندلی: یک صندلی مدیریتی از ۸ زاویه (چرخ‌میز) — منبع public/images/lab/chairs/new،
+ * آماده‌شده با scripts/lab/gen-chair-samples.mjs. نام‌ها و رنگ‌ها Placeholder آزمایشی‌اند.
  */
-export const CHAIRS: Look[] = [
-  ['arghavan', 'ارغوان', 'مشکی', '#2b2b2e', 'صندلی مهمان تاشو'],
-  ['diba', 'دیبا', 'طوسی', '#8e9496', 'صندلی مدیریتی پشت‌بلند'],
-  ['kiana', 'کیانا', 'سرمه‌ای', '#2c3a5c', 'صندلی مدیریتی'],
-  ['mahur', 'ماهور', 'کرم', '#cdbfa5', 'صندلی کارمندی'],
-  ['nasim', 'نسیم', 'شنی', '#c9b79a', 'صندلی ارگونومیک'],
-  ['parand', 'پرند', 'طوسی روشن', '#d9dbdd', 'صندلی کارمندی توری'],
-  ['roya', 'رؤیا', 'خاکی', '#c9c3a3', 'صندلی گردان'],
-  ['sadaf', 'صدف', 'خردلی', '#d79b3a', 'صندلی کنفرانسی'],
-  ['simin', 'سیمین', 'ذغالی', '#4a4d52', 'صندلی مهمان پایه‌ی لوله‌ای'],
-  ['yasna', 'یاسنا', 'مشکی', '#2a2a2a', 'صندلی استک'],
-].map(([id, name, color, swatch, type], i) => ({
-  id: id!,
+const RED = { name: 'قرمز', swatch: '#b23a3f' }
+const GREEN = { name: 'سبز طوسی', swatch: '#4f6660' }
+
+const VIEWS: Array<[string, typeof RED]> = [
+  ['نمای روبه‌رو', RED],
+  ['نمای سه‌رخ', GREEN],
+  ['نمای سه‌رخ از پشت', GREEN],
+  ['نیم‌رخ', RED],
+  ['نیم‌رخ', RED],
+  ['نمای سه‌رخ از پشت', GREEN],
+  ['نمای سه‌رخ', GREEN],
+  ['نمای روبه‌رو', RED],
+]
+
+export const CHAIRS: Look[] = VIEWS.map(([view, color], i) => ({
+  id: `turntable-${i + 1}`,
   src: `/images/lab/chairs/chair-${i + 1}.png`,
-  name: `صندلی ${name}`,
-  caption: type!,
+  name: 'صندلی مدیریتی',
+  caption: view,
   items: [
-    { kind: 'نوع', name: type! },
-    { kind: 'رنگ', name: color!, swatch: swatch! },
-    { kind: 'خانواده', name: 'صندلی مهمان' },
+    { kind: 'نوع', name: 'صندلی مدیریتی' },
+    { kind: 'نما', name: view },
+    { kind: 'رنگ', name: color.name, swatch: color.swatch },
   ],
 }))

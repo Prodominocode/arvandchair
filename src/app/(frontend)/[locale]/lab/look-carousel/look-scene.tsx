@@ -19,10 +19,13 @@ const OPACITY_CURVE: Array<[number, number]> = [
   [0, 1],
   [1, 1],
   [2, 0.8],
-  [3, 0.3],
-  [4, 0.19],
-  [5, 0.12],
+  [3, 0.28],
+  [4, 0.06],
+  [4.7, 0],
+  [5, 0],
 ]
+/** هل‌دادن اسلایدهای پشت دایره به بیرون (نسبت به عرض اسلاید، با کف ۰٫۷ فاصله‌ی گام) تا به ±۱ و ±۲ نچسبند */
+const BACK_PUSH = 0.5
 const curve = (a: number) => {
   for (let i = 1; i < OPACITY_CURVE.length; i++) {
     const [a1, v1] = OPACITY_CURVE[i]!
@@ -100,8 +103,27 @@ function buildMask(
   const ctx = c.getContext('2d', { willReadFrequently: true })!
   ctx.drawImage(img, 0, 0, w, h)
   const rgba = ctx.getImageData(0, 0, w, h).data
+  const raw = new Uint8ClampedArray(w * h)
+  for (let i = 0; i < w * h; i++) raw[i] = rgba[i * 4 + 3] ?? 0
+  // اتساع ۲ سلولی: شکاف‌های باریک داخل صندلی (درز، لبه‌ی روشن، فاصله‌ی پره‌ها) «خالی» حساب نشوند
   const data = new Uint8ClampedArray(w * h)
-  for (let i = 0; i < w * h; i++) data[i] = rgba[i * 4 + 3] ?? 0
+  const R = 2
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let m = 0
+      for (let dy = -R; dy <= R && m < 255; dy++) {
+        const yy = y + dy
+        if (yy < 0 || yy >= h) continue
+        for (let dx = -R; dx <= R; dx++) {
+          const xx = x + dx
+          if (xx < 0 || xx >= w) continue
+          const v = raw[yy * w + xx]!
+          if (v > m) m = v
+        }
+      }
+      data[y * w + x] = m
+    }
+  }
   return { data, w, h }
 }
 
@@ -241,17 +263,25 @@ function Slides({
     const y0 = vh * (yOffset ?? (sheet ? 0.03 : 0.1))
     // دایره‌ی کامل: هر گام 2π/count. شعاع افقی از عرض صفحه می‌آید (استفاده‌ی بیشتر از عرض)،
     // با حداقل فاصله‌ای که اسلایدهای مجاور روی هم نیفتند.
-    const THETA = (Math.PI * 2) / count
+    // با کمتر از ۱۰ اسلاید، گام زاویه همان ۱۰ اسلاید می‌ماند (فاصله‌ی ±۱/±۲ ثابت)؛ نیم‌دایره‌ی پشتی که
+    // ناقص می‌ماند همین‌طور هم کاملاً محو است.
+    const THETA = (Math.PI * 2) / Math.max(count, 10)
     const Rx = sheet
-      ? (gap * W) / THETA
-      : Math.min(Math.max(vw * 0.4, (gap * W) / THETA), (1.9 * gap * W) / THETA)
+    const usableW = vw - (panelPx / size.width) * vw
+    const neighborDx =
+      usableW * (sheet ? 0.36 : 0.32)
+        ? (gap * W) / THETA
+        : Math.min(Math.max(vw * 0.4, (gap * W) / THETA), (1.9 * gap * W) / THETA)
     const Rz = Rx * DEPTH_RATIO
     engine.state.unitPx = Rx * THETA * (size.width / vw)
 
-    const { pos, focus, focusIndex } = engine.state
-    // حالت فوکوس: فرد کمی بزرگ‌تر و به سمت خالی پنل می‌رود
-    const focusScale = sheet ? 0.8 : 1.22
-    const focusX = sheet ? 0 : -(182 / size.width) * vw
+    const { pos, focus } = engine.state
+    // حالت فوکوس: اسلاید مرکزی بزرگ‌تر و به سمت خالی پنل می‌رود؛ دو نمای مجاور (±۱) کمی دورتر،
+    // کوچک‌تر و کم‌رنگ‌تر دو طرفش می‌مانند و با کلیک/اسکرول جابه‌جا می‌شوند.
+    const focusScale = sheet ? 0.8 : 1.15
+    const neighborScale = focusScale * (sheet ? 0.66 : 0.64)
+    const panelPx = sheet ? 0 : 364
+    const focusX = sheet ? 0 : -(panelPx / 2 / size.width) * vw
     const focusY = sheet ? vh * 0.15 : -y0 * 0.7
 
     for (let i = 0; i < count; i++) {
@@ -264,27 +294,38 @@ function Slides({
       const o = mod(i - pos + count / 2, count) - count / 2
       const a = Math.abs(o)
       const ang = o * THETA
+      let rotY = Math.sin(ang) * EDGE_TURN
+      let zz = z
 
       const back = (1 - Math.cos(ang)) / 2 // ۰ جلو … ۱ پشت دایره
-      let x = Rx * Math.sin(ang)
+      const push = Math.max(W * BACK_PUSH, Rx * THETA * 0.7) // هم‌ارز برای تصویر باریک و پهن
+      let x = Rx * Math.sin(ang) + Math.sign(o) * push * smooth(1.6, 3.3, a)
       const z = -Rz * (1 - Math.cos(ang))
       let y = y0 + H * 0.06 * back // دورتر = کمی بالاتر روی «کف»
       let s = 1 / (1 + 0.04 * a)
-      let op = curve(a)
+      // پشتِ دایره (نیم‌دایره‌ی مقابل مرکز) هرگز دیده نشود، هر تعداد اسلایدی که باشد
+      const half = count / 2
+      let op = curve(a) * (1 - smooth(half - 1, half - 0.2, a))
       let blur = smooth(0.3, 2.6, a) * 1.8 + smooth(2, 5, a) * 1.4
-      const tint = smooth(1, 5, a) * 0.5
+      let tint = smooth(1, 5, a) * 0.5
 
       if (focus > 0) {
-        if (i === focusIndex) {
-          s *= 1 + (focusScale - 1) * focus
-          x += (focusX - x) * focus
-          y += focusY * focus
-        } else {
-          op *= 1 - focus
-          x *= 1 + 0.22 * focus
-          s *= 1 - 0.06 * focus
-          blur += 1.8 * focus
-        }
+        // چیدمان فوکوس به‌صورت تابعی پیوسته از o (نه شاخص)، تا با جابه‌جایی pos نرم بچرخد
+        const sg = Math.sign(o)
+        const near = Math.min(a, 1)
+        const fx = focusX + sg * (near * neighborDx + Math.max(a - 1, 0) * neighborDx * 0.6)
+        const fs = focusScale + (neighborScale - focusScale) * near - Math.max(a - 1, 0) * 0.08
+        const fop = a <= 1 ? 1 - 0.12 * a : 0.88 * (1 - smooth(1, 1.7, a))
+        const fz = -Math.min(a, 1.5) * 0.4
+        const fy = y0 + focusY + H * 0.012 * near
+        x += (fx - x) * focus
+        y += (fy - y) * focus
+        zz += (fz - zz) * focus
+        s += (fs - s) * focus
+        op += (fop - op) * focus
+        blur += (near * 0.55 - blur) * focus
+        tint += (near * 0.08 - tint) * focus
+        rotY *= 1 - focus
       }
 
       opacities.current[i] = op
@@ -293,16 +334,16 @@ function Slides({
       shadow.visible = visible
       if (!visible) continue
 
-      mesh.position.set(x, y, z)
+      mesh.position.set(x, y, zz)
       mesh.scale.set(W * s, H * s, 1)
-      mesh.rotation.y = Math.sin(ang) * EDGE_TURN
+      mesh.rotation.y = rotY
 
       const u = mat.uniforms as Record<string, THREE.IUniform<number>>
       u.uOpacity!.value = op
       u.uBlur!.value = blur
       u.uTintAmt!.value = tint
 
-      shadow.position.set(x, y - (H * s) / 2 + H * s * 0.01, z - 0.01)
+      shadow.position.set(x, y - (H * s) / 2 + H * s * 0.01, zz - 0.01)
       const shadowW = Math.min(W, H * 0.55) * s
       shadow.scale.set(shadowW * 1.3, shadowW * 0.22, 1)
       shadowMat.opacity = op * 0.9

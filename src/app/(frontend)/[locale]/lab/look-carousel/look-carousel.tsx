@@ -73,54 +73,6 @@ export function LookCarousel({
     }
   }, [engine, count])
 
-  // — درگ (ماوس/لمس/قلم). بدون setPointerCapture تا کلیک به Raycaster R3F برسد.
-  useEffect(() => {
-    const el = stageRef.current
-    if (!el) return
-    let id = -1
-    let x0 = 0
-
-    const move = (e: PointerEvent) => {
-      if (e.pointerId !== id) return
-      engine.dragBy(e.clientX - x0)
-    }
-    const up = (e: PointerEvent) => {
-      if (e.pointerId !== id) return
-      id = -1
-      el.dataset.drag = 'false'
-      engine.dragEnd()
-      window.removeEventListener('pointermove', move)
-      window.removeEventListener('pointerup', up)
-      window.removeEventListener('pointercancel', up)
-    }
-    const down = (e: PointerEvent) => {
-      if (e.button !== 0 || id !== -1) return
-      if (!engine.dragStart()) return
-      id = e.pointerId
-      x0 = e.clientX
-      el.dataset.drag = 'true'
-      window.addEventListener('pointermove', move)
-      window.addEventListener('pointerup', up)
-      window.addEventListener('pointercancel', up)
-    }
-    // فقط اسکرول افقی (تاچ‌پد/Shift+چرخ) را می‌گیریم؛ اسکرول عمودی صفحه دست‌نخورده می‌ماند
-    const wheel = (e: WheelEvent) => {
-      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return
-      e.preventDefault()
-      engine.wheel(e.deltaX)
-    }
-
-    el.addEventListener('pointerdown', down)
-    el.addEventListener('wheel', wheel, { passive: false })
-    return () => {
-      el.removeEventListener('pointerdown', down)
-      el.removeEventListener('wheel', wheel)
-      window.removeEventListener('pointermove', move)
-      window.removeEventListener('pointerup', up)
-      window.removeEventListener('pointercancel', up)
-    }
-  }, [engine])
-
   const enterFocus = useCallback(() => {
     engine.focusOn()
     setFocused(true)
@@ -131,10 +83,91 @@ export function LookCarousel({
     stageRef.current?.focus({ preventScroll: true })
   }, [engine])
 
+  // — درگ (ماوس/لمس/قلم). بدون setPointerCapture تا کلیک به Raycaster R3F برسد.
+  // در حالت فوکوس، شروع درگ روی تصاویر = بازگشت به حالت «همه‌ی تصاویر» و ادامه‌ی همان درگ.
+  useEffect(() => {
+    const stage = stageRef.current
+    if (!stage) return
+    const el: HTMLDivElement = stage
+    let id = -1
+    let x0 = 0
+    let dragging = false
+    let wheelLock = 0
+    let wheelAcc = 0
+
+    const stop = () => {
+      id = -1
+      dragging = false
+      el.dataset.drag = 'false'
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerup', up)
+      window.removeEventListener('pointercancel', up)
+    }
+    function move(e: PointerEvent) {
+      if (e.pointerId !== id) return
+      if (!dragging) {
+        // هنوز در حالت فوکوس: بعد از ~۸px حرکت افقی، از فوکوس خارج و درگ را شروع کن
+        if (Math.abs(e.clientX - x0) < 8) return
+        if (focusedRef.current) exitFocus()
+        if (!engine.dragStart()) return
+        dragging = true
+        el.dataset.drag = 'true'
+      }
+      engine.dragBy(e.clientX - x0)
+    }
+    function up(e: PointerEvent) {
+      if (e.pointerId !== id) return
+      const was = dragging
+      stop()
+      if (was) engine.dragEnd()
+    }
+    const down = (e: PointerEvent) => {
+      if (e.button !== 0 || id !== -1) return
+      id = e.pointerId
+      x0 = e.clientX
+      if (!focusedRef.current) {
+        if (!engine.dragStart()) return
+        dragging = true
+        el.dataset.drag = 'true'
+      }
+      window.addEventListener('pointermove', move)
+      window.addEventListener('pointerup', up)
+      window.addEventListener('pointercancel', up)
+    }
+    const wheel = (e: WheelEvent) => {
+      if (focusedRef.current) {
+        // حالت فوکوس: هر «ضربه»‌ی اسکرول (افقی یا عمودی) = یک نما جلو/عقب
+        e.preventDefault()
+        wheelAcc += Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY
+        const now = performance.now()
+        if (Math.abs(wheelAcc) > 30 && now - wheelLock > 420) {
+          engine.step(wheelAcc > 0 ? 1 : -1)
+          wheelLock = now
+          wheelAcc = 0
+        }
+        return
+      }
+      // فقط اسکرول افقی (تاچ‌پد/Shift+چرخ) را می‌گیریم؛ اسکرول عمودی صفحه دست‌نخورده می‌ماند
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return
+      e.preventDefault()
+      engine.wheel(e.deltaX)
+    }
+
+    el.addEventListener('pointerdown', down)
+    el.addEventListener('wheel', wheel, { passive: false })
+    return () => {
+      el.removeEventListener('pointerdown', down)
+      el.removeEventListener('wheel', wheel)
+      stop()
+    }
+  }, [engine, exitFocus])
+
   const onSlideClick = useCallback(
     (index: number, solid: boolean) => {
       if (focusedRef.current) {
-        if (!solid || index !== engine.state.focusIndex) exitFocus()
+        // کلیک روی ناحیه‌ی خالی = بازگشت؛ کلیک روی نمای مجاور = آوردنش به مرکز
+        if (!solid) exitFocus()
+        else if (index !== mod(Math.round(engine.state.pos), count)) engine.goTo(index)
         return
       }
       if (!solid) return
@@ -149,8 +182,11 @@ export function LookCarousel({
   const onReady = useCallback(() => setReady(true), [])
 
   const onKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape' && focused) return exitFocus()
-    if (focused) return
+    if (focused) {
+      if (e.key === 'ArrowRight') engine.step(1)
+      else if (e.key === 'ArrowLeft') engine.step(-1)
+      return
+    }
     // کلیدها در فضای فیزیکی: راست = اسلاید بعدی (ناحیه‌ی Stage همیشه ltr است)
     if (e.key === 'ArrowRight') engine.step(1)
     else if (e.key === 'ArrowLeft') engine.step(-1)
@@ -174,6 +210,10 @@ export function LookCarousel({
       aria-roledescription="carousel"
       aria-label={ariaLabel}
       dir="ltr"
+      onKeyDown={(e) => {
+        // Esc از هرجای بخش (از جمله دکمه‌ی بستن که فوکوس کیبورد را در حالت فوکوس دارد)
+        if (e.key === 'Escape' && focused) exitFocus()
+      }}
       className="relative isolate h-[calc(100svh-4rem)] min-h-[560px] w-full overflow-hidden select-none"
       style={{
         background: `radial-gradient(120% 70% at 50% 100%, #e9e5de 0%, ${BG} 62%)`,

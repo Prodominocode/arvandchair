@@ -24,10 +24,10 @@ export default async function LookCarouselLabPage({ params }: Args) {
       <LookCarousel
         variant="clean"
         looks={CHAIRS}
-        aspect={1}
-        heightFrac={0.6}
-        gap={0.65}
-        ariaLabel="صندلی‌های مهمان"
+        aspect={600 / 853}
+        heightFrac={0.66}
+        gap={0.9}
+        ariaLabel="صندلی مدیریتی؛ نماهای چرخشی"
         panelHeading="جزئیات صندلی"
         panelCta="مشاهده‌ی صفحه‌ی محصول"
       />

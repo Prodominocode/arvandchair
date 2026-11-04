@@ -106,7 +106,6 @@ export function createEngine(count: number) {
   }
 
   function step(dir: 1 | -1) {
-    if (state.focused) return
     const from = state.dragging ? Math.round(target) : Math.round(dest || state.pos)
     settle(from + dir, 0)
   }
