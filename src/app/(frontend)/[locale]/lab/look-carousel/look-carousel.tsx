@@ -65,6 +65,7 @@ export function LookCarousel({
     engine.state.reduced = mq.matches
     const onChange = () => (engine.state.reduced = mq.matches)
     mq.addEventListener('change', onChange)
+    engine.start()
     const off = engine.subscribe(() => setActive(mod(Math.round(engine.state.pos), count)))
     return () => {
       mq.removeEventListener('change', onChange)

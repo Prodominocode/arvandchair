@@ -43,7 +43,13 @@ export function createEngine(count: number) {
       listeners.forEach((fn) => fn())
     }
   }
-  gsap.ticker.add(tick)
+  // ticker در start() وصل و در destroy() جدا می‌شود. Strict Mode (و remount) افکت را «mount → cleanup →
+  // mount» می‌کند؛ اگر ticker فقط یک بار در createEngine وصل می‌شد، بعد از cleanup دیگر هیچ‌وقت
+  // برنمی‌گشت و (با frameloop="demand") هیچ فریمی رندر نمی‌شد.
+  function start() {
+    gsap.ticker.remove(tick)
+    gsap.ticker.add(tick)
+  }
 
   const dur = (s: number) => (state.reduced ? 0.001 : s)
 
@@ -143,6 +149,7 @@ export function createEngine(count: number) {
 
   return {
     state,
+    start,
     subscribe(fn: () => void) {
       listeners.add(fn)
       return () => {
