@@ -1,9 +1,8 @@
 import type { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 
-import { CHAIRS } from './chairs'
-import { LookCarousel } from './look-carousel'
-import { LOOKS } from './looks'
+import { LookCarousel } from '@/components/look-carousel/look-carousel'
+import { LOOKS } from '@/components/look-carousel/looks'
 
 type Args = { params: Promise<{ locale: string }> }
 
@@ -18,19 +17,8 @@ export default async function LookCarouselLabPage({ params }: Args) {
   setRequestLocale(locale)
   return (
     <>
-      {/* نسخه‌ی ۱: مدل‌های لباس — کامل (عنوان، برچسب، کنترل‌ها) */}
+      {/* مدل‌های لباس — کامل (عنوان، برچسب، کنترل‌ها)؛ نسخه‌ی صندلی به صفحه‌ی اصلی منتقل شد */}
       <LookCarousel looks={LOOKS} aspect={750 / 1800} ariaLabel="امتحانش کن؛ استایل‌ها" />
-      {/* نسخه‌ی ۲: صندلی‌ها — تمیز، فقط تصویر */}
-      <LookCarousel
-        variant="clean"
-        looks={CHAIRS}
-        aspect={600 / 853}
-        heightFrac={0.66}
-        gap={0.9}
-        ariaLabel="صندلی مدیریتی؛ نماهای چرخشی"
-        panelHeading="جزئیات صندلی"
-        panelCta="مشاهده‌ی صفحه‌ی محصول"
-      />
     </>
   )
 }

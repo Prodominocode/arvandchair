@@ -273,7 +273,8 @@ function Slides({
     const usableW = vw - (panelPx / size.width) * vw
     const neighborDx = usableW * (sheet ? 0.36 : 0.32)
     const Rz = Rx * DEPTH_RATIO
-    engine.state.unitPx = Rx * THETA * (size.width / vw)
+    // در حالت فوکوس فاصله‌ی دیده‌شده‌ی اسلایدها neighborDx است، نه گام دایره (برای درگ در فوکوس)
+    engine.state.unitPx = (engine.state.focused ? neighborDx : Rx * THETA) * (size.width / vw)
 
     const { pos, focus } = engine.state
     // حالت فوکوس: اسلاید مرکزی بزرگ‌تر و به سمت خالی پنل می‌رود؛ دو نمای مجاور (±۱) کمی دورتر،

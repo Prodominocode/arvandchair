@@ -60,8 +60,9 @@ export function createEngine(count: number) {
     gsap.to(state, { pos: to, duration: dur(seconds), ease: 'power3.out', overwrite: 'auto' })
   }
 
-  function dragStart() {
-    if (state.focused) return false
+  /** allowFocused: در حالت فوکوس هم درگ مجاز باشد (نسخه‌ی B سایدبار: درگ روی نماهای همان محصول) */
+  function dragStart(allowFocused = false) {
+    if (state.focused && !allowFocused) return false
     gsap.killTweensOf(state, 'pos')
     state.dragging = true
     startPos = state.pos

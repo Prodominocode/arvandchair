@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
+import Image from 'next/image'
+import gsap from 'gsap'
 import { ChevronLeft, ChevronRight, Plus, ShoppingBag, X } from 'lucide-react'
 
 import { cn } from '@/lib/utils/cn'
@@ -11,12 +13,31 @@ import type { Look } from './looks'
 // Three/R3F فقط سمت کلاینت و بعد از Hydrate بارگذاری می‌شود (قرارداد Scene.tsx فاز ۲)
 const LookScene = dynamic(() => import('./look-scene'), { ssr: false })
 
-/** رنگ زمینه؛ همین مقدار به Shader هم داده می‌شود تا اسلایدهای دور دقیقاً در زمینه حل شوند */
-const BG = '#f3f1ed'
+/** رنگ زمینه‌ی پیش‌فرض؛ همین مقدار به Shader هم داده می‌شود تا اسلایدهای دور دقیقاً در زمینه حل شوند */
+const DEFAULT_BG = '#f3f1ed'
+
+/** متن‌های رابط؛ پیش‌فرض فارسی است و صفحه‌ی میزبان می‌تواند برای هر زبان بازنویسی کند */
+export type LookCarouselLabels = {
+  loading: string
+  stage: string
+  panel: string
+  close: string
+  views: string
+}
+const DEFAULT_LABELS: LookCarouselLabels = {
+  loading: 'در حال بارگذاری استایل‌ها…',
+  stage: 'کاروسل استایل‌ها؛ با کلیدهای چپ و راست بچرخانید، Enter برای مشاهده‌ی جزئیات',
+  panel: 'اجزای این استایل',
+  close: 'بستن و بازگشت به کاروسل',
+  views: 'نماهای صندلی',
+}
 
 const fa = new Intl.NumberFormat('fa-IR')
 const toNum = (s: string) =>
   Number(s.replace(/[۰-۹]/g, (d) => String(d.charCodeAt(0) - 1776)).replace(/[^\d]/g, ''))
+
+/** نسخه‌ی سایدبار جزئیات (نسخه‌ی clean) برای A/B تست؛ a = نسخه‌ی فعلی صفحه‌ی اصلی */
+export type SidebarVariant = 'a' | 'b'
 
 type LookCarouselProps = {
   looks: Look[]
@@ -33,6 +54,21 @@ type LookCarouselProps = {
   ariaLabel: string
   panelHeading?: string
   panelCta?: string
+  /** رنگ زمینه‌ی بخش (و Tint دور شدن اسلایدها) */
+  bg?: string
+  /** true = زمینه‌ی تخت و هم‌رنگ bg (بدون گرادیان کف) تا با صفحه‌ی میزبان یکی شود */
+  flat?: boolean
+  /** جهت متن پنل جزئیات؛ خودِ صحنه همیشه ltr است */
+  textDir?: 'rtl' | 'ltr'
+  labels?: Partial<LookCarouselLabels>
+  /** رنگ نوار هدر شناور روی این بخش */
+  headerTone?: 'light' | 'dark'
+  /** تعداد تصاویر بندانگشتیِ قابل‌کلیک زیر مشخصات سایدبار (۲ ستونه)؛ از ابتدای looks برداشته می‌شود */
+  thumbnails?: number
+  sidebarVariant?: SidebarVariant
+  /** عنوان تبلیغاتی گوشه‌ی بالا-چپ (سبک، حروف بزرگ، رنگ تیره‌ی عنوان‌ها)؛ `
+` = خط جدید */
+  heading?: string
 }
 
 export function LookCarousel({
@@ -45,8 +81,22 @@ export function LookCarousel({
   ariaLabel,
   panelHeading = 'در این استایل',
   panelCta = 'افزودن کل استایل به سبد',
+  bg = DEFAULT_BG,
+  flat = false,
+  textDir = 'rtl',
+  labels,
+  headerTone,
+  heading,
+  thumbnails = 0,
+  sidebarVariant = 'a',
 }: LookCarouselProps) {
   const full = variant === 'full'
+  const ltr = textDir === 'ltr'
+  /** full: کلیک/درگ روی فضای خالی از فوکوس خارج می‌کند؛ clean: فقط دکمه‌ی X (یا Esc) */
+  const exitOnInteract = full
+  /** نسخه‌ی B سایدبار: درگ در فوکوس روی نماهای همان محصول، اسکرول صفحه تصاویر را جابه‌جا نمی‌کند، سایدبار روی هدر و با اسکرول صفحه بسته می‌شود */
+  const isB = !full && sidebarVariant === 'b'
+  const L = { ...DEFAULT_LABELS, ...labels }
   const count = looks.length
   const srcs = useMemo(() => looks.map((l) => l.src), [looks])
   const engine = useMemo(() => createEngine(count), [count])
@@ -56,6 +106,10 @@ export function LookCarousel({
   const [ready, setReady] = useState(false)
 
   const stageRef = useRef<HTMLDivElement>(null)
+  const sectionRef = useRef<HTMLElement>(null)
+  const scrollTween = useRef<gsap.core.Tween | null>(null)
+  /** true تا وقتی اسکرول نرمِ تراز کردن سکشن تمام نشده؛ اسکرول‌های خودمان نباید سایدبار را ببندند */
+  const aligningRef = useRef(false)
   const closeRef = useRef<HTMLButtonElement>(null)
   const focusedRef = useRef(false)
   focusedRef.current = focused
@@ -71,13 +125,44 @@ export function LookCarousel({
       mq.removeEventListener('change', onChange)
       off()
       engine.destroy()
+      scrollTween.current?.kill()
     }
   }, [engine, count])
 
   const enterFocus = useCallback(() => {
     engine.focusOn()
     setFocused(true)
-  }, [engine])
+    if (full) return
+    // با باز شدن سایدبار، صفحه نرم اسکرول می‌شود تا این سکشن (هم‌ارتفاع صفحه) دقیقاً تمام‌قد دیده شود
+    const section = sectionRef.current
+    if (!section) return
+    scrollTween.current?.kill()
+    const from = window.scrollY
+    const to = Math.round(from + section.getBoundingClientRect().top)
+    const dist = Math.abs(to - from)
+    if (dist < 2) return
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const pos = { y: from }
+    const cancel = () => {
+      scrollTween.current?.kill()
+      aligningRef.current = false
+    }
+    window.addEventListener('wheel', cancel, { passive: true, once: true })
+    window.addEventListener('touchstart', cancel, { passive: true, once: true })
+    aligningRef.current = true
+    scrollTween.current = gsap.to(pos, {
+      y: to,
+      duration: reduced ? 0 : Math.min(1.5, 0.8 + dist / 2500),
+      ease: 'power3.inOut',
+      overwrite: true,
+      onUpdate: () => window.scrollTo(0, pos.y),
+      onComplete: () => {
+        aligningRef.current = false
+        window.removeEventListener('wheel', cancel)
+        window.removeEventListener('touchstart', cancel)
+      },
+    })
+  }, [engine, full])
   const exitFocus = useCallback(() => {
     engine.unfocus()
     setFocused(false)
@@ -108,8 +193,12 @@ export function LookCarousel({
       if (e.pointerId !== id) return
       if (!dragging) {
         // هنوز در حالت فوکوس: بعد از ~۸px حرکت افقی، از فوکوس خارج و درگ را شروع کن
+        // (نسخه‌ی clean: درگ در حالت فوکوس نادیده گرفته می‌شود؛ بازگشت فقط با دکمه‌ی X)
         if (Math.abs(e.clientX - x0) < 8) return
-        if (focusedRef.current) exitFocus()
+        if (focusedRef.current) {
+          if (!exitOnInteract) return
+          exitFocus()
+        }
         if (!engine.dragStart()) return
         dragging = true
         el.dataset.drag = 'true'
@@ -126,8 +215,8 @@ export function LookCarousel({
       if (e.button !== 0 || id !== -1) return
       id = e.pointerId
       x0 = e.clientX
-      if (!focusedRef.current) {
-        if (!engine.dragStart()) return
+      if (!focusedRef.current || isB) {
+        if (!engine.dragStart(isB)) return
         dragging = true
         el.dataset.drag = 'true'
       }
@@ -137,6 +226,8 @@ export function LookCarousel({
     }
     const wheel = (e: WheelEvent) => {
       if (focusedRef.current) {
+        // نسخه‌ی B: اسکرول در فوکوس نه تصاویر را جابه‌جا می‌کند و نه صفحه را قفل (اسکرول صفحه = بستن)
+        if (isB) return
         // حالت فوکوس: هر «ضربه»‌ی اسکرول (افقی یا عمودی) = یک نما جلو/عقب
         e.preventDefault()
         wheelAcc += Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY
@@ -161,25 +252,26 @@ export function LookCarousel({
       el.removeEventListener('wheel', wheel)
       stop()
     }
-  }, [engine, exitFocus])
+  }, [engine, exitFocus, exitOnInteract, isB])
 
   const onSlideClick = useCallback(
     (index: number, solid: boolean) => {
       if (focusedRef.current) {
         // کلیک روی ناحیه‌ی خالی = بازگشت؛ کلیک روی نمای مجاور = آوردنش به مرکز
-        if (!solid) exitFocus()
-        else if (index !== mod(Math.round(engine.state.pos), count)) engine.goTo(index)
+        if (!solid) {
+          if (exitOnInteract) exitFocus()
+        } else if (index !== mod(Math.round(engine.state.pos), count)) engine.goTo(index)
         return
       }
       if (!solid) return
       if (index === mod(Math.round(engine.state.pos), count)) enterFocus()
       else engine.goTo(index)
     },
-    [engine, count, enterFocus, exitFocus],
+    [engine, count, enterFocus, exitFocus, exitOnInteract],
   )
   const onMiss = useCallback(() => {
-    if (focusedRef.current) exitFocus()
-  }, [exitFocus])
+    if (focusedRef.current && exitOnInteract) exitFocus()
+  }, [exitFocus, exitOnInteract])
   const onReady = useCallback(() => setReady(true), [])
 
   const onKeyDown = (e: React.KeyboardEvent) => {
@@ -197,27 +289,49 @@ export function LookCarousel({
     }
   }
 
+  // نسخه‌ی B: اگر بعد از تراز شدن، صفحه بیش از ۱۰px از سکشن جابه‌جا شد، سایدبار نرم محو و بسته می‌شود
+  useEffect(() => {
+    if (!isB || !focused) return
+    const onScroll = () => {
+      if (aligningRef.current) return
+      const top = sectionRef.current?.getBoundingClientRect().top ?? 0
+      if (Math.abs(top) > 10) exitFocus()
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [isB, focused, exitFocus])
+
   // با ورود به حالت فوکوس، فوکوس کیبورد به دکمه‌ی بستن می‌رود
   useEffect(() => {
     if (focused) closeRef.current?.focus({ preventScroll: true })
   }, [focused])
 
   const look = looks[active] ?? looks[0]!
+  const thumbs = looks.slice(0, thumbnails)
   const priced = look.items.every((it) => it.price)
   const total = look.items.reduce((sum, it) => sum + toNum(it.price ?? ''), 0)
 
   return (
     <section
+      ref={sectionRef}
       aria-roledescription="carousel"
       aria-label={ariaLabel}
       dir="ltr"
+      data-header-tone={headerTone}
+      data-sidebar-variant={full ? undefined : sidebarVariant}
       onKeyDown={(e) => {
         // Esc از هرجای بخش (از جمله دکمه‌ی بستن که فوکوس کیبورد را در حالت فوکوس دارد)
         if (e.key === 'Escape' && focused) exitFocus()
       }}
-      className="relative isolate h-[calc(100svh-4rem)] min-h-[560px] w-full overflow-hidden select-none"
+      className={cn(
+        // B: بدون isolate تا z-index سایدبار در Stacking Context صفحه (بالاتر از هدر) معنا داشته باشد
+        isB ? 'relative' : 'relative isolate',
+        'min-h-[560px] w-full overflow-hidden select-none',
+        // full: زیر هدر ثابت (۴rem)؛ clean: دقیقاً به اندازه‌ی ارتفاع صفحه‌ی نمایش
+        full ? 'h-[calc(100svh-4rem)]' : 'h-svh',
+      )}
       style={{
-        background: `radial-gradient(120% 70% at 50% 100%, #e9e5de 0%, ${BG} 62%)`,
+        background: flat ? bg : `radial-gradient(120% 70% at 50% 100%, #e9e5de 0%, ${bg} 62%)`,
       }}
     >
       {full && (
@@ -234,12 +348,25 @@ export function LookCarousel({
         </div>
       )}
 
+      {heading && (
+        <div
+          className={cn(
+            'pointer-events-none absolute start-0 top-0 z-10 max-w-[min(92%,44rem)] px-6 pt-20 text-start transition-opacity duration-500 md:px-10 md:pt-24',
+            focused && 'opacity-0',
+          )}
+        >
+          <p className="text-arvand-ink text-4xl leading-tight font-light tracking-tight whitespace-pre-line uppercase lg:text-5xl">
+            {heading}
+          </p>
+        </div>
+      )}
+
       {/* صحنه‌ی سه‌بعدی + درگ */}
       <div
         ref={stageRef}
         tabIndex={0}
         role="group"
-        aria-label="کاروسل استایل‌ها؛ با کلیدهای چپ و راست بچرخانید، Enter برای مشاهده‌ی جزئیات"
+        aria-label={L.stage}
         onKeyDown={onKeyDown}
         data-drag="false"
         className={cn(
@@ -252,7 +379,7 @@ export function LookCarousel({
         <LookScene
           engine={engine}
           srcs={srcs}
-          bg={BG}
+          bg={bg}
           aspect={aspect}
           heightFrac={heightFrac}
           gap={gap}
@@ -271,9 +398,9 @@ export function LookCarousel({
           'pointer-events-none absolute inset-0 z-20 grid place-items-center transition-opacity duration-500',
           ready ? 'opacity-0' : 'opacity-100',
         )}
-        style={{ background: BG }}
+        style={{ background: bg }}
       >
-        <span className="text-arvand-slate text-sm">در حال بارگذاری استایل‌ها…</span>
+        <span className="text-arvand-slate text-sm">{L.loading}</span>
       </div>
 
       {full ? (
@@ -337,95 +464,217 @@ export function LookCarousel({
         </div>
       ) : (
         <p className="sr-only" aria-live="polite">
-          {look.name}؛ {look.caption}
+          {look.name} — {look.caption}
         </p>
       )}
 
-      {/* پنل «در این استایل» — راست در دسکتاپ، Bottom-sheet در موبایل */}
-      <aside
-        aria-label="اجزای این استایل"
-        aria-hidden={!focused}
-        inert={!focused}
-        dir="rtl"
-        className={cn(
-          'absolute z-20 flex flex-col rounded-3xl bg-white/85 p-4 shadow-xl backdrop-blur-xl',
-          'inset-x-3 bottom-3 max-h-[44%] md:inset-x-auto md:top-20 md:right-6 md:bottom-auto md:max-h-none md:w-[340px]',
-          'transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
-          focused
-            ? 'translate-x-0 translate-y-0 opacity-100'
-            : 'pointer-events-none translate-y-10 opacity-0 md:translate-x-10 md:translate-y-0',
-        )}
-      >
-        <div className="mb-3 flex items-start justify-between gap-3">
-          <div>
-            <p className="text-arvand-slate text-xs">{panelHeading}</p>
-            <h2 className="text-arvand-ink text-lg font-bold">{look.name}</h2>
-          </div>
+      {full ? (
+        <>
+          {/* پنل «در این استایل» — راست در دسکتاپ، Bottom-sheet در موبایل */}
+          <aside
+            aria-label={L.panel}
+            aria-hidden={!focused}
+            inert={!focused}
+            dir={textDir}
+            className={cn(
+              'absolute z-20 flex flex-col rounded-3xl bg-white/85 p-4 shadow-xl backdrop-blur-xl',
+              'inset-x-3 bottom-3 max-h-[44%] md:inset-x-auto md:top-20 md:right-6 md:bottom-auto md:max-h-none md:w-[340px]',
+              'transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
+              focused
+                ? 'translate-x-0 translate-y-0 opacity-100'
+                : 'pointer-events-none translate-y-10 opacity-0 md:translate-x-10 md:translate-y-0',
+            )}
+          >
+            <div className="mb-3 flex items-start justify-between gap-3">
+              <div>
+                <p className="text-arvand-slate text-xs">{panelHeading}</p>
+                <h2 className="text-arvand-ink text-lg font-bold">{look.name}</h2>
+              </div>
+              <button
+                ref={closeRef}
+                type="button"
+                aria-label={L.close}
+                onClick={exitFocus}
+                className="text-arvand-ink grid size-10 shrink-0 place-items-center rounded-full bg-black/5 transition-[transform,background-color] hover:bg-black/10 active:scale-95"
+              >
+                <X className="size-5" aria-hidden />
+              </button>
+            </div>
+
+            <ul className="flex flex-1 flex-col gap-2 overflow-y-auto md:flex-none">
+              {look.items.map((it, i) => (
+                <li
+                  key={it.name}
+                  className="flex items-center gap-3 rounded-2xl bg-white p-2.5 shadow-sm transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+                  style={{
+                    transitionDelay: focused ? `${180 + i * 90}ms` : '0ms',
+                    transform: focused ? 'none' : 'translateY(12px)',
+                    opacity: focused ? 1 : 0,
+                  }}
+                >
+                  {it.swatch && (
+                    <span
+                      aria-hidden
+                      className="size-12 shrink-0 rounded-xl border border-black/10"
+                      style={{ background: it.swatch }}
+                    />
+                  )}
+                  <span className="min-w-0 flex-1">
+                    <span className="text-arvand-slate block text-[11px]">{it.kind}</span>
+                    <span className="text-arvand-ink block truncate text-sm font-semibold">
+                      {it.name}
+                    </span>
+                    {it.price && (
+                      <span className="text-arvand-slate block text-xs">{it.price} تومان</span>
+                    )}
+                  </span>
+                  {it.price && (
+                    <button
+                      type="button"
+                      aria-label={`افزودن ${it.name} به سبد`}
+                      className="text-arvand-ink grid size-10 shrink-0 place-items-center rounded-full border border-black/15 transition-[transform,background-color] hover:bg-black/5 active:scale-95"
+                    >
+                      <Plus className="size-4" aria-hidden />
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+
+            {priced && (
+              <div className="mt-3 flex items-center justify-between text-sm">
+                <span className="text-arvand-slate">جمع کل استایل</span>
+                <span className="text-arvand-ink font-bold">{fa.format(total)} تومان</span>
+              </div>
+            )}
+            <button
+              type="button"
+              className="bg-arvand-ink mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-xl text-sm font-bold text-white transition-[transform,opacity] hover:opacity-90 active:scale-[0.98]"
+            >
+              <ShoppingBag className="size-4" aria-hidden />
+              {panelCta}
+            </button>
+          </aside>
+        </>
+      ) : (
+        <>
+          {/* دکمه‌ی بستن: بیرون از سایدبار، گوشه‌ی بالا-راستِ اسلایدر (در دسکتاپ، بالا-چپِ سایدبار) */}
           <button
             ref={closeRef}
             type="button"
-            aria-label="بستن و بازگشت به کاروسل"
+            aria-label={L.close}
+            inert={!focused}
             onClick={exitFocus}
-            className="text-arvand-ink grid size-10 shrink-0 place-items-center rounded-full bg-black/5 transition-[transform,background-color] hover:bg-black/10 active:scale-95"
+            className={cn(
+              'text-arvand-ink absolute top-20 right-4 grid size-10 place-items-center rounded-full border border-black/10 transition-[opacity,background-color] duration-500 hover:bg-black/5 md:top-24 md:right-[calc(340px+1.25rem)]',
+              isB ? 'z-[100]' : 'z-30',
+              focused ? 'opacity-100' : 'pointer-events-none opacity-0',
+            )}
           >
             <X className="size-5" aria-hidden />
           </button>
-        </div>
 
-        <ul className="flex flex-1 flex-col gap-2 overflow-y-auto md:flex-none">
-          {look.items.map((it, i) => (
-            <li
-              key={it.name}
-              className="flex items-center gap-3 rounded-2xl bg-white p-2.5 shadow-sm transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
-              style={{
-                transitionDelay: focused ? `${180 + i * 90}ms` : '0ms',
-                transform: focused ? 'none' : 'translateY(12px)',
-                opacity: focused ? 1 : 0,
-              }}
+          {/* سایدبار جزئیات — تمام‌قد، بدون سایه، کمی روشن‌تر از زمینه با بردر ۱px کم‌کنتراست و
+              پس‌زمینه‌ی ۰٫۹ شفاف (بدون Blur) تا المان‌های پشتش کمی دیده شوند؛ موبایل: Bottom-sheet */}
+          <aside
+            aria-label={L.panel}
+            aria-hidden={!focused}
+            inert={!focused}
+            dir={textDir}
+            className={cn(
+              'absolute flex [scrollbar-width:none] flex-col overflow-y-auto border-black/10 px-6 pt-6 pb-6 md:px-8 md:pt-24 md:pb-8 [&::-webkit-scrollbar]:hidden',
+              isB ? 'z-[100]' : 'z-20',
+              'inset-x-0 bottom-0 max-h-[52%] rounded-t-3xl border-t',
+              'md:inset-y-0 md:right-0 md:left-auto md:max-h-none md:w-[340px] md:rounded-none md:border-t-0 md:border-l',
+              'transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
+              focused
+                ? 'translate-x-0 translate-y-0 opacity-100'
+                : 'pointer-events-none translate-y-10 opacity-0 md:translate-x-10 md:translate-y-0',
+            )}
+            style={{
+              background: `color-mix(in srgb, color-mix(in srgb, #fff 45%, ${bg}) 90%, transparent)`,
+            }}
+          >
+            <h2
+              className={cn(
+                'text-arvand-ink shrink-0 text-2xl leading-tight font-light',
+                ltr && 'tracking-tight',
+              )}
             >
-              {it.swatch && (
-                <span
-                  aria-hidden
-                  className="size-12 shrink-0 rounded-xl border border-black/10"
-                  style={{ background: it.swatch }}
-                />
-              )}
-              <span className="min-w-0 flex-1">
-                <span className="text-arvand-slate block text-[11px]">{it.kind}</span>
-                <span className="text-arvand-ink block truncate text-sm font-semibold">
-                  {it.name}
-                </span>
-                {it.price && (
-                  <span className="text-arvand-slate block text-xs">{it.price} تومان</span>
-                )}
-              </span>
-              {it.price && (
-                <button
-                  type="button"
-                  aria-label={`افزودن ${it.name} به سبد`}
-                  className="text-arvand-ink grid size-10 shrink-0 place-items-center rounded-full border border-black/15 transition-[transform,background-color] hover:bg-black/5 active:scale-95"
-                >
-                  <Plus className="size-4" aria-hidden />
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
+              {look.name}
+            </h2>
 
-        {priced && (
-          <div className="mt-3 flex items-center justify-between text-sm">
-            <span className="text-arvand-slate">جمع کل استایل</span>
-            <span className="text-arvand-ink font-bold">{fa.format(total)} تومان</span>
-          </div>
-        )}
-        <button
-          type="button"
-          className="bg-arvand-ink mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-xl text-sm font-bold text-white transition-[transform,opacity] hover:opacity-90 active:scale-[0.98]"
-        >
-          <ShoppingBag className="size-4" aria-hidden />
-          {panelCta}
-        </button>
-      </aside>
+            <dl className="mt-8 flex shrink-0 flex-col gap-4 md:mt-10 md:gap-5">
+              {look.items.map((it, i) => (
+                <div
+                  key={`${it.kind}-${it.name}`}
+                  className="flex items-baseline justify-between gap-4 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+                  style={{
+                    transitionDelay: focused ? `${180 + i * 70}ms` : '0ms',
+                    transform: focused ? 'none' : 'translateY(10px)',
+                    opacity: focused ? 1 : 0,
+                  }}
+                >
+                  <dt className="text-arvand-slate shrink-0 text-sm">{it.kind}</dt>
+                  <dd className="text-arvand-ink text-base font-light">{it.name}</dd>
+                </div>
+              ))}
+            </dl>
+
+            {thumbs.length > 0 && (
+              <ul
+                aria-label={L.views}
+                className="mt-8 grid shrink-0 grid-cols-4 gap-2.5 md:mt-10 md:grid-cols-2 md:gap-3"
+              >
+                {thumbs.map((t, i) => {
+                  // چرخ‌میز متقارن: دومین نیمه‌ی اسلایدها آینه‌ی نیمه‌ی اول است، پس نمای هم‌ارز هم فعال حساب می‌شود
+                  const current =
+                    active === i || (count === thumbs.length * 2 && active === count - 1 - i)
+                  return (
+                    <li
+                      key={t.id}
+                      className="transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+                      style={{
+                        transitionDelay: focused ? `${420 + i * 70}ms` : '0ms',
+                        transform: focused ? 'none' : 'translateY(10px)',
+                        opacity: focused ? 1 : 0,
+                      }}
+                    >
+                      <button
+                        type="button"
+                        aria-label={t.caption}
+                        aria-pressed={current}
+                        onClick={() => engine.goTo(i)}
+                        className={cn(
+                          'relative block aspect-square w-full overflow-hidden rounded-xl border bg-white/40 transition-[border-color,background-color] duration-300 hover:bg-white/70 motion-reduce:transition-none',
+                          current ? 'border-arvand-ink/50' : 'border-black/10',
+                        )}
+                      >
+                        <Image
+                          src={t.src}
+                          alt=""
+                          fill
+                          sizes="(min-width: 768px) 140px, 25vw"
+                          className="object-contain p-1.5"
+                        />
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+
+            <div className="mt-auto shrink-0 pt-10">
+              <button
+                type="button"
+                className="bg-arvand-ink flex h-12 w-full shrink-0 items-center justify-center gap-2 rounded-full text-sm font-semibold text-white transition-[transform,opacity] hover:opacity-90 active:scale-[0.98]"
+              >
+                {panelCta}
+              </button>
+            </div>
+          </aside>
+        </>
+      )}
     </section>
   )
 }

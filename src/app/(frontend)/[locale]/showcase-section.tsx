@@ -191,11 +191,26 @@ export function ShowcaseSection({ products, eyebrow, linkLabel, locale }: Props)
         onComplete: () => {
           sectionTransitioning = false
         },
+        // autoKill (کاربر وسط Handoff اسکرول کند) onComplete را صدا نمی‌زند؛ قفل نباید بماند
+        onInterrupt: () => {
+          sectionTransitioning = false
+        },
       })
+    }
+
+    /** مقصد Handoff: ابتدای سکشن بعد از Showcase. اگر اسکرول همین حالا هم جلوتر از آن است
+     * (مثلاً بعد از ریلود/Refresh ScrollTrigger وسط صفحه، که armHandoff را دوباره فعال می‌کند)،
+     * Handoff نباید صفحه را «به عقب» بپراند. */
+    function isPastHandoffTarget() {
+      return !mainST || window.scrollY >= mainST.end + window.innerHeight - 2
     }
 
     function onHandoffWheel(e: WheelEvent) {
       if (e.deltaY <= 0 || !mainST) return
+      if (isPastHandoffTarget()) {
+        disarmHandoff()
+        return
+      }
       e.preventDefault()
       disarmHandoff()
       runHandoff(mainST.end)
@@ -209,6 +224,10 @@ export function ShowcaseSection({ products, eyebrow, linkLabel, locale }: Props)
       if (touchStartY == null || !mainST) return
       const currentY = e.touches[0]?.clientY ?? touchStartY
       if (touchStartY - currentY <= TOUCH_HANDOFF_THRESHOLD) return
+      if (isPastHandoffTarget()) {
+        disarmHandoff()
+        return
+      }
       e.preventDefault()
       disarmHandoff()
       runHandoff(mainST.end)

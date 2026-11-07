@@ -17,6 +17,8 @@ import {
   SCROLL_TRIGGER,
 } from '@/lib/motion/scroll-tokens'
 import { Button } from '@/components/ui/button'
+import type { SidebarVariant } from '@/components/look-carousel/look-carousel'
+import { ChairCarouselSection } from './chair-carousel-section'
 import { ShowcaseSection, type ShowcaseProduct } from './showcase-section'
 import { StoriesSection, type StoryItem } from './stories-section'
 
@@ -24,6 +26,8 @@ type Props = {
   locale: AppLocale
   products: ShowcaseProduct[]
   stories: StoryItem[]
+  /** نسخه‌ی سایدبار کاروسل صندلی برای A/B تست (پیش‌فرض a) */
+  sidebarVariant?: SidebarVariant
 }
 
 /** هر کلمه را در یک span مجزا برای Stagger می‌پیچد، اما خودِ حروف داخل هر کلمه دست‌نخورده
@@ -48,7 +52,7 @@ function splitWords(el: HTMLElement) {
   return words
 }
 
-export function Landing1Content({ locale, products, stories }: Props) {
+export function Landing1Content({ locale, products, stories, sidebarVariant }: Props) {
   const t = useTranslations('Landing1')
 
   const rootRef = useRef<HTMLDivElement>(null)
@@ -431,6 +435,9 @@ export function Landing1Content({ locale, products, stories }: Props) {
           </div>
         </div>
       </section>
+
+      {/* کاروسل سه‌بعدی صندلی — زمینه هم‌رنگ سایت (surface-mist) */}
+      <ChairCarouselSection locale={locale} sidebarVariant={sidebarVariant} />
 
       {/* Stories — داستان/ویژگی محصولات با تصاویر واقعی (نه نقل‌قول مشتریان) */}
       <StoriesSection
