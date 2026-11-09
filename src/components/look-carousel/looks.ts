@@ -4,12 +4,21 @@
  */
 export type LookItem = { kind: string; name: string; price?: string; swatch?: string }
 
+export type LookDetail = {
+  src: string
+  alt: string
+  /** عنوان کوتاه بالا-چپ تصویر در سایدبار؛ اگر نباشد از alt استفاده می‌شود */
+  title?: string
+}
+
 export type Look = {
   id: string
   src: string
   name: string
   caption: string
   items: LookItem[]
+  /** عکس‌های جزئی که در سایدبار جزئیات نمایش داده می‌شوند (اختیاری) */
+  gallery?: LookDetail[]
 }
 
 export const LOOKS: Look[] = [

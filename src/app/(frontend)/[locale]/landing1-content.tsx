@@ -18,6 +18,7 @@ import {
 } from '@/lib/motion/scroll-tokens'
 import { Button } from '@/components/ui/button'
 import type { SidebarVariant } from '@/components/look-carousel/look-carousel'
+import type { Look } from '@/components/look-carousel/looks'
 import { ChairCarouselSection } from './chair-carousel-section'
 import { ShowcaseSection, type ShowcaseProduct } from './showcase-section'
 import { StoriesSection, type StoryItem } from './stories-section'
@@ -26,6 +27,8 @@ type Props = {
   locale: AppLocale
   products: ShowcaseProduct[]
   stories: StoryItem[]
+  /** اسلایدهای کاروسل صندلی (از پنل ادمین) */
+  chairs: Look[]
   /** نسخه‌ی سایدبار کاروسل صندلی برای A/B تست (پیش‌فرض a) */
   sidebarVariant?: SidebarVariant
 }
@@ -52,7 +55,7 @@ function splitWords(el: HTMLElement) {
   return words
 }
 
-export function Landing1Content({ locale, products, stories, sidebarVariant }: Props) {
+export function Landing1Content({ locale, products, stories, chairs, sidebarVariant }: Props) {
   const t = useTranslations('Landing1')
 
   const rootRef = useRef<HTMLDivElement>(null)
@@ -437,7 +440,7 @@ export function Landing1Content({ locale, products, stories, sidebarVariant }: P
       </section>
 
       {/* کاروسل سه‌بعدی صندلی — زمینه هم‌رنگ سایت (surface-mist) */}
-      <ChairCarouselSection locale={locale} sidebarVariant={sidebarVariant} />
+      <ChairCarouselSection locale={locale} chairs={chairs} sidebarVariant={sidebarVariant} />
 
       {/* Stories — داستان/ویژگی محصولات با تصاویر واقعی (نه نقل‌قول مشتریان) */}
       <StoriesSection

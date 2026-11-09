@@ -15,6 +15,7 @@
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "seed": "cross-env NODE_OPTIONS=--no-deprecation node --import ./src/seed/keep-alive.mjs node_modules/payload/bin.js run src/seed/index.ts",
+    "seed:carousel": "cross-env NODE_OPTIONS=--no-deprecation node --import ./src/seed/keep-alive.mjs node_modules/payload/bin.js run src/seed/carousel.ts",
     "create-admin": "cross-env NODE_OPTIONS=--no-deprecation node --import ./src/seed/keep-alive.mjs node_modules/payload/bin.js run src/seed/create-admin.ts",
     "prepare": "husky"
   },

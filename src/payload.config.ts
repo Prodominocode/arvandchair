@@ -17,6 +17,7 @@ import { Products } from './collections/Products'
 import { QuoteRequests } from './collections/QuoteRequests'
 import { Testimonials } from './collections/Testimonials'
 import { Users } from './collections/Users'
+import { HomeCarousel } from './globals/HomeCarousel'
 import { SiteSettings } from './globals/SiteSettings'
 import { migrations } from './migrations'
 
@@ -44,7 +45,7 @@ export default buildConfig({
     Pages,
     QuoteRequests,
   ],
-  globals: [SiteSettings],
+  globals: [SiteSettings, HomeCarousel],
   editor: lexicalEditor(),
   localization: {
     locales: ['fa', 'en'],

@@ -27,13 +27,14 @@ export default async function HomeBPage({ params }: Args) {
   const { locale } = await params
   setRequestLocale(locale)
   const appLocale = locale as AppLocale
-  const { showcaseProducts, stories } = await getHomeData(appLocale)
+  const { showcaseProducts, stories, chairs } = await getHomeData(appLocale)
 
   return (
     <Landing1Content
       locale={appLocale}
       products={showcaseProducts}
       stories={stories}
+      chairs={chairs}
       sidebarVariant="b"
     />
   )

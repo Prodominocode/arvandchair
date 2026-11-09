@@ -109,9 +109,11 @@ export interface Config {
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('fa' | 'en') | ('fa' | 'en')[];
   globals: {
     'site-settings': SiteSetting;
+    'home-carousel': HomeCarousel;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'home-carousel': HomeCarouselSelect<false> | HomeCarouselSelect<true>;
   };
   locale: 'fa' | 'en';
   widgets: {
@@ -1010,6 +1012,47 @@ export interface SiteSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-carousel".
+ */
+export interface HomeCarousel {
+  id: number;
+  /**
+   * ترتیب ردیف‌ها همان ترتیب اسلایدهاست. تصویر اصلی بهتر است PNG با پس‌زمینه‌ی شفاف و نسبت ۶۰۰×۸۵۳ باشد؛ تصویری با نسبت دیگر هم پذیرفته می‌شود و خودکار (فقط با کراپ دور خودِ صندلی، بدون کشیدن) به همان نسبت می‌رسد. اگر هیچ صندلی‌ای ثبت نشود، مقادیر پیش‌فرض سایت نمایش داده می‌شود.
+   */
+  chairs?:
+    | {
+        name: string;
+        /**
+         * مثلاً «نمای روبه‌رو».
+         */
+        caption?: string | null;
+        /**
+         * PNG شفاف با نسبت ایده‌آل ۶۰۰×۸۵۳. نسبت دیگر خودکار به همین نسبت کراپ می‌شود (صندلی وسط می‌ماند).
+         */
+        image: number | Media;
+        /**
+         * تصاویر ریزتر (دسته‌بندی، پارچه، پایه، …) که در سایدبار جزئیات زیر مشخصات نمایش داده می‌شوند.
+         */
+        gallery?: (number | Media)[] | null;
+        specs?:
+          | {
+              kind: string;
+              value: string;
+              /**
+               * کد هگز، مثل #b23a3f
+               */
+              swatch?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
@@ -1062,6 +1105,32 @@ export interface SiteSettingsSelect<T extends boolean = true> {
       };
   contactEmail?: T;
   contactPhone?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-carousel_select".
+ */
+export interface HomeCarouselSelect<T extends boolean = true> {
+  chairs?:
+    | T
+    | {
+        name?: T;
+        caption?: T;
+        image?: T;
+        gallery?: T;
+        specs?:
+          | T
+          | {
+              kind?: T;
+              value?: T;
+              swatch?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

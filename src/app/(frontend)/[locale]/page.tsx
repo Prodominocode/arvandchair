@@ -30,7 +30,7 @@ export default async function HomePage({ params }: Args) {
   setRequestLocale(locale)
   const appLocale = locale as AppLocale
 
-  const { showcaseProducts, stories, siteSettings } = await getHomeData(appLocale)
+  const { showcaseProducts, stories, siteSettings, chairs } = await getHomeData(appLocale)
 
   const organizationJsonLd = {
     '@context': 'https://schema.org',
@@ -54,7 +54,12 @@ export default async function HomePage({ params }: Args) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
-      <Landing1Content locale={appLocale} products={showcaseProducts} stories={stories} />
+      <Landing1Content
+        locale={appLocale}
+        products={showcaseProducts}
+        stories={stories}
+        chairs={chairs}
+      />
     </>
   )
 }

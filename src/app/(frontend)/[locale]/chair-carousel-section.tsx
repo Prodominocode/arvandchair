@@ -1,10 +1,9 @@
 'use client'
 
-import { useMemo } from 'react'
 import { useTranslations } from 'next-intl'
 
 import type { AppLocale } from '@/i18n/routing'
-import { getChairs } from '@/components/look-carousel/chairs'
+import type { Look } from '@/components/look-carousel/looks'
 import { LookCarousel, type SidebarVariant } from '@/components/look-carousel/look-carousel'
 
 /** رنگ زمینه‌ی سایت (`--color-surface-mist` در globals.css)؛ باید با Shader کاروسل یکی باشد */
@@ -13,13 +12,14 @@ const SURFACE_MIST = '#ececec'
 /** کاروسل سه‌بعدی صندلی (نسخه‌ی clean: فقط تصویر) — بین Philosophy و Stories صفحه‌ی اصلی. */
 export function ChairCarouselSection({
   locale,
+  chairs,
   sidebarVariant,
 }: {
   locale: AppLocale
+  chairs: Look[]
   sidebarVariant?: SidebarVariant
 }) {
   const t = useTranslations('Landing1.chairCarousel')
-  const chairs = useMemo(() => getChairs(locale), [locale])
 
   return (
     <LookCarousel
@@ -43,6 +43,7 @@ export function ChairCarouselSection({
         panel: t('panel'),
         close: t('close'),
         views: t('views'),
+        details: t('details'),
       }}
     />
   )

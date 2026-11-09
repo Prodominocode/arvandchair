@@ -208,6 +208,7 @@
       "stage": "Chair views; use the left and right arrow keys to rotate, Enter for details",
       "panel": "Details of this chair",
       "views": "Chair views",
+      "details": "Detail photos",
       "close": "Close and return to the carousel"
     },
     "productStories": {

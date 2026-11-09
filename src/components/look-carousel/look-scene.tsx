@@ -6,6 +6,7 @@ import { useTexture } from '@react-three/drei'
 import * as THREE from 'three'
 
 import { mod, type Engine } from './engine'
+import { normalizeTexture } from './normalize-texture'
 
 /** چرخش لبه‌ها به سمت بیرون دایره (۰ = کاملاً تخت) */
 const EDGE_TURN = 0.25
@@ -26,6 +27,8 @@ const OPACITY_CURVE: Array<[number, number]> = [
 ]
 /** هل‌دادن اسلایدهای پشت دایره به بیرون (نسبت به عرض اسلاید، با کف ۰٫۷ فاصله‌ی گام) تا به ±۱ و ±۲ نچسبند */
 const BACK_PUSH = 0.5
+/** سایه‌ی بیضی زیر هر اسلاید — موقتاً غیرفعال؛ برای برگرداندن `true` کنید */
+const SHOW_SHADOW = false
 const curve = (a: number) => {
   for (let i = 1; i < OPACITY_CURVE.length; i++) {
     const [a1, v1] = OPACITY_CURVE[i]!
@@ -173,7 +176,20 @@ function Slides({
   const count = srcs.length
   const gl = useThree((s) => s.gl)
   const invalidate = useThree((s) => s.invalidate)
-  const textures = useTexture(srcs) as THREE.Texture[]
+  const rawTextures = useTexture(srcs) as THREE.Texture[]
+
+  // یکسان‌سازی نسبت: هر تصویری با نسبت متفاوت (آپلود پنل) با کراپ به `aspect` می‌رسد، نه با کشیدن
+  const normalized = useMemo(
+    () => rawTextures.map((t) => normalizeTexture(t, aspect)),
+    [rawTextures, aspect],
+  )
+  const textures = useMemo(() => normalized.map((n) => n.texture), [normalized])
+  useEffect(
+    () => () => {
+      for (const n of normalized) if (n.created) n.texture.dispose()
+    },
+    [normalized],
+  )
 
   // تنظیمات تکسچر قبل از اولین رندر (Layout Effect) — فیلتر Mip، آنیزوتروپی، Premultiplied
   useLayoutEffect(() => {
@@ -269,7 +285,7 @@ function Slides({
     const Rx = sheet
       ? (gap * W) / THETA
       : Math.min(Math.max(vw * 0.4, (gap * W) / THETA), (1.9 * gap * W) / THETA)
-    const panelPx = sheet ? 0 : 364
+    const panelPx = sheet ? 0 : 228
     const usableW = vw - (panelPx / size.width) * vw
     const neighborDx = usableW * (sheet ? 0.36 : 0.32)
     const Rz = Rx * DEPTH_RATIO
@@ -331,7 +347,7 @@ function Slides({
       opacities.current[i] = op
       const visible = op > 0.003
       mesh.visible = visible
-      shadow.visible = visible
+      shadow.visible = visible && SHOW_SHADOW
       if (!visible) continue
 
       mesh.position.set(x, y, zz)

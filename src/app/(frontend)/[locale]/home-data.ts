@@ -1,5 +1,6 @@
 import type { AppLocale } from '@/i18n/routing'
 import { getCategories } from '@/lib/data/categories'
+import { getHomeCarousel } from '@/lib/data/home-carousel'
 import { getFeaturedProducts, getProductById } from '@/lib/data/products'
 import { getProductStories } from '@/lib/data/product-stories'
 import { getSiteSettings } from '@/lib/data/site-settings'
@@ -8,11 +9,12 @@ import type { StoryItem } from './stories-section'
 
 /** داده‌ی مشترک صفحه‌ی اصلی و نسخه‌های آزمایشی‌اش (مثل /home-b) — تا همیشه هم‌گام بمانند. */
 export async function getHomeData(appLocale: AppLocale) {
-  const [categories, featuredProducts, productStories, siteSettings] = await Promise.all([
+  const [categories, featuredProducts, productStories, siteSettings, chairs] = await Promise.all([
     getCategories(),
     getFeaturedProducts(4),
     getProductStories(),
     getSiteSettings(),
+    getHomeCarousel(appLocale),
   ])
 
   const showcaseProducts: ShowcaseProduct[] = featuredProducts.map((product) => {
@@ -43,5 +45,5 @@ export async function getHomeData(appLocale: AppLocale) {
   )
   const stories = resolvedStories.filter((story): story is StoryItem => story !== null)
 
-  return { showcaseProducts, stories, siteSettings }
+  return { showcaseProducts, stories, siteSettings, chairs }
 }

@@ -23,6 +23,8 @@ export type LookCarouselLabels = {
   panel: string
   close: string
   views: string
+  /** عنوان دسترسی‌پذیری لیست عکس‌های جزئی */
+  details: string
 }
 const DEFAULT_LABELS: LookCarouselLabels = {
   loading: 'در حال بارگذاری استایل‌ها…',
@@ -30,6 +32,7 @@ const DEFAULT_LABELS: LookCarouselLabels = {
   panel: 'اجزای این استایل',
   close: 'بستن و بازگشت به کاروسل',
   views: 'نماهای صندلی',
+  details: 'عکس‌های جزئی',
 }
 
 const fa = new Intl.NumberFormat('fa-IR')
@@ -308,6 +311,7 @@ export function LookCarousel({
 
   const look = looks[active] ?? looks[0]!
   const thumbs = looks.slice(0, thumbnails)
+  const gallery = look.gallery ?? []
   const priced = look.items.every((it) => it.price)
   const total = look.items.reduce((sum, it) => sum + toNum(it.price ?? ''), 0)
 
@@ -566,7 +570,7 @@ export function LookCarousel({
             inert={!focused}
             onClick={exitFocus}
             className={cn(
-              'text-arvand-ink absolute top-20 right-4 grid size-10 place-items-center rounded-full border border-black/10 transition-[opacity,background-color] duration-500 hover:bg-black/5 md:top-24 md:right-[calc(340px+1.25rem)]',
+              'text-arvand-ink absolute top-20 right-4 grid size-10 place-items-center rounded-full border border-black/10 transition-[opacity,background-color] duration-500 hover:bg-black/5 md:top-24 md:right-[calc(204px+1.25rem)]',
               isB ? 'z-[100]' : 'z-30',
               focused ? 'opacity-100' : 'pointer-events-none opacity-0',
             )}
@@ -574,30 +578,30 @@ export function LookCarousel({
             <X className="size-5" aria-hidden />
           </button>
 
-          {/* سایدبار جزئیات — تمام‌قد، بدون سایه، کمی روشن‌تر از زمینه با بردر ۱px کم‌کنتراست و
-              پس‌زمینه‌ی ۰٫۹ شفاف (بدون Blur) تا المان‌های پشتش کمی دیده شوند؛ موبایل: Bottom-sheet */}
+          {/* سایدبار جزئیات — تمام‌قد، بدون سایه و بدون بردر (دسکتاپ)، با پس‌زمینه‌ی دقیقاً هم‌رنگ
+              زمینه‌ی صفحه (`bg`)؛ موبایل: Bottom-sheet */}
           <aside
             aria-label={L.panel}
             aria-hidden={!focused}
             inert={!focused}
             dir={textDir}
             className={cn(
-              'absolute flex [scrollbar-width:none] flex-col overflow-y-auto border-black/10 px-6 pt-6 pb-6 md:px-8 md:pt-24 md:pb-8 [&::-webkit-scrollbar]:hidden',
+              'absolute flex [scrollbar-width:none] flex-col overflow-y-auto border-black/10 px-6 pt-6 pb-6 md:px-5 md:pb-8 [&::-webkit-scrollbar]:hidden',
+              // B: سایدبار از زیر هدر ثابت (h-16) شروع می‌شود و وارد آن نمی‌شود؛ عنوان هم‌تراز دکمه‌ی بستن می‌ماند
+              isB ? 'md:top-16 md:bottom-0 md:pt-8' : 'md:inset-y-0 md:pt-24',
               isB ? 'z-[100]' : 'z-20',
               'inset-x-0 bottom-0 max-h-[52%] rounded-t-3xl border-t',
-              'md:inset-y-0 md:right-0 md:left-auto md:max-h-none md:w-[340px] md:rounded-none md:border-t-0 md:border-l',
+              'md:right-0 md:left-auto md:max-h-none md:w-[204px] md:rounded-none md:border-t-0 md:border-l',
               'transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
               focused
                 ? 'translate-x-0 translate-y-0 opacity-100'
                 : 'pointer-events-none translate-y-10 opacity-0 md:translate-x-10 md:translate-y-0',
             )}
-            style={{
-              background: `color-mix(in srgb, color-mix(in srgb, #fff 45%, ${bg}) 90%, transparent)`,
-            }}
+            style={{ background: bg }}
           >
             <h2
               className={cn(
-                'text-arvand-ink shrink-0 text-2xl leading-tight font-light',
+                'text-arvand-ink shrink-0 text-xl leading-tight font-light',
                 ltr && 'tracking-tight',
               )}
             >
@@ -608,7 +612,7 @@ export function LookCarousel({
               {look.items.map((it, i) => (
                 <div
                   key={`${it.kind}-${it.name}`}
-                  className="flex items-baseline justify-between gap-4 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+                  className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
                   style={{
                     transitionDelay: focused ? `${180 + i * 70}ms` : '0ms',
                     transform: focused ? 'none' : 'translateY(10px)',
@@ -616,52 +620,93 @@ export function LookCarousel({
                   }}
                 >
                   <dt className="text-arvand-slate shrink-0 text-sm">{it.kind}</dt>
-                  <dd className="text-arvand-ink text-base font-light">{it.name}</dd>
+                  <dd className="text-arvand-ink text-sm font-light">{it.name}</dd>
                 </div>
               ))}
             </dl>
 
-            {thumbs.length > 0 && (
+            {gallery.length > 0 ? (
               <ul
-                aria-label={L.views}
-                className="mt-8 grid shrink-0 grid-cols-4 gap-2.5 md:mt-10 md:grid-cols-2 md:gap-3"
+                aria-label={L.details}
+                className="mt-8 grid shrink-0 grid-cols-2 gap-x-4 gap-y-6 md:-mx-5 md:mt-10 md:grid-cols-1 md:gap-y-7"
               >
-                {thumbs.map((t, i) => {
-                  // چرخ‌میز متقارن: دومین نیمه‌ی اسلایدها آینه‌ی نیمه‌ی اول است، پس نمای هم‌ارز هم فعال حساب می‌شود
-                  const current =
-                    active === i || (count === thumbs.length * 2 && active === count - 1 - i)
-                  return (
-                    <li
-                      key={t.id}
-                      className="transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
-                      style={{
-                        transitionDelay: focused ? `${420 + i * 70}ms` : '0ms',
-                        transform: focused ? 'none' : 'translateY(10px)',
-                        opacity: focused ? 1 : 0,
-                      }}
-                    >
-                      <button
-                        type="button"
-                        aria-label={t.caption}
-                        aria-pressed={current}
-                        onClick={() => engine.goTo(i)}
-                        className={cn(
-                          'relative block aspect-square w-full overflow-hidden rounded-xl border bg-white/40 transition-[border-color,background-color] duration-300 hover:bg-white/70 motion-reduce:transition-none',
-                          current ? 'border-arvand-ink/50' : 'border-black/10',
-                        )}
-                      >
+                {gallery.map((g, i) => (
+                  <li
+                    key={`${g.src}-${i}`}
+                    className="transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+                    style={{
+                      transitionDelay: focused ? `${420 + i * 70}ms` : '0ms',
+                      transform: focused ? 'none' : 'translateY(10px)',
+                      opacity: focused ? 1 : 0,
+                    }}
+                  >
+                    <figure>
+                      <figcaption className="text-arvand-slate mb-1 text-left text-xs md:px-3">
+                        {g.title ?? g.alt}
+                      </figcaption>
+                      <div className="relative aspect-[4/5] w-full">
                         <Image
-                          src={t.src}
-                          alt=""
+                          src={g.src}
+                          alt={g.alt}
                           fill
-                          sizes="(min-width: 768px) 140px, 25vw"
-                          className="object-contain p-1.5"
+                          sizes="(min-width: 768px) 204px, 45vw"
+                          className="object-contain"
                         />
-                      </button>
-                    </li>
-                  )
-                })}
+                      </div>
+                    </figure>
+                  </li>
+                ))}
               </ul>
+            ) : (
+              thumbs.length > 0 && (
+                <ul
+                  aria-label={L.views}
+                  className="mt-8 grid shrink-0 grid-cols-2 gap-x-4 gap-y-6 md:-mx-5 md:mt-10 md:grid-cols-1 md:gap-y-7"
+                >
+                  {thumbs.map((t, i) => {
+                    // چرخ‌میز متقارن: دومین نیمه‌ی اسلایدها آینه‌ی نیمه‌ی اول است، پس نمای هم‌ارز هم فعال حساب می‌شود
+                    const current =
+                      active === i || (count === thumbs.length * 2 && active === count - 1 - i)
+                    return (
+                      <li
+                        key={t.id}
+                        className="transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+                        style={{
+                          transitionDelay: focused ? `${420 + i * 70}ms` : '0ms',
+                          transform: focused ? 'none' : 'translateY(10px)',
+                          opacity: focused ? 1 : 0,
+                        }}
+                      >
+                        <button
+                          type="button"
+                          aria-label={t.caption}
+                          aria-pressed={current}
+                          onClick={() => engine.goTo(i)}
+                          className="block w-full"
+                        >
+                          <span
+                            className={cn(
+                              'mb-1 block text-left text-xs transition-colors duration-300 md:px-3',
+                              current ? 'text-arvand-ink' : 'text-arvand-slate',
+                            )}
+                          >
+                            {t.caption}
+                          </span>
+                          <span className="relative block aspect-[4/5] w-full">
+                            <Image
+                              src={t.src}
+                              alt=""
+                              fill
+                              sizes="(min-width: 768px) 204px, 45vw"
+                              className="object-contain"
+                            />
+                          </span>
+                        </button>
+                      </li>
+                    )
+                  })}
+                </ul>
+              )
             )}
 
             <div className="mt-auto shrink-0 pt-10">
