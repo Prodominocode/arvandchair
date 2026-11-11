@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
-import Image from 'next/image'
 import gsap from 'gsap'
 import { ChevronLeft, ChevronRight, Plus, ShoppingBag, X } from 'lucide-react'
 
 import { cn } from '@/lib/utils/cn'
 import { createEngine, mod } from './engine'
 import type { Look } from './looks'
+import { CarouselControls, type CarouselControlLabels } from './carousel-controls'
+import { TrimmedImage } from './trimmed-image'
 
 // Three/R3F فقط سمت کلاینت و بعد از Hydrate بارگذاری می‌شود (قرارداد Scene.tsx فاز ۲)
 const LookScene = dynamic(() => import('./look-scene'), { ssr: false })
@@ -25,7 +26,7 @@ export type LookCarouselLabels = {
   views: string
   /** عنوان دسترسی‌پذیری لیست عکس‌های جزئی */
   details: string
-}
+} & CarouselControlLabels
 const DEFAULT_LABELS: LookCarouselLabels = {
   loading: 'در حال بارگذاری استایل‌ها…',
   stage: 'کاروسل استایل‌ها؛ با کلیدهای چپ و راست بچرخانید، Enter برای مشاهده‌ی جزئیات',
@@ -33,6 +34,11 @@ const DEFAULT_LABELS: LookCarouselLabels = {
   close: 'بستن و بازگشت به کاروسل',
   views: 'نماهای صندلی',
   details: 'عکس‌های جزئی',
+  prev: 'اسلاید قبلی',
+  next: 'اسلاید بعدی',
+  play: 'پخش خودکار',
+  pause: 'توقف پخش خودکار',
+  goTo: 'رفتن به اسلاید',
 }
 
 const fa = new Intl.NumberFormat('fa-IR')
@@ -69,6 +75,10 @@ type LookCarouselProps = {
   /** تعداد تصاویر بندانگشتیِ قابل‌کلیک زیر مشخصات سایدبار (۲ ستونه)؛ از ابتدای looks برداشته می‌شود */
   thumbnails?: number
   sidebarVariant?: SidebarVariant
+  /** نوار کنترل زیر کاروسل (فلش‌ها، نوار بخش‌بندی‌شده، توقف/پخش)؛ فقط در نسخه‌ی clean */
+  controls?: boolean
+  /** مدت هر اسلاید به ثانیه برای پخش خودکار (نیازمند `controls`)؛ ۰ = خاموش */
+  autoplay?: number
   /** عنوان تبلیغاتی گوشه‌ی بالا-چپ (سبک، حروف بزرگ، رنگ تیره‌ی عنوان‌ها)؛ `
 ` = خط جدید */
   heading?: string
@@ -92,6 +102,8 @@ export function LookCarousel({
   heading,
   thumbnails = 0,
   sidebarVariant = 'a',
+  controls = false,
+  autoplay = 0,
 }: LookCarouselProps) {
   const full = variant === 'full'
   const ltr = textDir === 'ltr'
@@ -467,9 +479,24 @@ export function LookCarousel({
           </button>
         </div>
       ) : (
-        <p className="sr-only" aria-live="polite">
-          {look.name} — {look.caption}
-        </p>
+        <>
+          <p className="sr-only" aria-live="polite">
+            {look.name} — {look.caption}
+          </p>
+          {controls && (
+            <CarouselControls
+              engine={engine}
+              names={looks.map((l) => l.name)}
+              active={active}
+              autoplay={autoplay}
+              hidden={focused}
+              ready={ready}
+              sectionRef={sectionRef}
+              labels={L}
+              persianDigits={!ltr}
+            />
+          )}
+        </>
       )}
 
       {full ? (
@@ -570,7 +597,7 @@ export function LookCarousel({
             inert={!focused}
             onClick={exitFocus}
             className={cn(
-              'text-arvand-ink absolute top-20 right-4 grid size-10 place-items-center rounded-full border border-black/10 transition-[opacity,background-color] duration-500 hover:bg-black/5 md:top-24 md:right-[calc(204px+1.25rem)]',
+              'text-arvand-ink absolute top-20 right-4 grid size-10 place-items-center rounded-full border border-black/10 transition-[opacity,background-color] duration-500 hover:bg-black/5 md:top-24 md:right-[calc(264px+1.25rem)]',
               isB ? 'z-[100]' : 'z-30',
               focused ? 'opacity-100' : 'pointer-events-none opacity-0',
             )}
@@ -591,7 +618,7 @@ export function LookCarousel({
               isB ? 'md:top-16 md:bottom-0 md:pt-8' : 'md:inset-y-0 md:pt-24',
               isB ? 'z-[100]' : 'z-20',
               'inset-x-0 bottom-0 max-h-[52%] rounded-t-3xl border-t',
-              'md:right-0 md:left-auto md:max-h-none md:w-[204px] md:rounded-none md:border-t-0 md:border-l',
+              'md:right-0 md:left-auto md:max-h-none md:w-[264px] md:rounded-none md:border-t-0 md:border-l',
               'transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
               focused
                 ? 'translate-x-0 translate-y-0 opacity-100'
@@ -628,7 +655,7 @@ export function LookCarousel({
             {gallery.length > 0 ? (
               <ul
                 aria-label={L.details}
-                className="mt-8 grid shrink-0 grid-cols-2 gap-x-4 gap-y-6 md:-mx-5 md:mt-10 md:grid-cols-1 md:gap-y-7"
+                className="mt-8 grid shrink-0 grid-cols-2 gap-x-4 gap-y-6 md:mt-10 md:grid-cols-1 md:gap-y-8"
               >
                 {gallery.map((g, i) => (
                   <li
@@ -641,17 +668,11 @@ export function LookCarousel({
                     }}
                   >
                     <figure>
-                      <figcaption className="text-arvand-slate mb-1 text-left text-xs md:px-3">
+                      <figcaption className="text-arvand-ink mb-2 text-left text-[11px] tracking-wider uppercase">
                         {g.title ?? g.alt}
                       </figcaption>
-                      <div className="relative aspect-[4/5] w-full">
-                        <Image
-                          src={g.src}
-                          alt={g.alt}
-                          fill
-                          sizes="(min-width: 768px) 204px, 45vw"
-                          className="object-contain"
-                        />
+                      <div className="relative aspect-square w-full">
+                        <TrimmedImage src={g.src} alt={g.alt} />
                       </div>
                     </figure>
                   </li>
@@ -661,7 +682,7 @@ export function LookCarousel({
               thumbs.length > 0 && (
                 <ul
                   aria-label={L.views}
-                  className="mt-8 grid shrink-0 grid-cols-2 gap-x-4 gap-y-6 md:-mx-5 md:mt-10 md:grid-cols-1 md:gap-y-7"
+                  className="mt-8 grid shrink-0 grid-cols-2 gap-x-4 gap-y-6 md:mt-10 md:grid-cols-1 md:gap-y-8"
                 >
                   {thumbs.map((t, i) => {
                     // چرخ‌میز متقارن: دومین نیمه‌ی اسلایدها آینه‌ی نیمه‌ی اول است، پس نمای هم‌ارز هم فعال حساب می‌شود
@@ -686,20 +707,14 @@ export function LookCarousel({
                         >
                           <span
                             className={cn(
-                              'mb-1 block text-left text-xs transition-colors duration-300 md:px-3',
+                              'mb-2 block text-left text-[11px] tracking-wider uppercase transition-colors duration-300',
                               current ? 'text-arvand-ink' : 'text-arvand-slate',
                             )}
                           >
                             {t.caption}
                           </span>
-                          <span className="relative block aspect-[4/5] w-full">
-                            <Image
-                              src={t.src}
-                              alt=""
-                              fill
-                              sizes="(min-width: 768px) 204px, 45vw"
-                              className="object-contain"
-                            />
+                          <span className="relative block aspect-square w-full">
+                            <TrimmedImage src={t.src} alt="" />
                           </span>
                         </button>
                       </li>

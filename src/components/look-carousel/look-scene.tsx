@@ -285,7 +285,7 @@ function Slides({
     const Rx = sheet
       ? (gap * W) / THETA
       : Math.min(Math.max(vw * 0.4, (gap * W) / THETA), (1.9 * gap * W) / THETA)
-    const panelPx = sheet ? 0 : 228
+    const panelPx = sheet ? 0 : 288
     const usableW = vw - (panelPx / size.width) * vw
     const neighborDx = usableW * (sheet ? 0.36 : 0.32)
     const Rz = Rx * DEPTH_RATIO

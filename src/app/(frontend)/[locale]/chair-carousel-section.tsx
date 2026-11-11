@@ -35,6 +35,8 @@ export function ChairCarouselSection({
       textDir={locale === 'fa' ? 'rtl' : 'ltr'}
       ariaLabel={t('ariaLabel')}
       thumbnails={4}
+      controls
+      autoplay={5}
       sidebarVariant={sidebarVariant}
       panelCta={t('panelCta')}
       labels={{
@@ -44,6 +46,11 @@ export function ChairCarouselSection({
         close: t('close'),
         views: t('views'),
         details: t('details'),
+        prev: t('prev'),
+        next: t('next'),
+        play: t('play'),
+        pause: t('pause'),
+        goTo: t('goTo'),
       }}
     />
   )

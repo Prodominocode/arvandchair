@@ -209,7 +209,12 @@
       "panel": "Details of this chair",
       "views": "Chair views",
       "details": "Detail photos",
-      "close": "Close and return to the carousel"
+      "close": "Close and return to the carousel",
+      "prev": "Previous chair",
+      "next": "Next chair",
+      "play": "Resume autoplay",
+      "pause": "Pause autoplay",
+      "goTo": "Go to chair"
     },
     "productStories": {
       "title": "The stories behind our products",

@@ -20,7 +20,7 @@ const sizeOf = (img: Source) => ({
  * جعبه‌ی دربرگیرنده‌ی سوژه (پیکسل‌های غیرشفاف) در مختصات تصویر اصلی. اگر تصویر شفافیت ندارد
  * (یا چیزی پیدا نشد) کل تصویر برمی‌گردد → کراپ وسط‌چین می‌شود.
  */
-function subjectBox(img: Source, w: number, h: number) {
+export function subjectBox(img: Source, w: number, h: number) {
   const k = PROBE / Math.max(w, h)
   const pw = Math.max(1, Math.round(w * k))
   const ph = Math.max(1, Math.round(h * k))
