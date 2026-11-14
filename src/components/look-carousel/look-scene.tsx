@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import { Suspense, useDeferredValue, useEffect, useLayoutEffect, useMemo, useRef } from 'react'
 import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
 import * as THREE from 'three'
@@ -146,9 +146,18 @@ function makeShadowTexture() {
   return new THREE.CanvasTexture(c)
 }
 
+/**
+ * یک تصویر در صحنه. `slot === 0` تصویر اصلی صندلی `chair` است (روی دایره‌ی کاروسل)؛ `slot > 0` عکس‌های
+ * جزئی همان صندلی‌اند که فقط در حالت فوکوس همان صندلی دیده می‌شوند (و تنبل بارگذاری می‌شوند).
+ * تصاویر اصلی همیشه اول لیست و به ترتیب صندلی‌ها هستند.
+ */
+export type SceneItem = { src: string; chair: number; slot: number }
+
 type SlidesProps = {
   engine: Engine
-  srcs: string[]
+  items: SceneItem[]
+  /** true: در فوکوس، اسلایدها عکس‌های خودِ صندلی فوکوس‌شده‌اند (اصلی + جزئی)؛ false: چیدمان قدیمی (صندلی‌های مجاور) */
+  detailFocus?: boolean
   bg: string
   /** نسبت عرض/ارتفاع تصاویر */
   aspect: number
@@ -158,22 +167,34 @@ type SlidesProps = {
   gap: number
   /** جابه‌جایی عمودی کل صحنه (کسری از ارتفاع)؛ پیش‌فرض برای جا دادن کنترل‌های پایین */
   yOffset?: number
+  /**
+   * موبایل (Bottom-sheet): ناحیه‌ی دیده‌شده‌ی صحنه در حالت فوکوس = بین `top` پیکسل (هدر ثابت) و
+   * بالای پنل (`1 - sheetFrac` ارتفاع). اسلاید فوکوس‌شده دقیقاً درون این ناحیه جا می‌شود تا نه زیر هدر
+   * برود و نه زیر پنل. اگر نباشد، چیدمان قدیمی (مقادیر ثابت) می‌ماند.
+   */
+  sheetLayout?: { top: number; sheetFrac: number }
   onSlideClick: (index: number, solid: boolean) => void
   onReady: () => void
 }
 
 function Slides({
   engine,
-  srcs,
+  items,
+  detailFocus = false,
   bg,
   aspect,
   heightFrac,
   gap,
   yOffset,
+  sheetLayout,
   onSlideClick,
   onReady,
 }: SlidesProps) {
+  // افزودن عکس‌های جزئی نباید صحنه را Suspend/پنهان کند؛ تا آماده‌شدن تکسچرها لیست قبلی می‌ماند
+  const liveItems = useDeferredValue(items)
+  const srcs = useMemo(() => liveItems.map((it) => it.src), [liveItems])
   const count = srcs.length
+  const chairCount = useMemo(() => liveItems.filter((it) => it.slot === 0).length, [liveItems])
   const gl = useThree((s) => s.gl)
   const invalidate = useThree((s) => s.invalidate)
   const rawTextures = useTexture(srcs) as THREE.Texture[]
@@ -281,7 +302,7 @@ function Slides({
     // با حداقل فاصله‌ای که اسلایدهای مجاور روی هم نیفتند.
     // با کمتر از ۱۰ اسلاید، گام زاویه همان ۱۰ اسلاید می‌ماند (فاصله‌ی ±۱/±۲ ثابت)؛ نیم‌دایره‌ی پشتی که
     // ناقص می‌ماند همین‌طور هم کاملاً محو است.
-    const THETA = (Math.PI * 2) / Math.max(count, 10)
+    const THETA = (Math.PI * 2) / Math.max(chairCount, 10)
     const Rx = sheet
       ? (gap * W) / THETA
       : Math.min(Math.max(vw * 0.4, (gap * W) / THETA), (1.9 * gap * W) / THETA)
@@ -292,13 +313,23 @@ function Slides({
     // در حالت فوکوس فاصله‌ی دیده‌شده‌ی اسلایدها neighborDx است، نه گام دایره (برای درگ در فوکوس)
     engine.state.unitPx = (engine.state.focused ? neighborDx : Rx * THETA) * (size.width / vw)
 
-    const { pos, focus } = engine.state
+    const { pos, focus, lpos, localCount } = engine.state
+    const fc = engine.state.focusIndex
     // حالت فوکوس: اسلاید مرکزی بزرگ‌تر و به سمت خالی پنل می‌رود؛ دو نمای مجاور (±۱) کمی دورتر،
     // کوچک‌تر و کم‌رنگ‌تر دو طرفش می‌مانند و با کلیک/اسکرول جابه‌جا می‌شوند.
-    const focusScale = sheet ? 0.8 : 1.15
+    let focusScale = sheet ? 0.8 : 1.15
+    let focusYSheet = vh * 0.15
+    if (sheet && sheetLayout) {
+      const topFrac = sheetLayout.top / size.height
+      const botFrac = 1 - sheetLayout.sheetFrac
+      const regionH = vh * Math.max(0.2, botFrac - topFrac)
+      focusScale = Math.min((regionH * 0.9) / H, (vw * 0.7) / W, 1.3)
+      // مرکز ناحیه‌ی دیده‌شده (بالا مثبت) نسبت به مرکز Viewport؛ `fy` پایین‌تر y0 را اضافه می‌کند
+      focusYSheet = vh * (0.5 - (topFrac + botFrac) / 2) - y0
+    }
     const neighborScale = focusScale * (sheet ? 0.66 : 0.64)
     const focusX = sheet ? 0 : -(panelPx / 2 / size.width) * vw
-    const focusY = sheet ? vh * 0.15 : -y0 * 0.7
+    const focusY = sheet ? focusYSheet : -y0 * 0.7
 
     for (let i = 0; i < count; i++) {
       const mesh = meshes.current[i]
@@ -307,7 +338,14 @@ function Slides({
       const shadowMat = shadowMats[i]
       if (!mesh || !shadow || !mat || !shadowMat) continue
 
-      const o = mod(i - pos + count / 2, count) - count / 2
+      const item = liveItems[i]!
+      // فاصله‌ی صندلیِ این اسلاید از مرکز دایره (عکس‌های جزئی هم‌جایگاه صندلی خودشان‌اند)
+      const o = mod(item.chair - pos + chairCount / 2, chairCount) - chairCount / 2
+      const isFocusChair = detailFocus && item.chair === fc
+      // فاصله‌ی این عکس از مرکز در لیست محلیِ صندلی فوکوس‌شده
+      const lo = isFocusChair
+        ? mod(item.slot - lpos + localCount / 2, localCount) - localCount / 2
+        : o
       const a = Math.abs(o)
       const ang = o * THETA
       let rotY = Math.sin(ang) * EDGE_TURN
@@ -320,19 +358,24 @@ function Slides({
       let y = y0 + H * 0.06 * back // دورتر = کمی بالاتر روی «کف»
       let s = 1 / (1 + 0.04 * a)
       // پشتِ دایره (نیم‌دایره‌ی مقابل مرکز) هرگز دیده نشود، هر تعداد اسلایدی که باشد
-      const half = count / 2
+      const half = chairCount / 2
       let op = curve(a) * (1 - smooth(half - 1, half - 0.2, a))
+      if (item.slot > 0) op = 0 // عکس جزئی بیرون از فوکوس دیده نمی‌شود
       let blur = smooth(0.3, 2.6, a) * 1.8 + smooth(2, 5, a) * 1.4
       let tint = smooth(1, 5, a) * 0.5
 
-      if (focus > 0) {
-        // چیدمان فوکوس به‌صورت تابعی پیوسته از o (نه شاخص)، تا با جابه‌جایی pos نرم بچرخد
-        const sg = Math.sign(o)
-        const near = Math.min(a, 1)
-        const fx = focusX + sg * (near * neighborDx + Math.max(a - 1, 0) * neighborDx * 0.6)
-        const fs = focusScale + (neighborScale - focusScale) * near - Math.max(a - 1, 0) * 0.08
-        const fop = a <= 1 ? 1 - 0.12 * a : 0.88 * (1 - smooth(1, 1.7, a))
-        const fz = -Math.min(a, 1.5) * 0.4
+      if (focus > 0 && detailFocus && !isFocusChair) {
+        // اسلایدهای صندلی‌های دیگر در فوکوس محو می‌شوند؛ جایشان همان جای دایره می‌ماند
+        op += (0 - op) * focus
+      } else if (focus > 0) {
+        // چیدمان فوکوس به‌صورت تابعی پیوسته از فاصله‌ی `lo` (نه شاخص)، تا با جابه‌جایی نرم بچرخد
+        const fa = Math.abs(lo)
+        const sg = Math.sign(lo)
+        const near = Math.min(fa, 1)
+        const fx = focusX + sg * (near * neighborDx + Math.max(fa - 1, 0) * neighborDx * 0.6)
+        const fs = focusScale + (neighborScale - focusScale) * near - Math.max(fa - 1, 0) * 0.08
+        const fop = fa <= 1 ? 1 - 0.12 * fa : 0.88 * (1 - smooth(1, 1.7, fa))
+        const fz = -Math.min(fa, 1.5) * 0.4
         const fy = y0 + focusY + H * 0.012 * near
         x += (fx - x) * focus
         y += (fy - y) * focus
@@ -383,7 +426,7 @@ function Slides({
   return (
     <>
       {srcs.map((src, i) => (
-        <group key={src}>
+        <group key={`${i}:${src}`}>
           <mesh
             ref={(m) => {
               shadows.current[i] = m

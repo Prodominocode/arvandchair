@@ -9,12 +9,16 @@ import { cn } from '@/lib/utils/cn'
 import { createEngine, mod } from './engine'
 import type { Look } from './looks'
 import { CarouselControls, type CarouselControlLabels } from './carousel-controls'
+import type { SceneItem } from './look-scene'
 import { TrimmedImage } from './trimmed-image'
 
 // Three/R3F فقط سمت کلاینت و بعد از Hydrate بارگذاری می‌شود (قرارداد Scene.tsx فاز ۲)
 const LookScene = dynamic(() => import('./look-scene'), { ssr: false })
 
 /** رنگ زمینه‌ی پیش‌فرض؛ همین مقدار به Shader هم داده می‌شود تا اسلایدهای دور دقیقاً در زمینه حل شوند */
+/** موبایل: ارتفاع Bottom-sheet سایدبار (باید با `h-[42%]` کلاس پنل یکی باشد) و ارتفاع هدر ثابت */
+const SHEET_LAYOUT = { top: 64, sheetFrac: 0.42 }
+
 const DEFAULT_BG = '#f3f1ed'
 
 /** متن‌های رابط؛ پیش‌فرض فارسی است و صفحه‌ی میزبان می‌تواند برای هر زبان بازنویسی کند */
@@ -109,14 +113,28 @@ export function LookCarousel({
   const ltr = textDir === 'ltr'
   /** full: کلیک/درگ روی فضای خالی از فوکوس خارج می‌کند؛ clean: فقط دکمه‌ی X (یا Esc) */
   const exitOnInteract = full
+  /** clean: در حالت فوکوس هم با درگ می‌شود اسلایدها را چرخاند (full با درگ از فوکوس خارج می‌شود) */
+  const dragInFocus = !full
   /** نسخه‌ی B سایدبار: درگ در فوکوس روی نماهای همان محصول، اسکرول صفحه تصاویر را جابه‌جا نمی‌کند، سایدبار روی هدر و با اسکرول صفحه بسته می‌شود */
   const isB = !full && sidebarVariant === 'b'
   const L = { ...DEFAULT_LABELS, ...labels }
   const count = looks.length
-  const srcs = useMemo(() => looks.map((l) => l.src), [looks])
+  /** صندلی‌هایی که عکس‌های جزئی‌شان وارد صحنه شده (تنبل: فقط بعد از اولین فوکوس روی هر صندلی) */
+  const [detailChairs, setDetailChairs] = useState<number[]>([])
+  const items = useMemo<SceneItem[]>(() => {
+    const list: SceneItem[] = looks.map((l, chair) => ({ src: l.src, chair, slot: 0 }))
+    for (const chair of detailChairs) {
+      ;(looks[chair]?.gallery ?? []).forEach((g, k) =>
+        list.push({ src: g.src, chair, slot: k + 1 }),
+      )
+    }
+    return list
+  }, [looks, detailChairs])
   const engine = useMemo(() => createEngine(count), [count])
 
   const [active, setActive] = useState(0)
+  /** عکس فعال در لیست محلی صندلی فوکوس‌شده (۰ = عکس اصلی، k = k‌امین عکس جزئی) */
+  const [localActive, setLocalActive] = useState(0)
   const [focused, setFocused] = useState(false)
   const [ready, setReady] = useState(false)
 
@@ -135,7 +153,11 @@ export function LookCarousel({
     const onChange = () => (engine.state.reduced = mq.matches)
     mq.addEventListener('change', onChange)
     engine.start()
-    const off = engine.subscribe(() => setActive(mod(Math.round(engine.state.pos), count)))
+    const off = engine.subscribe(() => {
+      setActive(mod(Math.round(engine.state.pos), count))
+      const { localCount, lpos, focused } = engine.state
+      setLocalActive(focused && localCount > 0 ? mod(Math.round(lpos), localCount) : 0)
+    })
     return () => {
       mq.removeEventListener('change', onChange)
       off()
@@ -145,7 +167,12 @@ export function LookCarousel({
   }, [engine, count])
 
   const enterFocus = useCallback(() => {
-    engine.focusOn()
+    // clean: در فوکوس، عکس‌های همین صندلی (اصلی + جزئی) می‌چرخند؛ full: همان صندلی‌های مجاور
+    const idx = mod(Math.round(engine.state.pos), count)
+    if (!full) {
+      engine.focusOn(1 + (looks[idx]?.gallery?.length ?? 0))
+      setDetailChairs((prev) => (prev.includes(idx) ? prev : [...prev, idx]))
+    } else engine.focusOn()
     setFocused(true)
     if (full) return
     // با باز شدن سایدبار، صفحه نرم اسکرول می‌شود تا این سکشن (هم‌ارتفاع صفحه) دقیقاً تمام‌قد دیده شود
@@ -177,7 +204,7 @@ export function LookCarousel({
         window.removeEventListener('touchstart', cancel)
       },
     })
-  }, [engine, full])
+  }, [engine, full, looks, count])
   const exitFocus = useCallback(() => {
     engine.unfocus()
     setFocused(false)
@@ -230,8 +257,8 @@ export function LookCarousel({
       if (e.button !== 0 || id !== -1) return
       id = e.pointerId
       x0 = e.clientX
-      if (!focusedRef.current || isB) {
-        if (!engine.dragStart(isB)) return
+      if (!focusedRef.current || dragInFocus) {
+        if (!engine.dragStart(dragInFocus)) return
         dragging = true
         el.dataset.drag = 'true'
       }
@@ -267,22 +294,27 @@ export function LookCarousel({
       el.removeEventListener('wheel', wheel)
       stop()
     }
-  }, [engine, exitFocus, exitOnInteract, isB])
+  }, [engine, exitFocus, exitOnInteract, isB, dragInFocus])
 
   const onSlideClick = useCallback(
-    (index: number, solid: boolean) => {
+    (meshIndex: number, solid: boolean) => {
+      const it = items[meshIndex]
+      if (!it) return
       if (focusedRef.current) {
-        // کلیک روی ناحیه‌ی خالی = بازگشت؛ کلیک روی نمای مجاور = آوردنش به مرکز
         if (!solid) {
           if (exitOnInteract) exitFocus()
-        } else if (index !== mod(Math.round(engine.state.pos), count)) engine.goTo(index)
+        } else if (!full) {
+          // عکس کلیک‌شده را در لیست محلی صندلی فوکوس‌شده به مرکز می‌آورد
+          if (it.slot !== mod(Math.round(engine.state.lpos), engine.state.localCount))
+            engine.goTo(it.slot)
+        } else if (it.chair !== mod(Math.round(engine.state.pos), count)) engine.goTo(it.chair)
         return
       }
-      if (!solid) return
-      if (index === mod(Math.round(engine.state.pos), count)) enterFocus()
-      else engine.goTo(index)
+      if (!solid || it.slot !== 0) return
+      if (it.chair === mod(Math.round(engine.state.pos), count)) enterFocus()
+      else engine.goTo(it.chair)
     },
-    [engine, count, enterFocus, exitFocus, exitOnInteract],
+    [engine, items, full, count, enterFocus, exitFocus, exitOnInteract],
   )
   const onMiss = useCallback(() => {
     if (focusedRef.current && exitOnInteract) exitFocus()
@@ -394,12 +426,14 @@ export function LookCarousel({
       >
         <LookScene
           engine={engine}
-          srcs={srcs}
+          items={items}
+          detailFocus={!full}
           bg={bg}
           aspect={aspect}
           heightFrac={heightFrac}
           gap={gap}
           yOffset={yOffset ?? (full ? undefined : 0)}
+          sheetLayout={full ? undefined : SHEET_LAYOUT}
           onSlideClick={onSlideClick}
           onMiss={onMiss}
           onReady={onReady}
@@ -617,7 +651,9 @@ export function LookCarousel({
               // B: سایدبار از زیر هدر ثابت (h-16) شروع می‌شود و وارد آن نمی‌شود؛ عنوان هم‌تراز دکمه‌ی بستن می‌ماند
               isB ? 'md:top-16 md:bottom-0 md:pt-8' : 'md:inset-y-0 md:pt-24',
               isB ? 'z-[100]' : 'z-20',
-              'inset-x-0 bottom-0 max-h-[52%] rounded-t-3xl border-t',
+              'inset-x-0 bottom-0 rounded-t-3xl border-t',
+              // ارتفاع ثابت (هم‌خوان با SHEET_FRAC صحنه) تا اسلاید فوکوس‌شده دقیق بالای آن جا شود
+              'h-[42%] md:h-auto',
               'md:right-0 md:left-auto md:max-h-none md:w-[264px] md:rounded-none md:border-t-0 md:border-l',
               'transition-[transform,opacity] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
               focused
@@ -655,7 +691,7 @@ export function LookCarousel({
             {gallery.length > 0 ? (
               <ul
                 aria-label={L.details}
-                className="mt-8 grid shrink-0 grid-cols-2 gap-x-4 gap-y-6 md:mt-10 md:grid-cols-1 md:gap-y-8"
+                className="mt-8 grid shrink-0 grid-cols-1 gap-y-6 md:mt-10 md:gap-y-8"
               >
                 {gallery.map((g, i) => (
                   <li
@@ -667,14 +703,36 @@ export function LookCarousel({
                       opacity: focused ? 1 : 0,
                     }}
                   >
-                    <figure>
-                      <figcaption className="text-arvand-ink mb-2 text-left text-[11px] tracking-wider uppercase">
-                        {g.title ?? g.alt}
-                      </figcaption>
-                      <div className="relative aspect-square w-full">
-                        <TrimmedImage src={g.src} alt={g.alt} />
-                      </div>
-                    </figure>
+                    {(() => {
+                      // کلیک: همین عکس در کاروسل بالا (حالت فوکوس) به مرکز می‌آید
+                      const current = localActive === i + 1
+                      return (
+                        <button
+                          type="button"
+                          aria-label={g.alt}
+                          aria-pressed={current}
+                          onClick={() => engine.goTo(i + 1)}
+                          className="group block w-full cursor-pointer text-start"
+                        >
+                          <span
+                            className={cn(
+                              'mb-2 block text-left text-[11px] tracking-wider uppercase transition-colors duration-500',
+                              current ? 'text-arvand-ink' : 'text-arvand-slate',
+                            )}
+                          >
+                            {g.title ?? g.alt}
+                          </span>
+                          <span
+                            className={cn(
+                              'relative block aspect-square w-full transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none',
+                              current ? 'opacity-100' : 'opacity-60 group-hover:opacity-100',
+                            )}
+                          >
+                            <TrimmedImage src={g.src} alt="" />
+                          </span>
+                        </button>
+                      )
+                    })()}
                   </li>
                 ))}
               </ul>
@@ -682,7 +740,7 @@ export function LookCarousel({
               thumbs.length > 0 && (
                 <ul
                   aria-label={L.views}
-                  className="mt-8 grid shrink-0 grid-cols-2 gap-x-4 gap-y-6 md:mt-10 md:grid-cols-1 md:gap-y-8"
+                  className="mt-8 grid shrink-0 grid-cols-1 gap-y-6 md:mt-10 md:gap-y-8"
                 >
                   {thumbs.map((t, i) => {
                     // چرخ‌میز متقارن: دومین نیمه‌ی اسلایدها آینه‌ی نیمه‌ی اول است، پس نمای هم‌ارز هم فعال حساب می‌شود
@@ -702,7 +760,10 @@ export function LookCarousel({
                           type="button"
                           aria-label={t.caption}
                           aria-pressed={current}
-                          onClick={() => engine.goTo(i)}
+                          onClick={() => {
+                            exitFocus()
+                            engine.goTo(i)
+                          }}
                           className="block w-full"
                         >
                           <span

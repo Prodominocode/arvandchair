@@ -17,6 +17,12 @@ export const mod = (n: number, m: number) => ((n % m) + m) % m
 export function createEngine(count: number) {
   const state = {
     pos: 0,
+    /**
+     * موقعیت محلی در لیست عکس‌های صندلی فوکوس‌شده (اصلی + جزئی)، وقتی `focusOn(m)` با m > 0 صدا زده شود.
+     * در حالت فوکوس، درگ/گام/goTo روی این محور کار می‌کنند و `pos` (دایره‌ی صندلی‌ها) ثابت می‌ماند.
+     */
+    lpos: 0,
+    localCount: 0,
     focus: 0,
     focusIndex: -1,
     focused: false,
@@ -36,10 +42,12 @@ export function createEngine(count: number) {
   const listeners = new Set<() => void>()
   let lastPos = Number.NaN
   let lastFocus = Number.NaN
+  let lastLpos = Number.NaN
   const tick = () => {
-    if (state.pos !== lastPos || state.focus !== lastFocus) {
+    if (state.pos !== lastPos || state.focus !== lastFocus || state.lpos !== lastLpos) {
       lastPos = state.pos
       lastFocus = state.focus
+      lastLpos = state.lpos
       listeners.forEach((fn) => fn())
     }
   }
@@ -53,19 +61,24 @@ export function createEngine(count: number) {
 
   const dur = (s: number) => (state.reduced ? 0.001 : s)
 
+  /** محور فعال: در فوکوسِ «عکس‌های صندلی» محلی (`lpos`)، وگرنه دایره‌ی صندلی‌ها (`pos`) */
+  const local = () => state.focused && state.localCount > 0
+  const axis = () => (local() ? 'lpos' : 'pos')
+  const size = () => (local() ? state.localCount : count)
+
   function settle(to: number, velocity = 0) {
     dest = to
     const d = Math.abs(to - state.pos)
     const seconds = clamp((3 * d) / Math.max(Math.abs(velocity), 2.5), 0.55, 2.4)
-    gsap.to(state, { pos: to, duration: dur(seconds), ease: 'power3.out', overwrite: 'auto' })
+    gsap.to(state, { [axis()]: to, duration: dur(seconds), ease: 'power3.out', overwrite: 'auto' })
   }
 
   /** allowFocused: در حالت فوکوس هم درگ مجاز باشد (نسخه‌ی B سایدبار: درگ روی نماهای همان محصول) */
   function dragStart(allowFocused = false) {
     if (state.focused && !allowFocused) return false
-    gsap.killTweensOf(state, 'pos')
+    gsap.killTweensOf(state, axis())
     state.dragging = true
-    startPos = state.pos
+    startPos = state[axis()]
     target = startPos
     samples = [[performance.now(), startPos]]
     return true
@@ -77,7 +90,12 @@ export function createEngine(count: number) {
     const now = performance.now()
     samples.push([now, target])
     while (samples.length > 2 && now - samples[0]![0] > 100) samples.shift()
-    gsap.to(state, { pos: target, duration: dur(0.35), ease: 'power3.out', overwrite: 'auto' })
+    gsap.to(state, {
+      [axis()]: target,
+      duration: dur(0.35),
+      ease: 'power3.out',
+      overwrite: 'auto',
+    })
   }
 
   function dragEnd() {
@@ -106,37 +124,53 @@ export function createEngine(count: number) {
   }
 
   function goTo(index: number) {
-    const base = Math.round(state.pos)
-    let diff = mod(index - base, count)
-    if (diff > count / 2) diff -= count
+    const n = size()
+    const base = Math.round(state[axis()])
+    let diff = mod(index - base, n)
+    if (diff > n / 2) diff -= n
     settle(base + diff, 0)
   }
 
   function step(dir: 1 | -1) {
-    const from = state.dragging ? Math.round(target) : Math.round(dest || state.pos)
+    const from = state.dragging ? Math.round(target) : Math.round(dest || state[axis()])
     settle(from + dir, 0)
   }
 
-  function focusOn() {
+  /**
+   * localCount = تعداد عکس‌های صندلی فوکوس‌شده (اصلی + جزئی). اگر > 0 باشد، در فوکوس همین عکس‌ها
+   * می‌چرخند (محور `lpos` از ۰ = عکس اصلی)؛ اگر ۰ باشد رفتار قدیمی: صندلی‌های مجاور روی `pos`.
+   */
+  function focusOn(localCount = 0) {
     if (state.focused) return
     state.dragging = false
-    state.focused = true
     const snapped = Math.round(state.pos)
     state.focusIndex = mod(snapped, count)
-    settle(snapped, 0)
+    gsap.to(state, { pos: snapped, duration: dur(0.55), ease: 'power3.out', overwrite: 'auto' })
+    gsap.killTweensOf(state, 'lpos')
+    state.lpos = 0
+    state.localCount = Math.max(0, Math.floor(localCount))
+    dest = state.localCount > 0 ? 0 : snapped
+    state.focused = true
     gsap.to(state, { focus: 1, duration: dur(1.05), ease: 'expo.out', overwrite: 'auto' })
   }
 
   function unfocus() {
     if (!state.focused) return
+    state.dragging = false
+    gsap.killTweensOf(state, 'lpos')
     state.focused = false
+    dest = Math.round(state.pos)
     gsap.to(state, {
       focus: 0,
       duration: dur(0.8),
       ease: 'power3.inOut',
       overwrite: 'auto',
       onComplete: () => {
-        if (!state.focused) state.focusIndex = -1
+        if (!state.focused) {
+          state.focusIndex = -1
+          state.localCount = 0
+          state.lpos = 0
+        }
       },
     })
   }
